@@ -1,0 +1,5 @@
+<div class="inventory">
+    <div *ngFor="let resource of getResources()" class="resource resource-{{resource.type.toLowerCase()}}">
+        {{resource.amount}}/{{resource.maxAmount}}
+    </div>
+</div>
