@@ -6,4 +6,5 @@ interface IResource {
     type : ResourceType;
     amount : number;
     maxAmount : number;
+    generationPerSecond : number;
 }
