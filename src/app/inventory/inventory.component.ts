@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InventoryService } from "../inventory.service";
-import { IResource, ResourceType } from "../model/resource";
+import { Resource, ResourceType } from "../model/resource";
 
 interface IInventoryResource {
   amountDisplay: string;
@@ -25,10 +25,10 @@ export class InventoryComponent implements OnInit {
     return this.inventory.getResources().map(x => this.toInventoryResource(x));
   }
 
-  private toInventoryResource(resource : IResource) : IInventoryResource {
+  private toInventoryResource(resource : Resource) : IInventoryResource {
     return {amount: resource.amount, maxAmount: resource.maxAmount, type: ResourceType[resource.type], amountDisplay: this.amountDisplay(resource)};
   }
-  private amountDisplay(resource : IResource) : string {
+  private amountDisplay(resource : Resource) : string {
     return resource.amount.toLocaleString(undefined, { maximumFractionDigits: 0 }) + "/" + resource.maxAmount.toLocaleString(undefined, { maximumFractionDigits: 0 });
   }
 }
