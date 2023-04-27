@@ -5,11 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { GameLogicService } from './game-logic.service';
+import { SkillsComponent } from './skills/skills.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InventoryComponent
+    InventoryComponent,
+    SkillsComponent
   ],
   imports: [
     BrowserModule,
