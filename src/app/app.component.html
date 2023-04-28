@@ -1,2 +1,9 @@
-<app-inventory></app-inventory>
-<router-outlet></router-outlet>
+<div class="app">
+    <div class="sidebar">
+        <app-inventory></app-inventory>
+    </div>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="main">
+        <router-outlet></router-outlet>
+    </div>
+</div>

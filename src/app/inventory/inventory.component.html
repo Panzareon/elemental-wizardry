@@ -1,6 +1,4 @@
-<aside class="inventory">
-    <div *ngFor="let resource of getResources()" class="resource resource-{{resource.type.toLowerCase()}}">
-        <div class="resource-amount h-full bg-indigo-600" style="width:{{resource.amount/resource.maxAmount*100}}%"></div>
-        <span class="p-1">{{resource.amountDisplay}}</span>
-    </div>
-</aside>
+<mat-card *ngFor="let resource of getResources()" class="resource resource-{{resource.type.toLowerCase()}}">
+    <div class="resource-amount" style="width:{{resource.amount/resource.maxAmount*100}}%"></div>
+    <span>{{resource.amountDisplay}}</span>
+</mat-card>
