@@ -8,6 +8,8 @@ import { GameLogicService } from './game-logic.service';
 import { SkillsComponent } from './skills/skills.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { MatCardModule } from '@angular/material/card';
     AppRoutingModule,
     MatDividerModule,
     MatCardModule,
+    MatButtonModule,
+    MatButtonToggleModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,

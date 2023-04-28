@@ -14,4 +14,8 @@ export class SkillsComponent {
   public getSkills() : Skill[] {
     return this.data.wizard.skills;
   }
+
+  public toggleSkill(skill: Skill) {
+    skill.isActive = !skill.isActive;
+  }
 }

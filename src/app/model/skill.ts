@@ -26,6 +26,8 @@ class Skill {
     public get name() : string {
         return SkillType[this.type];
     }
+
+    public isActive : boolean = false;
     
     private toActiontype(type: SkillType): SkillActionType {
         switch (type) {
