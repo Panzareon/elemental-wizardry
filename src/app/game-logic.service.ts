@@ -6,6 +6,7 @@ import { InventoryService } from './inventory.service';
 })
 export class GameLogicService {
   readonly tickDurationInMilliSeconds = 20;
+  readonly maxCombineTicks = 50;
   readonly ticksPerSecond = 1000 / this.tickDurationInMilliSeconds;
 
   private lastTick = new Date();
@@ -21,12 +22,26 @@ export class GameLogicService {
     let duration = newDate.getTime() - this.lastTick.getTime();
     if (duration > this.tickDurationInMilliSeconds)
     {
-      this.tick();
-      this.lastTick.setMilliseconds(this.lastTick.getMilliseconds() + this.tickDurationInMilliSeconds);
+      if (duration < this.tickDurationInMilliSeconds * 2)
+      {
+        this.tick(this.ticksPerSecond);
+        this.lastTick.setMilliseconds(this.lastTick.getMilliseconds() + this.tickDurationInMilliSeconds);
+      }
+      else
+      {
+        var numberTicks = Math.floor(duration / this.tickDurationInMilliSeconds);
+        if (numberTicks > this.maxCombineTicks)
+        {
+          numberTicks = this.maxCombineTicks;
+        }
+
+        this.tick(this.ticksPerSecond / numberTicks);
+        this.lastTick.setMilliseconds(this.lastTick.getMilliseconds() + this.tickDurationInMilliSeconds * numberTicks);
+      }
     }
   }
 
-  private tick() {
-    this.inventory.produceResources(this.ticksPerSecond);
+  private tick(ticksPerSecond: number) {
+    this.inventory.produceResources(ticksPerSecond);
   }
 }
