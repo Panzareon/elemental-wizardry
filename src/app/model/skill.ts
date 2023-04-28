@@ -2,11 +2,9 @@ export { Skill, SkillType }
 
 enum SkillType {
     StudyMagic,
-    MagicKnowledge,
 }
 enum SkillActionType {
     Ongoing,
-    Knowledge,
 }
 
 class Skill {
@@ -33,8 +31,6 @@ class Skill {
         switch (type) {
             case SkillType.StudyMagic:
                 return SkillActionType.Ongoing;
-            case SkillType.MagicKnowledge:
-                return SkillActionType.Knowledge;
         }
     }
 }
