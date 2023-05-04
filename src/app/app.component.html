@@ -4,6 +4,12 @@
     </div>
     <mat-divider [vertical]="true"></mat-divider>
     <div class="main">
-        <router-outlet></router-outlet>
+        <nav mat-tab-nav-bar>
+            <a mat-tab-link href="skills">Skills</a>
+            <a mat-tab-link href="knowledge">Knowledge</a>
+        </nav>
+        <mat-tab-nav-panel #tabPanel>
+            <router-outlet></router-outlet>
+        </mat-tab-nav-panel>
     </div>
 </div>

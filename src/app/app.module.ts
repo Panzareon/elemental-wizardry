@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTabsModule } from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatCardModule,
     MatButtonModule,
     MatButtonToggleModule,
+    MatTabsModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,
