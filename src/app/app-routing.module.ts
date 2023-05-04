@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SkillsComponent } from './skills/skills.component';
 
 const routes: Routes = [
+  { path: "", redirectTo: "/skills", pathMatch: "full" },
   { path: "skills", component: SkillsComponent }
 ];
 
