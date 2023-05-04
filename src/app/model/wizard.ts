@@ -12,7 +12,7 @@ class Wizard {
 
   constructor() {
       this._resources = [new Resource(ResourceType.Mana)];
-      this._skills = [new Skill(SkillType.StudyMagic)]
+      this._skills = [new Skill(SkillType.Meditate)]
       this._knowldege = [new Knowledge(KnowledgeType.MagicKnowledge)]
       this._unlocks = [];
   }

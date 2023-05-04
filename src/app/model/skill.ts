@@ -1,7 +1,7 @@
 export { Skill, SkillType }
 
 enum SkillType {
-    StudyMagic,
+    Meditate,
 }
 enum SkillActionType {
     Ongoing,
@@ -10,9 +10,13 @@ enum SkillActionType {
 class Skill {
     private _type: SkillType;
     private _actionType: SkillActionType;
+    private _level: number;
+    private _exp: number;
     constructor(type: SkillType) {
         this._type = type;
         this._actionType = this.toActiontype(type);
+        this._level = 1;
+        this._exp = 0;
     }
 
     public get type() : SkillType {
@@ -23,6 +27,10 @@ class Skill {
         return this._actionType;
     }
 
+    public get level() : number {
+        return this._level;
+    }
+
     public get name() : string {
         return SkillType[this.type];
     }
@@ -31,7 +39,7 @@ class Skill {
     
     private toActiontype(type: SkillType): SkillActionType {
         switch (type) {
-            case SkillType.StudyMagic:
+            case SkillType.Meditate:
                 return SkillActionType.Ongoing;
         }
     }
