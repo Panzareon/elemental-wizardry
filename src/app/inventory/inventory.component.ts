@@ -29,6 +29,6 @@ export class InventoryComponent implements OnInit {
     return {amount: resource.amount, maxAmount: resource.maxAmount, type: ResourceType[resource.type], amountDisplay: this.amountDisplay(resource)};
   }
   private amountDisplay(resource : Resource) : string {
-    return resource.amount.toLocaleString(undefined, { maximumFractionDigits: 0 }) + "/" + resource.maxAmount.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    return Math.floor(resource.amount) + "/" + Math.floor(resource.maxAmount);
   }
 }

@@ -29,17 +29,19 @@ class Resource {
     public get amount(): number {
         return this._amount;
     }
-    public produce(ticksPerSecond: number) {
-        var newValue = this.amount + this.generationPerSecond/ticksPerSecond;
-        if (newValue < 0) {
-          newValue = 0;
+    public set amount(value: number) {
+        if (value < 0) {
+            value = 0;
         }
-  
-        if (newValue > this.maxAmount) {
-          newValue = this.maxAmount;
+
+        if (value > this.maxAmount) {
+            value = this.maxAmount;
         }
-  
-        this._amount = newValue;
+
+        this._amount = value;
+    }
+    public produce(deltaTime: number) {
+        this.amount += this.generationPerSecond*deltaTime;
     }
     public calculate(wizard: Wizard) {
         this._maxAmount = this.baseMaxAmount;

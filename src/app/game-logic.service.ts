@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InventoryService } from './inventory.service';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class GameLogicService {
 
   private lastTick = new Date();
 
-  constructor(private inventory: InventoryService) { }
+  constructor(private inventory: InventoryService, private data: DataService) { }
 
   public init() {
     window.setInterval(() => this.onInterval(), this.tickDurationInMilliSeconds);
@@ -24,7 +25,7 @@ export class GameLogicService {
     {
       if (duration < this.tickDurationInMilliSeconds * 2)
       {
-        this.tick(this.ticksPerSecond);
+        this.tick(this.tickDurationInMilliSeconds / 1000);
         this.lastTick.setMilliseconds(this.lastTick.getMilliseconds() + this.tickDurationInMilliSeconds);
       }
       else
@@ -35,13 +36,21 @@ export class GameLogicService {
           numberTicks = this.maxCombineTicks;
         }
 
-        this.tick(this.ticksPerSecond / numberTicks);
+        this.tick(this.tickDurationInMilliSeconds * numberTicks / 1000);
         this.lastTick.setMilliseconds(this.lastTick.getMilliseconds() + this.tickDurationInMilliSeconds * numberTicks);
       }
     }
   }
 
-  private tick(ticksPerSecond: number) {
-    this.inventory.produceResources(ticksPerSecond);
+  private tick(deltaTime: number) {
+    this.inventory.produceResources(deltaTime);
+    for (const skill of this.data.wizard.skills)
+    {
+      if (!skill.isActive) {
+        continue;
+      }
+
+      skill.activate(this.data.wizard, deltaTime);
+    }
   }
 }

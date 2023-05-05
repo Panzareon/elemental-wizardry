@@ -1,3 +1,6 @@
+import { ResourceType } from "./resource";
+import { Wizard } from "./wizard";
+
 export { Skill, SkillType }
 
 enum SkillType {
@@ -36,6 +39,16 @@ class Skill {
     }
 
     public isActive : boolean = false;
+    
+    activate(wizard: Wizard, deltaTime: number) {
+        switch (this.type) {
+            case SkillType.Meditate:
+                for (const mana of wizard.resources.filter(x => x.type == ResourceType.Mana)) {
+                    mana.amount += (1 + this.level * 0.1) * deltaTime;
+                }
+                break;
+        }
+    }
     
     private toActiontype(type: SkillType): SkillActionType {
         switch (type) {
