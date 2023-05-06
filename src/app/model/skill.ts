@@ -1,3 +1,4 @@
+import { IActive } from "./active";
 import { ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
@@ -10,7 +11,7 @@ enum SkillActionType {
     Ongoing,
 }
 
-class Skill {
+class Skill implements IActive {
     private _type: SkillType;
     private _actionType: SkillActionType;
     private _level: number;
@@ -38,8 +39,6 @@ class Skill {
         return SkillType[this.type];
     }
 
-    public isActive : boolean = false;
-    
     activate(wizard: Wizard, deltaTime: number) {
         switch (this.type) {
             case SkillType.Meditate:

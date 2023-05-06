@@ -16,6 +16,16 @@ export class SkillsComponent {
   }
 
   public toggleSkill(skill: Skill) {
-    skill.isActive = !skill.isActive;
+    if (this.isActive(skill)) {
+      this.data.wizard.setInactive(skill);
+    }
+    else
+    {
+      this.data.wizard.setActive(skill);
+    }
+  }
+
+  public isActive(skill: Skill) : boolean {
+    return this.data.wizard.active.includes(skill);
   }
 }

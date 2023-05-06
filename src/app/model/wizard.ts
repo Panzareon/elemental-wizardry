@@ -1,3 +1,4 @@
+import { IActive } from "./active";
 import { Knowledge, KnowledgeType } from "./knowledge";
 import { Resource, ResourceType } from "./resource";
 import { Skill, SkillType } from "./skill";
@@ -9,11 +10,13 @@ class Wizard {
   private _skills: Skill[];
   private _knowldege: Knowledge[];
   private _unlocks: Unlocks[];
+  private _active: IActive[];
 
   constructor() {
       this._resources = [new Resource(ResourceType.Mana)];
       this._skills = [new Skill(SkillType.Meditate)]
       this._knowldege = [new Knowledge(KnowledgeType.MagicKnowledge)]
+      this._active = [];
       this._unlocks = [];
   }
 
@@ -31,5 +34,24 @@ class Wizard {
 
   public get unlocks(): Unlocks[] {
     return this._unlocks;
+  }
+
+  public get active(): IActive[] {
+    return this._active;
+  }
+
+  public setActive(active: IActive) {
+    if (this._active.length > 0) {
+      this._active.pop();
+    }
+
+    this._active.push(active);
+  }
+
+  public setInactive(active: IActive) {
+    var index = this._active.indexOf(active);
+    if (index >= 0) {
+      this._active.splice(index, 1);
+    }
   }
 }

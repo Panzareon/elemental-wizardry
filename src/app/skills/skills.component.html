@@ -1,6 +1,6 @@
 
 <div class="skills">
-    <mat-button-toggle *ngFor="let resource of getSkills()" class="skill" checked="{{resource.isActive}}" (change)="toggleSkill(resource)">
+    <mat-button-toggle *ngFor="let resource of getSkills()" class="skill" checked="{{isActive(resource)}}" (change)="toggleSkill(resource)">
         {{resource.name}}
     </mat-button-toggle>
 </div>

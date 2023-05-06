@@ -44,13 +44,9 @@ export class GameLogicService {
 
   private tick(deltaTime: number) {
     this.inventory.produceResources(deltaTime);
-    for (const skill of this.data.wizard.skills)
+    for (const active of this.data.wizard.active)
     {
-      if (!skill.isActive) {
-        continue;
-      }
-
-      skill.activate(this.data.wizard, deltaTime);
+      active.activate(this.data.wizard, deltaTime);
     }
   }
 }
