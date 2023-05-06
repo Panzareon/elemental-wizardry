@@ -11,12 +11,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from "@angular/material/tabs";
+import { KnowledgeComponent } from './knowledge/knowledge.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InventoryComponent,
-    SkillsComponent
+    SkillsComponent,
+    KnowledgeComponent
   ],
   imports: [
     BrowserModule,

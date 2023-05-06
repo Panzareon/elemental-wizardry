@@ -1,0 +1,6 @@
+
+<div class="knowledge">
+    <mat-button-toggle *ngFor="let knowledge of getKnowledge()" class="knowledge" checked="{{isActive(knowledge)}}" (change)="toggleLearning(knowledge)">
+        {{knowledge.name}}
+    </mat-button-toggle>
+</div>
