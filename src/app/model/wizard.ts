@@ -54,4 +54,13 @@ class Wizard {
       this._active.splice(index, 1);
     }
   }
+  spendResource(resourceType: ResourceType, amount: number): boolean {
+    const resource = this.resources.find(x => x.type == resourceType);
+    if (resource !== undefined && resource.amount >= amount) {
+      resource.amount -= amount;
+      return true;
+    }
+
+    return false;
+  }
 }

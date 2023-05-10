@@ -44,9 +44,13 @@ export class GameLogicService {
 
   private tick(deltaTime: number) {
     this.inventory.produceResources(deltaTime);
-    for (const active of this.data.wizard.active)
+    for (let i = 0; i < this.data.wizard.active.length; i++)
     {
-      active.activate(this.data.wizard, deltaTime);
+      var active = this.data.wizard.active[i];
+      if (!active.activate(this.data.wizard, deltaTime)) {
+        this.data.wizard.active.splice(i, 1);
+        i--;
+      }
     }
   }
 }

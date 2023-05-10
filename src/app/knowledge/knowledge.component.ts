@@ -15,15 +15,27 @@ export class KnowledgeComponent {
     return this.data.wizard.knowledge;
   }
 
-  toggleLearning(knowledge: Knowledge) {
-    if (this.isActive(knowledge)) {
-      this.data.wizard.setInactive(knowledge);
+  toggleStudy(knowledge: Knowledge) {
+    if (this.isStudyActive(knowledge)) {
+      this.data.wizard.setInactive(knowledge.studyActive);
     }
     else {
-      this.data.wizard.setActive(knowledge);
+      this.data.wizard.setActive(knowledge.studyActive);
     }
   }
-  isActive(knowledge: Knowledge) {
-    return this.data.wizard.active.includes(knowledge);
+  isStudyActive(knowledge: Knowledge) {
+    return this.data.wizard.active.includes(knowledge.studyActive);
+  }
+
+  toggleTraining(knowledge: Knowledge) {
+    if (this.isTrainingActive(knowledge)) {
+      this.data.wizard.setInactive(knowledge.trainingActive);
+    }
+    else {
+      this.data.wizard.setActive(knowledge.trainingActive);
+    }
+  }
+  isTrainingActive(knowledge: Knowledge) {
+    return this.data.wizard.active.includes(knowledge.trainingActive);
   }
 }

@@ -39,13 +39,13 @@ class Skill implements IActive {
         return SkillType[this.type];
     }
 
-    activate(wizard: Wizard, deltaTime: number) {
+    activate(wizard: Wizard, deltaTime: number): boolean {
         switch (this.type) {
             case SkillType.Meditate:
                 for (const mana of wizard.resources.filter(x => x.type == ResourceType.Mana)) {
                     mana.amount += (1 + this.level * 0.1) * deltaTime;
                 }
-                break;
+                return true;
         }
     }
     
