@@ -63,4 +63,18 @@ class Wizard {
 
     return false;
   }
+  addResource(resourceType: ResourceType, amount: number) {
+    let resource = this.resources.find(x => x.type == resourceType);
+    if (resource === undefined) {
+      resource = new Resource(resourceType);
+      this.resources.push(resource)
+    }
+    resource.amount += amount;
+  }
+  learnSkill(skillType: SkillType) {
+    const skill = this.skills.find(x => x.type == skillType);
+    if (skill === undefined) {
+      this.skills.push(new Skill(skillType));
+    }
+  }
 }

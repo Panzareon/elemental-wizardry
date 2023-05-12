@@ -6,6 +6,7 @@ export { Skill, SkillType }
 
 enum SkillType {
     Meditate,
+    OfferServices,
 }
 enum SkillActionType {
     Ongoing,
@@ -46,12 +47,19 @@ class Skill implements IActive {
                     mana.amount += (1 + this.level * 0.1) * deltaTime;
                 }
                 return true;
+            case SkillType.OfferServices:
+                if (wizard.spendResource(ResourceType.Mana, deltaTime)) {
+                    wizard.addResource(ResourceType.Gold, deltaTime * 2);
+                    return true;
+                }
+                return false;
         }
     }
     
     private toActiontype(type: SkillType): SkillActionType {
         switch (type) {
             case SkillType.Meditate:
+            case SkillType.OfferServices:
                 return SkillActionType.Ongoing;
         }
     }

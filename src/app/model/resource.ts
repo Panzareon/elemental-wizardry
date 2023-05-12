@@ -1,10 +1,18 @@
 import { UnlockType, Unlocks } from "./unlocks";
 import { Wizard } from "./wizard";
 
-export { Resource, ResourceType }
+export { Resource, ResourceType, ResourceKind }
 enum ResourceType {
     Mana = 1,
+    Gold = 2,
+    Gemstone = 3,
+    ManaGem = 4,
 }
+enum ResourceKind {
+    Mana = 1,
+    Item = 2,
+}
+
 class Resource {
     private _type: ResourceType;
     private _amount: number;
@@ -17,6 +25,10 @@ class Resource {
         this._generationPerSecond = this.baseGeneration;
     }
 
+    public get name(): string
+    {
+        return ResourceType[this.type];
+    }
     public get maxAmount(): number {
         return this._maxAmount;
     }
@@ -54,12 +66,23 @@ class Resource {
         }
     }
 
+    public get kind() {
+        switch (this.type) {
+            case ResourceType.Mana:
+                return ResourceKind.Mana;
+            default:
+                return ResourceKind.Item;
+        }
+    }
+
     private get baseMaxAmount() : number {
         switch (this.type) {
             case ResourceType.Mana:
                 return 10;
+            case ResourceType.Gold:
+                return 100;
             default:
-                throw new Error("Unknown resource type " + this.type);
+                return 10;
         }
     }
 
@@ -68,7 +91,7 @@ class Resource {
             case ResourceType.Mana:
                 return 0.1;
             default:
-                throw new Error("Unknown resource type " + this.type);
+                return 0;
         }
     }
 }

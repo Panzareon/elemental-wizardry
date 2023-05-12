@@ -1,5 +1,6 @@
 import { IActive } from "./active";
 import { ResourceType } from "./resource";
+import { SkillType } from "./skill";
 import { Wizard } from "./wizard";
 
 export { Knowledge, KnowledgeType }
@@ -34,12 +35,13 @@ class Knowledge {
         return KnowledgeType[this._type];
     }
 
-    gainExp(exp: number) {
+    gainExp(exp: number, wizard: Wizard) {
         this._exp += exp;
         var neededExp = this.nextLevelExp;
         if (this._exp >= neededExp) {
             this._exp -= neededExp;
             this._level++;
+            this.getUnlocks(wizard);
         }
     }
     
@@ -58,12 +60,20 @@ class Knowledge {
     get levelUpProgress() : number {
         return this._exp / this.nextLevelExp * 100;
     }
+    private getUnlocks(wizard: Wizard) {
+        switch (this.type){
+            case KnowledgeType.MagicKnowledge:
+                if (this.level >= 2) {
+                    wizard.learnSkill(SkillType.OfferServices);
+                }
+        }
+    }
 }
 class KnowledgeStudy implements IActive {
     constructor(private knowledge: Knowledge) {
     }
     activate(wizard: Wizard, deltaTime: number): boolean {
-        this.knowledge.gainExp(deltaTime);
+        this.knowledge.gainExp(deltaTime, wizard);
         return true;
     }
 }
@@ -73,7 +83,7 @@ class KnowledgeTraining implements IActive {
     activate(wizard: Wizard, deltaTime: number): boolean {
         var resource = this.requiredResource;
         if (wizard.spendResource(resource, deltaTime)) {
-            this.knowledge.gainExp(deltaTime * 5);
+            this.knowledge.gainExp(deltaTime * 5, wizard);
             return true;
         }
         else {
