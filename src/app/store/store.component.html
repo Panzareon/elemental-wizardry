@@ -1,0 +1,9 @@
+<mat-expansion-panel *ngFor="let store of stores" expanded="true">
+    <mat-expansion-panel-header>
+        <mat-panel-title>{{store.name}}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div *ngFor="let offer of store.offers" class="offer">
+        <span>{{getName(offer.toResource)}}</span>
+        <button mat-stroked-button (click)="buy(offer)" [disabled]="!canAfford(offer)">Buy ({{offer.resourceCost}}x {{getName(offer.fromResource)}})</button>
+    </div>
+</mat-expansion-panel>

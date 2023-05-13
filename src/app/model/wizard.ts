@@ -1,4 +1,5 @@
 import { IActive } from "./active";
+import { GameLocation, LocationType } from "./gameLocation";
 import { Knowledge, KnowledgeType } from "./knowledge";
 import { Resource, ResourceType } from "./resource";
 import { Skill, SkillType } from "./skill";
@@ -11,6 +12,7 @@ class Wizard {
   private _knowldege: Knowledge[];
   private _unlocks: Unlocks[];
   private _active: IActive[];
+  private _location: GameLocation[];
 
   constructor() {
       this._resources = [new Resource(ResourceType.Mana)];
@@ -18,6 +20,7 @@ class Wizard {
       this._knowldege = [new Knowledge(KnowledgeType.MagicKnowledge)]
       this._active = [];
       this._unlocks = [];
+      this._location = [new GameLocation(LocationType.Store)];
   }
 
   public get resources(): Resource[] {
@@ -30,6 +33,10 @@ class Wizard {
 
   public get knowledge(): Knowledge[] {
     return this._knowldege;
+  }
+
+  public get location(): GameLocation[] {
+    return this._location;
   }
 
   public get unlocks(): Unlocks[] {
@@ -58,6 +65,14 @@ class Wizard {
     const resource = this.resources.find(x => x.type == resourceType);
     if (resource !== undefined && resource.amount >= amount) {
       resource.amount -= amount;
+      return true;
+    }
+
+    return false;
+  }
+  hasResource(resourceType: ResourceType, amount: number) {
+    const resource = this.resources.find(x => x.type == resourceType);
+    if (resource !== undefined && resource.amount >= amount) {
       return true;
     }
 

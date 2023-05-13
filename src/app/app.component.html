@@ -7,6 +7,7 @@
         <nav mat-tab-nav-bar [tabPanel]="tabPanel">
             <a mat-tab-link routerLink="skills">Skills</a>
             <a mat-tab-link routerLink="knowledge">Knowledge</a>
+            <a mat-tab-link routerLink="store" *ngIf="hasUnlockedShop">Store</a>
         </nav>
         <mat-tab-nav-panel #tabPanel>
             <router-outlet></router-outlet>

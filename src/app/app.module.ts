@@ -12,13 +12,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from "@angular/material/tabs";
 import { KnowledgeComponent } from './knowledge/knowledge.component';
+import { StoreComponent } from './store/store.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent,
     InventoryComponent,
     SkillsComponent,
-    KnowledgeComponent
+    KnowledgeComponent,
+    StoreComponent
   ],
   imports: [
     BrowserModule,
@@ -28,6 +32,8 @@ import { KnowledgeComponent } from './knowledge/knowledge.component';
     MatButtonModule,
     MatButtonToggleModule,
     MatTabsModule,
+    MatExpansionModule,
+    BrowserAnimationsModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,
