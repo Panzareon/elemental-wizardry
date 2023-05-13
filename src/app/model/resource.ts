@@ -1,7 +1,7 @@
 import { UnlockType, Unlocks } from "./unlocks";
 import { Wizard } from "./wizard";
 
-export { Resource, ResourceType, ResourceKind }
+export { Resource, ResourceType, ResourceKind, ResourceAmount }
 enum ResourceType {
     Mana = 1,
     Gold = 2,
@@ -11,6 +11,10 @@ enum ResourceType {
 enum ResourceKind {
     Mana = 1,
     Item = 2,
+}
+class ResourceAmount {
+    constructor(public resourceType: ResourceType, public amount: number) {
+    }
 }
 
 class Resource {

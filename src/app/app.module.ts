@@ -15,6 +15,7 @@ import { KnowledgeComponent } from './knowledge/knowledge.component';
 import { StoreComponent } from './store/store.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SpellbookComponent } from './spellbook/spellbook.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     InventoryComponent,
     SkillsComponent,
     KnowledgeComponent,
-    StoreComponent
+    StoreComponent,
+    SpellbookComponent
   ],
   imports: [
     BrowserModule,

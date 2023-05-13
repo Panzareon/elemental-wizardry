@@ -1,0 +1,4 @@
+
+<button mat-stroked-button *ngFor="let spell of spells" (click)="cast(spell)" [disabled]="!canCast(spell)">
+    {{spell.name}}
+</button>

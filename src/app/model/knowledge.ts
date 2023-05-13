@@ -1,6 +1,7 @@
 import { IActive } from "./active";
 import { ResourceType } from "./resource";
 import { SkillType } from "./skill";
+import { SpellType } from "./spell";
 import { Wizard } from "./wizard";
 
 export { Knowledge, KnowledgeType }
@@ -65,6 +66,9 @@ class Knowledge {
             case KnowledgeType.MagicKnowledge:
                 if (this.level >= 2) {
                     wizard.learnSkill(SkillType.OfferServices);
+                }
+                if (this.level >= 3) {
+                    wizard.learnSpell(SpellType.InfuseGem);
                 }
         }
     }
