@@ -85,6 +85,10 @@ class Resource {
         }
     }
 
+    load(amount: number) {
+        this._amount = amount;
+    }
+
     private get baseMaxAmount() : number {
         switch (this.type) {
             case ResourceType.Mana:

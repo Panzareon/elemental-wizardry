@@ -23,6 +23,7 @@ class WizardDeserializer {
             this.json.spells.map(x => this.deserializeSpell(x)),
         );
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
+        wizard.resources.forEach(x => x.amount = x.amount);
         return wizard;
     }
     deserializeSpell(x: SpellJson): Spell {
@@ -33,7 +34,7 @@ class WizardDeserializer {
     }
     deserializeResource(x: ResourceJson): Resource {
         var resource = new Resource(x.type)
-        resource.amount = x.amount;
+        resource.load(x.amount);
         return resource;
     }
     deserializeKnowledge(x: KnowledgeJson): Knowledge {
