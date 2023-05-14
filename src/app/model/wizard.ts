@@ -24,6 +24,7 @@ class Wizard {
       this._unlocks = unlocks;
       this._location = location;
       this._spells = spells;
+      this.recalculateResources();
   }
 
   public static createNew() : Wizard {
@@ -112,9 +113,11 @@ class Wizard {
     if (resource === undefined) {
       resource = new Resource(resourceType);
       this.resources.push(resource)
+      this.recalculateResources();
     }
     resource.amount += amount;
   }
+
   learnSkill(skillType: SkillType) {
     const skill = this.skills.find(x => x.type == skillType);
     if (skill === undefined) {
@@ -126,5 +129,8 @@ class Wizard {
     if (spell === undefined) {
       this.spells.push(new Spell(spellType));
     }
+  }
+  private recalculateResources() {
+    this.resources.forEach(x => x.calculate(this));
   }
 }

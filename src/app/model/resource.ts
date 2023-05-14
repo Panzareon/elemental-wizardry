@@ -13,8 +13,11 @@ enum ResourceKind {
     Item = 2,
 }
 class ResourceAmount {
-    constructor(public resourceType: ResourceType, public amount: number) {
-    }
+    constructor(public resourceType: ResourceType, public amount: number) {}
+}
+
+class AdjustMaxAmount {
+    constructor(public resource: Resource, public maxAmountMultiplier: number) {}
 }
 
 class Resource {
@@ -22,11 +25,13 @@ class Resource {
     private _amount: number;
     private _maxAmount: number;
     private _generationPerSecond: number;
+    private _adjustMaxAmount: AdjustMaxAmount[];
     constructor(type: ResourceType) {
         this._type = type;
         this._amount = 0;
         this._maxAmount = this.baseMaxAmount;
         this._generationPerSecond = this.baseGeneration;
+        this._adjustMaxAmount = [];
     }
 
     public get name(): string
@@ -34,7 +39,7 @@ class Resource {
         return ResourceType[this.type];
     }
     public get maxAmount(): number {
-        return this._maxAmount;
+        return this._maxAmount + this._adjustMaxAmount.reduce((partial, x) => partial + x.resource.amount * x.maxAmountMultiplier, 0);
     }
     public get generationPerSecond(): number {
         return this._generationPerSecond;
@@ -64,6 +69,7 @@ class Resource {
         for (const unlock of wizard.unlocks) {
             this._maxAmount += unlock.increaseMaxResourceAmount(this.type);
         }
+        this._adjustMaxAmount = wizard.resources.flatMap(x => this.adjustsMaxAmount(x));
         this._generationPerSecond = this.baseGeneration;
         for (const unlock of wizard.unlocks) {
             this._generationPerSecond += unlock.increaseResourceGeneration(this.type);
@@ -97,5 +103,14 @@ class Resource {
             default:
                 return 0;
         }
+    }
+    private adjustsMaxAmount(x: Resource): AdjustMaxAmount[] {
+        switch (this.type) {
+            case ResourceType.Mana:
+                if (x.type == ResourceType.ManaGem) {
+                    return [new AdjustMaxAmount(x, 10)];
+                }
+        }
+        return [];
     }
 }
