@@ -31,6 +31,9 @@ class Knowledge {
     public get level() : number {
         return this._level;
     }
+    public get exp() : number {
+        return this._exp;
+    }
 
     public get name() : string {
         return KnowledgeType[this._type];
@@ -61,7 +64,11 @@ class Knowledge {
     get levelUpProgress() : number {
         return this._exp / this.nextLevelExp * 100;
     }
-    private getUnlocks(wizard: Wizard) {
+    load(level: number, exp: number) {
+        this._level = level;
+        this._exp = exp;
+    }
+    public getUnlocks(wizard: Wizard) {
         switch (this.type){
             case KnowledgeType.MagicKnowledge:
                 if (this.level >= 2) {

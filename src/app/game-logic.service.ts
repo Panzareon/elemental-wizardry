@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { InventoryService } from './inventory.service';
 import { DataService } from './data.service';
+import { SaveService } from './save.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class GameLogicService {
 
   private lastTick = new Date();
 
-  constructor(private inventory: InventoryService, private data: DataService) { }
+  constructor(private inventory: InventoryService, private data: DataService, private saveService: SaveService) { }
 
   public init() {
     window.setInterval(() => this.onInterval(), this.tickDurationInMilliSeconds);
@@ -52,5 +53,7 @@ export class GameLogicService {
         i--;
       }
     }
+
+    this.saveService.tick(deltaTime);
   }
 }

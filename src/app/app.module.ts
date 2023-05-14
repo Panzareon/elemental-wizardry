@@ -16,6 +16,7 @@ import { StoreComponent } from './store/store.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpellbookComponent } from './spellbook/spellbook.component';
+import { SaveService } from './save.service';
 
 @NgModule({
   declarations: [
@@ -39,8 +40,12 @@ import { SpellbookComponent } from './spellbook/spellbook.component';
   ],
   providers: [{
     provide: APP_INITIALIZER,
-    deps: [GameLogicService],
-    useFactory: (logic: GameLogicService) => () => logic.init(),
+    deps: [GameLogicService, SaveService],
+    useFactory: (logic: GameLogicService, saveService: SaveService) => () =>
+    {
+      saveService.load();
+      logic.init();
+    },
     multi: true,
   }],
   bootstrap: [AppComponent]

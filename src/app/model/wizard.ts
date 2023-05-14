@@ -16,14 +16,25 @@ class Wizard {
   private _location: GameLocation[];
   private _spells: Spell[];
 
-  constructor() {
-      this._resources = [new Resource(ResourceType.Mana)];
-      this._skills = [new Skill(SkillType.Meditate)]
-      this._knowldege = [new Knowledge(KnowledgeType.MagicKnowledge)]
-      this._active = [];
-      this._unlocks = [];
-      this._location = [new GameLocation(LocationType.Store)];
-      this._spells = [];
+  public constructor(resources: Resource[], skills: Skill[], knowledge: Knowledge[], actives: IActive[], unlocks: Unlocks[], location: GameLocation[], spells: Spell[]) {
+      this._resources = resources;
+      this._skills = skills;
+      this._knowldege = knowledge;
+      this._active = actives;
+      this._unlocks = unlocks;
+      this._location = location;
+      this._spells = spells;
+  }
+
+  public static createNew() : Wizard {
+    return new Wizard(
+      [new Resource(ResourceType.Mana)],
+      [new Skill(SkillType.Meditate)],
+      [new Knowledge(KnowledgeType.MagicKnowledge)],
+      [],
+      [],
+      [new GameLocation(LocationType.Store)],
+      [])
   }
 
   public get resources(): Resource[] {
