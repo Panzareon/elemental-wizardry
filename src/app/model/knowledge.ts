@@ -72,7 +72,7 @@ class Knowledge {
         switch (this.type){
             case KnowledgeType.MagicKnowledge:
                 if (this.level >= 2) {
-                    wizard.learnSkill(SkillType.OfferServices);
+                    wizard.learnSkill(SkillType.MagicShow);
                 }
                 if (this.level >= 3) {
                     wizard.learnSpell(SpellType.InfuseGem);
