@@ -33,17 +33,21 @@ class WizardDeserializer {
         return new Skill(x.type);
     }
     deserializeResource(x: ResourceJson): Resource {
-        var resource = new Resource(x.type)
+        let resource = new Resource(x.type)
         resource.load(x.amount);
         return resource;
     }
     deserializeKnowledge(x: KnowledgeJson): Knowledge {
-        var knowledge = new Knowledge(x.type);
+        let knowledge = new Knowledge(x.type);
         knowledge.load(x.level, x.exp);
         return knowledge;
     }
     deserializeLocation(x: LocationJson): GameLocation {
-        return new GameLocation(x.type);
+        let location = new GameLocation(x.type);
+        if (x.exploreProgress && location.exploreActive) {
+            location.exploreActive.load(x.exploreProgress);
+        }
+        return location;
     }
     deserializeUnlocks(x: UnlocksJson): Unlocks {
         return new Unlocks(x.type);

@@ -1,6 +1,14 @@
 
-<div class="skills">
-    <mat-button-toggle *ngFor="let resource of getSkills()" class="skill" checked="{{isActive(resource)}}" (change)="toggleSkill(resource)">
+<div class="action-list skills">
+    <h4>Skills</h4>
+    <mat-button-toggle *ngFor="let resource of getSkills()" class="action skill" checked="{{isActive(resource)}}" (change)="toggleSkill(resource)">
         {{resource.name}}
+    </mat-button-toggle>
+</div>
+
+<div class="action-list locations">
+    <h4>Explore Locations</h4>
+    <mat-button-toggle *ngFor="let location of getExplorableLocations()" class="action location" checked="{{isExploreActive(location)}}" (change)="toggleExplore(location)">
+        {{location.name}}
     </mat-button-toggle>
 </div>

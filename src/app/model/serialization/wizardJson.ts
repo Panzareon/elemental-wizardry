@@ -35,4 +35,5 @@ interface SkillJson {
 }
 interface LocationJson {
     type: LocationType;
+    exploreProgress: number|undefined;
 }

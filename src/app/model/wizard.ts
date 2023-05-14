@@ -34,7 +34,7 @@ class Wizard {
       [new Knowledge(KnowledgeType.MagicKnowledge)],
       [],
       [],
-      [new GameLocation(LocationType.Store)],
+      [new GameLocation(LocationType.Village)],
       [])
   }
 
@@ -128,6 +128,12 @@ class Wizard {
     const spell = this.spells.find(x => x.type == spellType);
     if (spell === undefined) {
       this.spells.push(new Spell(spellType));
+    }
+  }
+  findLocation(locationType: LocationType) {
+    const location = this.location.find(x => x.type == locationType);
+    if (location === undefined) {
+      this.location.push(new GameLocation(locationType));
     }
   }
   private recalculateResources() {
