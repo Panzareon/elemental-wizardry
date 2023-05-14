@@ -3,11 +3,11 @@ import { DataService } from '../data.service';
 import { Skill } from '../model/skill';
 
 @Component({
-  selector: 'app-skills',
-  templateUrl: './skills.component.html',
-  styleUrls: ['./skills.component.less']
+  selector: 'app-actions',
+  templateUrl: './actions.component.html',
+  styleUrls: ['./actions.component.less']
 })
-export class SkillsComponent {
+export class ActionsComponent {
   constructor(private data: DataService) {
   }
 

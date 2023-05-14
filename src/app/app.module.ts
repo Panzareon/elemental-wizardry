@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { GameLogicService } from './game-logic.service';
-import { SkillsComponent } from './skills/skills.component';
+import { ActionsComponent } from './actions/actions.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,7 +22,7 @@ import { SaveService } from './save.service';
   declarations: [
     AppComponent,
     InventoryComponent,
-    SkillsComponent,
+    ActionsComponent,
     KnowledgeComponent,
     StoreComponent,
     SpellbookComponent
