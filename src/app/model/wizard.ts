@@ -136,6 +136,14 @@ class Wizard {
       this.location.push(new GameLocation(locationType));
     }
   }
+  getKnowledgeLevel(type: KnowledgeType) : number|null {
+    const knowledge = this.knowledge.find(x => x.type == type);
+    if (knowledge === undefined){
+      return null;
+    }
+
+    return knowledge.level;
+  }
   private recalculateResources() {
     this.resources.forEach(x => x.calculate(this));
   }

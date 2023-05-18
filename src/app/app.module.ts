@@ -17,6 +17,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpellbookComponent } from './spellbook/spellbook.component';
 import { SaveService } from './save.service';
+import { UnlocksComponent } from './unlocks/unlocks.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { SaveService } from './save.service';
     ActionsComponent,
     KnowledgeComponent,
     StoreComponent,
-    SpellbookComponent
+    SpellbookComponent,
+    UnlocksComponent
   ],
   imports: [
     BrowserModule,

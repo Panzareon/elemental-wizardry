@@ -1,0 +1,12 @@
+<button mat-raised-button *ngFor="let unlock of availableUnlocks" (click)="buyUnlock(unlock)" [disabled]="!canUnlock(unlock)">
+    {{unlock.name}}
+</button>
+<button mat-raised-button *ngFor="let unlock of repeatableUnlocks" (click)="repeatUnlock(unlock)" [disabled]="!canUnlock(unlock)">
+    {{unlock.name}}
+</button>
+<ng-container *ngIf="completedUnlocks.length > 0">
+    Unlocked:
+    <div *ngFor="let unlock of completedUnlocks">
+        {{unlock.name}}
+    </div>
+</ng-container>
