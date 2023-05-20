@@ -1,7 +1,7 @@
 
-<button mat-stroked-button *ngFor="let spell of spells" (click)="cast(spell)" [disabled]="!canCast(spell)" class="spell">
+<button mat-stroked-button *ngFor="let spell of spells" (click)="cast(spell, icon)" [disabled]="!canCast(spell)" class="spell">
     <span class="spell-content">
-        <app-spell-icon [spell]="spell"></app-spell-icon>
+        <app-spell-icon [spell]="spell" #icon></app-spell-icon>
         {{spell.name}}
     </span>
 </button>

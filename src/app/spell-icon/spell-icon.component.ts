@@ -8,4 +8,11 @@ import { Spell } from '../model/spell';
 })
 export class SpellIconComponent {
   @Input() spell!: Spell;
+  public isAnimating = false;
+  public animationEnded() {
+    this.isAnimating = false;
+  }
+  animate() {
+    this.isAnimating = true;
+  }
 }

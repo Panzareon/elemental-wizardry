@@ -1,5 +1,6 @@
 @spell-size: 20px;
 @spell-background: @spell-size + 4px;
+@animation-shadow-spread: 10px;
 
 div.spell-icon-container {
     display: flex;
@@ -19,3 +20,21 @@ img.spell-icon {
     height: @spell-size;
     margin: 2px;
 }
+img.spell-icon.isAnimating {
+    animation: wave 1s forwards;
+}
+
+@keyframes wave {
+    0% {
+        box-shadow: 0 0 11px 0px #ffffff;
+    }
+    20% {
+        box-shadow: 0 0 11px (@animation-shadow-spread*0.9) #ffffff;
+    }
+    30% {
+        box-shadow: 0 0 11px @animation-shadow-spread #ffffff;
+    }
+    100% {
+        box-shadow: 0 0 11px 0px #ffffff;
+    }
+  }
