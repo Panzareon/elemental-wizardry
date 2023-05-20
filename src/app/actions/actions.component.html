@@ -1,9 +1,10 @@
 
 <div class="action-list skills">
-    <h4>Skills</h4>
-    <mat-button-toggle *ngFor="let resource of getSkills()" class="action skill" checked="{{isActive(resource)}}" (change)="toggleSkill(resource)">
-        {{resource.name}}
+    <mat-button-toggle *ngFor="let skill of getOngoingSkills()" class="action skill" checked="{{isActive(skill)}}" (change)="toggleSkill(skill)">
+        {{skill.name}}
     </mat-button-toggle>
+    <app-duration-action *ngFor="let skill of getDurationSkills()" [skill]="skill">
+    </app-duration-action>
 </div>
 
 <div class="action-list locations">

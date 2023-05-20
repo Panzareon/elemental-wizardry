@@ -32,6 +32,11 @@ interface UnlocksJson {
 }
 interface SkillJson {
     type: SkillType;
+    exp: number;
+    durationInfo?: SkillDurationInfo;
+}
+interface SkillDurationInfo {
+    timeSpent: number;
 }
 interface LocationJson {
     type: LocationType;

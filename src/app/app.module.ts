@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpellbookComponent } from './spellbook/spellbook.component';
 import { SaveService } from './save.service';
 import { UnlocksComponent } from './unlocks/unlocks.component';
+import { DurationActionComponent } from './duration-action/duration-action.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { UnlocksComponent } from './unlocks/unlocks.component';
     KnowledgeComponent,
     StoreComponent,
     SpellbookComponent,
-    UnlocksComponent
+    UnlocksComponent,
+    DurationActionComponent
   ],
   imports: [
     BrowserModule,

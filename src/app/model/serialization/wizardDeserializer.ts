@@ -30,7 +30,12 @@ class WizardDeserializer {
         return new Spell(x.type);
     }
     deserializeSkills(x: SkillJson): Skill {
-        return new Skill(x.type);
+        let skill = new Skill(x.type);
+        skill.load(x.exp);
+        if (x.durationInfo !== undefined) {
+            skill.loadDuration(x.durationInfo.timeSpent);
+        }
+        return skill;
     }
     deserializeResource(x: ResourceJson): Resource {
         let resource = new Resource(x.type)

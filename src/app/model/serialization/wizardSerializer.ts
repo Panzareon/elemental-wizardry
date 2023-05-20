@@ -1,7 +1,7 @@
 import { GameLocation } from "../gameLocation";
 import { Knowledge } from "../knowledge";
 import { Resource } from "../resource";
-import { Skill } from "../skill";
+import { Skill, SkillActionType } from "../skill";
 import { Spell } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
@@ -30,9 +30,17 @@ class WizardSerializer {
         }
     }
     serializeSkill(x: Skill): SkillJson {
-        return {
+        let skill : SkillJson = {
             type: x.type,
+            exp: x.exp,
         }
+        if (x.actionType == SkillActionType.Duration) {
+            skill.durationInfo = {
+                timeSpent: x.durationTimeSpent,
+            };
+        }
+
+        return skill;
     }
     serializeSpell(x: Spell): SpellJson {
         return {

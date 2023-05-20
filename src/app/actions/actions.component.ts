@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../data.service';
-import { Skill } from '../model/skill';
+import { Skill, SkillActionType, SkillType } from '../model/skill';
 import { GameLocation } from '../model/gameLocation';
 
 @Component({
@@ -12,8 +12,12 @@ export class ActionsComponent {
   constructor(private data: DataService) {
   }
 
-  public getSkills() : Skill[] {
-    return this.data.wizard.skills;
+  public getOngoingSkills() : Skill[] {
+    return this.data.wizard.skills.filter(x => x.actionType == SkillActionType.Ongoing);
+  }
+
+  public getDurationSkills() : Skill[] {
+    return this.data.wizard.skills.filter(x => x.actionType == SkillActionType.Duration);
   }
 
   public getExplorableLocations() : GameLocation[] {
