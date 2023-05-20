@@ -19,6 +19,7 @@ import { SpellbookComponent } from './spellbook/spellbook.component';
 import { SaveService } from './save.service';
 import { UnlocksComponent } from './unlocks/unlocks.component';
 import { DurationActionComponent } from './duration-action/duration-action.component';
+import { SpellIconComponent } from './spell-icon/spell-icon.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { DurationActionComponent } from './duration-action/duration-action.compo
     StoreComponent,
     SpellbookComponent,
     UnlocksComponent,
-    DurationActionComponent
+    DurationActionComponent,
+    SpellIconComponent
   ],
   imports: [
     BrowserModule,

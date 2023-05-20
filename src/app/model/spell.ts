@@ -23,6 +23,11 @@ class Spell {
         return this._type;
     }
 
+    public get icon() {
+        let name = SpellType[this.type];
+        return name + ".png";
+    }
+
     public cast(wizard: Wizard) {
         if (!wizard.spendResources(this._cost)){
             return;

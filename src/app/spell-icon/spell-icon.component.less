@@ -1,0 +1,21 @@
+@spell-size: 20px;
+@spell-background: @spell-size + 4px;
+
+div.spell-icon-container {
+    display: flex;
+}
+img.spell-background {
+    width: @spell-background;
+    height: @spell-background;
+    display: block;
+}
+span.spell-background-container {
+    overflow: visible;
+    width: 0;
+    display: inline-block;
+}
+img.spell-icon {
+    width: @spell-size;
+    height: @spell-size;
+    margin: 2px;
+}
