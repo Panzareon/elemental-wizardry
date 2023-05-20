@@ -144,6 +144,13 @@ class Wizard {
 
     return knowledge.level;
   }
+  addUnlock(unlock: Unlocks) {
+    this._unlocks.push(unlock);
+    this.unlocked(unlock);
+  }
+  unlocked(unlock: Unlocks) {
+    this.recalculateResources();
+  }
   private recalculateResources() {
     this.resources.forEach(x => x.calculate(this));
   }

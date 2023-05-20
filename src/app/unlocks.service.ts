@@ -16,6 +16,7 @@ export class UnlocksService {
   }
   getAvailableUnlocksInternal() : UnlockType[]{
     const result = [];
+    result.push(UnlockType.Purse);
     const magicKnowledgeLevel = this.data.wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge);
     if (magicKnowledgeLevel !== null && magicKnowledgeLevel >= 4) {
       result.push(UnlockType.ManaProduction);

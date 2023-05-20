@@ -5,6 +5,7 @@ export { Unlocks, UnlockType }
 
 enum UnlockType {
     ManaProduction,
+    Purse,
 }
 
 class Unlocks {
@@ -13,7 +14,7 @@ class Unlocks {
     private _cost: ResourceAmount[]; 
     public constructor(type: UnlockType) {
         this._type = type;
-        this._numberRepeated = 1;
+        this._numberRepeated = 0;
         this._cost = this.getCost();
     }
 
@@ -29,6 +30,7 @@ class Unlocks {
     public get repeatable(): boolean {
         switch (this.type) {
             case UnlockType.ManaProduction:
+            case UnlockType.Purse:
                 return true;
             default:
                 return false;
@@ -39,6 +41,10 @@ class Unlocks {
     }
     increaseMaxResourceAmount(type: ResourceType) : number {
         switch (this.type) {
+            case UnlockType.Purse:
+                if (type == ResourceType.Gold) {
+                    return this.numberRepeated * 100;
+                }
         }
         return 0;
     }
@@ -55,6 +61,7 @@ class Unlocks {
         if (wizard.spendResources(this._cost)) {
             this._numberRepeated++;
             this._cost = this.getCost();
+            wizard.unlocked(this);
             return true;
         }
 
@@ -65,6 +72,8 @@ class Unlocks {
         switch (this.type) {
             case UnlockType.ManaProduction:
                 return [new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, targetUnlockNumber * 10)]
+            case UnlockType.Purse:
+                return [new ResourceAmount(ResourceType.Gold, targetUnlockNumber * 50)];
         }
     }
 }

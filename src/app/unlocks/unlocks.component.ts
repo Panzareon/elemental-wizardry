@@ -26,7 +26,7 @@ export class UnlocksComponent {
 
   public buyUnlock(unlock: Unlocks) {
     if (unlock.buy(this.data.wizard)) {
-      this.data.wizard.unlocks.push(unlock);
+      this.data.wizard.addUnlock(unlock);
       this._availableUnlocks.splice(this._availableUnlocks.indexOf(unlock), 1);
     }
   }
