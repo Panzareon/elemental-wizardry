@@ -22,7 +22,7 @@ export class GameLogicService {
   private onInterval() {
     let newDate = new Date();
     let duration = newDate.getTime() - this.lastTick.getTime();
-    if (duration > this.tickDurationInMilliSeconds)
+    if (duration >= this.tickDurationInMilliSeconds)
     {
       if (duration < this.tickDurationInMilliSeconds * 2)
       {
@@ -31,14 +31,30 @@ export class GameLogicService {
       }
       else
       {
-        var numberTicks = Math.floor(duration / this.tickDurationInMilliSeconds);
-        if (numberTicks > this.maxCombineTicks)
+        let maxDate = Date.now() + this.tickDurationInMilliSeconds;
+        let sumOfTicks = 0;
+        while(true)
         {
-          numberTicks = this.maxCombineTicks;
-        }
+          var numberTicks = Math.floor(duration / this.tickDurationInMilliSeconds);
+          if (numberTicks > this.maxCombineTicks)
+          {
+            numberTicks = this.maxCombineTicks;
+          }
 
-        this.tick(this.tickDurationInMilliSeconds * numberTicks / 1000);
-        this.lastTick.setMilliseconds(this.lastTick.getMilliseconds() + this.tickDurationInMilliSeconds * numberTicks);
+          sumOfTicks += numberTicks;
+          this.tick(this.tickDurationInMilliSeconds * numberTicks / 1000);
+          this.lastTick.setMilliseconds(this.lastTick.getMilliseconds() + this.tickDurationInMilliSeconds * numberTicks);
+          duration = newDate.getTime() - this.lastTick.getTime();
+          if (duration < this.tickDurationInMilliSeconds) {
+            // console.log((Date.now() - newDate.getTime()) + "ms " + sumOfTicks + " ticks");
+            return;
+          }
+
+          if (maxDate <= Date.now()) {
+            console.warn(((Date.now() - this.lastTick.getTime()) / 1000) + " seconds behind");
+            return;
+          }
+        }
       }
     }
   }
