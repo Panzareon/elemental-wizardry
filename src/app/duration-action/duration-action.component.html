@@ -11,7 +11,7 @@
             <mat-panel-title>Use Spells</mat-panel-title>
         </mat-expansion-panel-header>
         <div *ngFor="let spell of availableSpells" class="spell">
-            <app-spell-icon [spell]="spell"></app-spell-icon>
+            <app-spell-icon [spell]="spell" #spellIcon></app-spell-icon>
             {{spell.name}}
             <mat-checkbox [checked]="isDurationSpellActive(skill, spell)" (change)="toggleActiveDurationSpell(skill, spell)"></mat-checkbox>
         </div>

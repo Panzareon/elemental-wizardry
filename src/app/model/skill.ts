@@ -1,3 +1,4 @@
+import { Subject } from "rxjs";
 import { IActive } from "./active";
 import { ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
@@ -78,6 +79,8 @@ class Skill implements IActive {
     public earnExp(wizard: Wizard, amount: number) {
         this._exp += amount;
     }
+
+    public durationSpellCast : Subject<[Skill, Spell]> = new Subject();
 
     load(exp: number) {
         this._exp = exp;
@@ -163,6 +166,7 @@ class Skill implements IActive {
             if (Math.random() < chance && spell.canCast(wizard)) {
                 spell.cast(wizard);
                 this.getDurationBenefit(spell);
+                this.durationSpellCast.next([this, spell]);
             }
         }
     }
