@@ -73,6 +73,7 @@ class Knowledge {
             case KnowledgeType.MagicKnowledge:
                 if (this.level >= 2) {
                     wizard.learnSkill(SkillType.MagicShow);
+                    wizard.learnSpell(SpellType.MagicBolt);
                 }
                 if (this.level >= 3) {
                     wizard.learnSpell(SpellType.InfuseGem);

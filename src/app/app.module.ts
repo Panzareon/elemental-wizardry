@@ -20,6 +20,7 @@ import { SaveService } from './save.service';
 import { UnlocksComponent } from './unlocks/unlocks.component';
 import { DurationActionComponent } from './duration-action/duration-action.component';
 import { SpellIconComponent } from './spell-icon/spell-icon.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { SpellIconComponent } from './spell-icon/spell-icon.component';
     MatTabsModule,
     MatExpansionModule,
     BrowserAnimationsModule,
+    MatCheckboxModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,

@@ -8,8 +8,10 @@ mat-card.progress-card {
         height: 100%;
         position: absolute;
         background-color: rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        pointer-events: none;
     }
-    mat-card-header {
+    mat-card-header, mat-expansion-panel {
         z-index: 0;
     }
     mat-card-content mat-button-toggle {

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Skill } from '../model/skill';
 import { DataService } from '../data.service';
+import { Spell } from '../model/spell';
 
 @Component({
   selector: 'app-duration-action',
@@ -13,6 +14,10 @@ export class DurationActionComponent {
 
   public get name() : string {
     return this.skill.name;
+  }
+
+  public get availableSpells() : Spell[] {
+    return this.data.wizard.spells.filter(x => this.skill.doesImproveDuration(x));
   }
   
   public toggleSkill(skill: Skill) {
@@ -27,5 +32,17 @@ export class DurationActionComponent {
 
   public isActive(skill: Skill) : boolean {
     return this.data.wizard.active.includes(skill);
+  }
+
+  public toggleActiveDurationSpell(skill: Skill, spell: Spell) {
+    if (this.isDurationSpellActive(skill, spell)) {
+      skill.disableDurationSpell(spell);
+    }
+    else {
+      skill.enableDurationSpell(spell);
+    }
+  }
+  public isDurationSpellActive(skill: Skill, spell: Spell) {
+    return skill.activeDurationSpells.includes(spell);
   }
 }

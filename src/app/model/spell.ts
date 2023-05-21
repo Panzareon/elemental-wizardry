@@ -5,6 +5,7 @@ export { Spell, SpellType }
 
 enum SpellType {
     InfuseGem,
+    MagicBolt,
 }
 
 class Spell {
@@ -45,6 +46,8 @@ class Spell {
         switch (this.type) {
             case SpellType.InfuseGem:
                 return [new ResourceAmount(ResourceType.Mana, 10), new ResourceAmount(ResourceType.Gemstone, 1)];
+            case SpellType.MagicBolt:
+                return [new ResourceAmount(ResourceType.Mana, 2)];
         }
     }
 }

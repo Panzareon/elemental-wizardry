@@ -13,14 +13,15 @@ class WizardDeserializer {
     constructor (private json: WizardJson) {}
 
     public deserialize() : Wizard {
+        let spells = this.json.spells.map(x => this.deserializeSpell(x));
         var wizard = new Wizard(
             this.json.resources.map(x => this.deserializeResource(x)),
-            this.json.skills.map(x => this.deserializeSkills(x)),
+            this.json.skills.map(x => this.deserializeSkills(x, spells)),
             this.json.knowledge.map(x => this.deserializeKnowledge(x)),
             [],
             this.json.unlocks.map(x => this.deserializeUnlocks(x)),
             this.json.locations.map(x => this.deserializeLocation(x)),
-            this.json.spells.map(x => this.deserializeSpell(x)),
+            spells,
         );
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
@@ -29,11 +30,12 @@ class WizardDeserializer {
     deserializeSpell(x: SpellJson): Spell {
         return new Spell(x.type);
     }
-    deserializeSkills(x: SkillJson): Skill {
+    deserializeSkills(x: SkillJson, spells: Spell[]): Skill {
         let skill = new Skill(x.type);
         skill.load(x.exp);
         if (x.durationInfo !== undefined) {
-            skill.loadDuration(x.durationInfo.timeSpent);
+            let durationInfo = x.durationInfo;
+            skill.loadDuration(durationInfo.timeSpent, durationInfo.increasedOutput, spells.filter(spell => durationInfo.activeSpells.includes(spell.type)));
         }
         return skill;
     }

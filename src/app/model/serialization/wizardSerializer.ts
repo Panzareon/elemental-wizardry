@@ -37,6 +37,8 @@ class WizardSerializer {
         if (x.actionType == SkillActionType.Duration) {
             skill.durationInfo = {
                 timeSpent: x.durationTimeSpent,
+                increasedOutput: x.durationIncreasedOutput,
+                activeSpells: x.activeDurationSpells.map(x => x.type),
             };
         }
 

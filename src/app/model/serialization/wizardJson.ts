@@ -37,6 +37,8 @@ interface SkillJson {
 }
 interface SkillDurationInfo {
     timeSpent: number;
+    increasedOutput: number;
+    activeSpells: SpellType[];
 }
 interface LocationJson {
     type: LocationType;
