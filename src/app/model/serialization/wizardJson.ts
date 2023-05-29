@@ -1,4 +1,4 @@
-import { LocationType } from "../gameLocation";
+import { ExploreResultType, LocationType } from "../gameLocation";
 import { KnowledgeType } from "../knowledge";
 import { ResourceType } from "../resource";
 import { SkillType } from "../skill";
@@ -42,5 +42,5 @@ interface SkillDurationInfo {
 }
 interface LocationJson {
     type: LocationType;
-    exploreProgress: number|undefined;
+    exploreProgress: [ExploreResultType, number, boolean][];
 }

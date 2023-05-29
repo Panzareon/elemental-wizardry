@@ -59,7 +59,7 @@ class WizardSerializer {
     serializeLocation(x: GameLocation): LocationJson {
         return {
             type: x.type,
-            exploreProgress: x.exploreActive?.progress,
+            exploreProgress: x.exploreActive?.progress ?? [],
         }
     }
     serializeUnlocks(x: Unlocks): UnlocksJson {
