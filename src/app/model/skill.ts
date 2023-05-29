@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
 import { IActive } from "./active";
-import { ResourceType } from "./resource";
+import { ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
 import { Wizard } from "./wizard";
 
@@ -102,8 +102,11 @@ class Skill implements IActive {
     activate(wizard: Wizard, deltaTime: number): boolean {
         switch (this.type) {
             case SkillType.Meditate:
-                for (const mana of wizard.resources.filter(x => x.type == ResourceType.Mana)) {
-                    mana.amount += (1 + this.level * 0.1) * deltaTime;
+                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
+                let baseGenerationSum = manaResources.map(x => x.generationPerSecond).reduce((x, y) => x + y, 0);
+                for (let resource of manaResources) {
+                    wizard.addResource(resource.type, manaGeneration * resource.generationPerSecond / baseGenerationSum)
                 }
                 break;
             case SkillType.MagicShow:
