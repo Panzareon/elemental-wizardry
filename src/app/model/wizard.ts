@@ -176,7 +176,7 @@ class Wizard {
     return knowledge.level;
   }
   addAvailableUnlock(unlockType: UnlockType) {
-    if (this._availableUnlocks.includes(unlockType)) {
+    if (this._availableUnlocks.includes(unlockType) || this._unlocks.some(x => x.type == unlockType)) {
       return;
     }
 
