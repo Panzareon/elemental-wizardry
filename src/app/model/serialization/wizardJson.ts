@@ -43,5 +43,5 @@ interface SkillDurationInfo {
 }
 interface LocationJson {
     type: LocationType;
-    exploreProgress: [ExploreResultType, number, boolean][];
+    exploreProgress: [ExploreResultType, number, boolean, boolean][];
 }

@@ -1,4 +1,5 @@
 import { IActive } from "./active";
+import { KnowledgeType } from "./knowledge";
 import { ResourceType } from "./resource";
 import { UnlockType } from "./unlocks";
 import { Wizard } from "./wizard";
@@ -38,10 +39,12 @@ class ExploreResult {
     private _progress: number;
     private _done: boolean = false;
     private _repeatable: boolean;
+    private _available: boolean;
     constructor(private _type: ExploreResultType, private _locationType : LocationType) {
         this._targetProgress = this.getTargetProgress();
         this._progress = 0;
         this._repeatable = this.isRepeatable();
+        this._available = false;
     }
 
     public get type() : ExploreResultType {
@@ -56,9 +59,21 @@ class ExploreResult {
         return this._done;
     }
 
+    public get available() : boolean {
+        return this._available;
+    }
     public activate(wizard: Wizard, deltaTime: number) {
         if (this._done) {
             return;
+        }
+
+        if (this._available === false) {
+            if (this.isAvailable(wizard)) {
+                this._available = true;
+            }
+            else {
+                return;
+            }
         }
 
         this._progress += deltaTime;
@@ -72,9 +87,10 @@ class ExploreResult {
             this.getReward(wizard);
         }
     }
-    public load(progress: number, done: boolean) {
+    public load(progress: number, done: boolean, available: boolean) {
         this._progress = progress;
         this._done = !this._repeatable && done;
+        this._available = available;
     }
     private getTargetProgress(): number {
         switch (this._type) {
@@ -112,6 +128,15 @@ class ExploreResult {
                 break;
         }
     }
+    
+    private isAvailable(wizard: Wizard) : boolean {
+        switch (this._type) {
+            case ExploreResultType.ChronomancyMentor:
+                return (wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge) ?? 0) >= 4;
+            default:
+                return true;
+        }
+    }
 }
 
 class ExploreLocation implements IActive {
@@ -120,8 +145,8 @@ class ExploreLocation implements IActive {
         this._rewards = this.getRewards();
     }
 
-    public get progress() : [ExploreResultType, number, boolean][] {
-        return this._rewards.map(x => [x.type, x.progress, x.done]);
+    public get progress() : [ExploreResultType, number, boolean, boolean][] {
+        return this._rewards.map(x => [x.type, x.progress, x.done, x.available]);
     }
     
     public activate(wizard: Wizard, deltaTime: number): boolean {
@@ -131,11 +156,11 @@ class ExploreLocation implements IActive {
         return true;
     }
     
-    public load(exploreProgress: [ExploreResultType, number, boolean][]) {
+    public load(exploreProgress: [ExploreResultType, number, boolean, boolean][]) {
         for (const progress of exploreProgress) {
             const reward = this._rewards.find(x => x.type == progress[0]);
             if (reward !== undefined) {
-                reward.load(progress[1], progress[2]);
+                reward.load(progress[1], progress[2], progress[3]);
             }
         }
     }
