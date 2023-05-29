@@ -1,5 +1,6 @@
 import { IActive } from "./active";
 import { ResourceType } from "./resource";
+import { UnlockType } from "./unlocks";
 import { Wizard } from "./wizard";
 
 export { GameLocation, Offer, LocationType, ExploreResultType }
@@ -29,6 +30,7 @@ class Offer {
 enum ExploreResultType {
     Random,
     Store,
+    ChronomancyMentor,
 }
 
 class ExploreResult {
@@ -80,6 +82,8 @@ class ExploreResult {
                 return 1;
             case ExploreResultType.Store:
                 return 10;
+            case ExploreResultType.ChronomancyMentor:
+                return 12;
         }
     }
 
@@ -102,6 +106,10 @@ class ExploreResult {
                 break;
             case ExploreResultType.Store:
                 wizard.findLocation(LocationType.Store);
+                break;
+            case ExploreResultType.ChronomancyMentor:
+                wizard.addAvailableUnlock(UnlockType.ChronomancyMentor);
+                break;
         }
     }
 }
@@ -139,6 +147,7 @@ class ExploreLocation implements IActive {
             case LocationType.Village:
                 result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
                 result.push(new ExploreResult(ExploreResultType.Store, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.ChronomancyMentor, this.location.type));
         }
         return result;
     }

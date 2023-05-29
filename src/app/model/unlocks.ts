@@ -6,6 +6,7 @@ export { Unlocks, UnlockType }
 enum UnlockType {
     ManaProduction,
     Purse,
+    ChronomancyMentor,
 }
 
 class Unlocks {
@@ -74,6 +75,8 @@ class Unlocks {
                 return [new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, targetUnlockNumber * 10)]
             case UnlockType.Purse:
                 return [new ResourceAmount(ResourceType.Gold, targetUnlockNumber * 50)];
+            case UnlockType.ChronomancyMentor:
+                return [new ResourceAmount(ResourceType.ManaGem, 1)]
         }
     }
 }

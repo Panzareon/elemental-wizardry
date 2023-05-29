@@ -2,6 +2,7 @@ import { IActive } from "./active";
 import { ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { SpellType } from "./spell";
+import { UnlockType } from "./unlocks";
 import { Wizard } from "./wizard";
 
 export { Knowledge, KnowledgeType }
@@ -77,6 +78,9 @@ class Knowledge {
                 }
                 if (this.level >= 3) {
                     wizard.learnSpell(SpellType.InfuseGem);
+                }
+                if (this.level >= 4) {
+                    wizard.addAvailableUnlock(UnlockType.ManaProduction);
                 }
         }
     }

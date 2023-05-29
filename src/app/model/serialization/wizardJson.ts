@@ -14,6 +14,7 @@ interface WizardJson {
     knowledge: KnowledgeJson[];
     unlocks: UnlocksJson[];
     locations: LocationJson[];
+    availableUnlocks: UnlockType[];
 }
 interface ResourceJson {
     type: ResourceType;

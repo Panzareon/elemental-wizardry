@@ -20,7 +20,8 @@ class WizardSerializer {
             spells: this.wizard.spells.map(x => this.serializeSpell(x)),
             knowledge: this.wizard.knowledge.map(x => this.serializeKnowledge(x)),
             locations: this.wizard.location.map(x => this.serializeLocation(x)),
-            unlocks: this.wizard.unlocks.map(x => this.serializeUnlocks(x))
+            unlocks: this.wizard.unlocks.map(x => this.serializeUnlocks(x)),
+            availableUnlocks: this.wizard.availableUnlocks,
         }
     }
     serializeResource(x: Resource): ResourceJson {

@@ -5,7 +5,7 @@ import { Knowledge, KnowledgeType } from "./knowledge";
 import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { Skill, SkillType } from "./skill";
 import { Spell, SpellType } from "./spell";
-import { Unlocks } from "./unlocks";
+import { UnlockType, Unlocks } from "./unlocks";
 export { Wizard }
 
 class Wizard {
@@ -17,8 +17,16 @@ class Wizard {
   private _location: GameLocation[];
   private _spells: Spell[];
   private _event: Subject<string> = new Subject();
+  private _availableUnlocks: UnlockType[] = [];
 
-  public constructor(resources: Resource[], skills: Skill[], knowledge: Knowledge[], actives: IActive[], unlocks: Unlocks[], location: GameLocation[], spells: Spell[]) {
+  public constructor(resources: Resource[],
+    skills: Skill[],
+    knowledge: Knowledge[],
+    actives: IActive[],
+    unlocks: Unlocks[],
+    location: GameLocation[],
+    spells: Spell[],
+    availableUnlocks: UnlockType[]) {
       this._resources = resources;
       this._skills = skills;
       this._knowldege = knowledge;
@@ -26,6 +34,7 @@ class Wizard {
       this._unlocks = unlocks;
       this._location = location;
       this._spells = spells;
+      this._availableUnlocks = availableUnlocks;
       this.recalculateResources();
   }
 
@@ -37,7 +46,8 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
-      [])
+      [],
+      [UnlockType.Purse])
   }
 
   public get resources(): Resource[] {
@@ -62,6 +72,10 @@ class Wizard {
 
   public get unlocks(): Unlocks[] {
     return this._unlocks;
+  }
+
+  public get availableUnlocks(): UnlockType[] {
+    return this._availableUnlocks;
   }
 
   public get active(): IActive[] {
@@ -160,9 +174,21 @@ class Wizard {
 
     return knowledge.level;
   }
+  addAvailableUnlock(unlockType: UnlockType) {
+    if (this._availableUnlocks.includes(unlockType)) {
+      return;
+    }
+
+    this.notifyEvent(new Unlocks(unlockType).name + " available");
+    this._availableUnlocks.push(unlockType);
+  }
   addUnlock(unlock: Unlocks) {
     this.notifyEvent("Unlocked " + unlock.name);
     this._unlocks.push(unlock);
+    let availableUnlockIndex = this._availableUnlocks.indexOf(unlock.type);
+    if (availableUnlockIndex >= 0) {
+      this._availableUnlocks.splice(availableUnlockIndex, 1);
+    }
     this.unlocked(unlock);
   }
   unlocked(unlock: Unlocks) {

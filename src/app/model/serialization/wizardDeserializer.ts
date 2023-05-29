@@ -22,6 +22,7 @@ class WizardDeserializer {
             this.json.unlocks.map(x => this.deserializeUnlocks(x)),
             this.json.locations.map(x => this.deserializeLocation(x)),
             spells,
+            this.json.availableUnlocks,
         );
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);

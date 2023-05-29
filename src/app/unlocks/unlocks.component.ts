@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { UnlocksService } from '../unlocks.service';
 import { DataService } from '../data.service';
 import { Unlocks } from '../model/unlocks';
 
@@ -10,11 +9,27 @@ import { Unlocks } from '../model/unlocks';
 })
 export class UnlocksComponent {
   private _availableUnlocks;
-  constructor(private unlocksService: UnlocksService, private data: DataService) {
-    this._availableUnlocks = this.unlocksService.getAvailableUnlocks().map(x => new Unlocks(x));
+  constructor(private data: DataService) {
+    this._availableUnlocks = data.wizard.availableUnlocks.map(x => new Unlocks(x));
   }
 
   public get availableUnlocks() : Unlocks[] {
+    let unlocksToRemove = this._availableUnlocks.map(x => true);
+    for (const type of this.data.wizard.availableUnlocks) {
+      let index = this._availableUnlocks.findIndex(x => x.type == type);
+      if (index < 0) {
+        this._availableUnlocks.push(new Unlocks(type))
+      }
+      else {
+        unlocksToRemove[index] = false;
+      }
+    }
+
+    for (let i = unlocksToRemove.length - 1; i >= 0; i--) {
+      if (unlocksToRemove[i] === true) {
+        this._availableUnlocks.splice(i, 1);
+      }
+    }
     return this._availableUnlocks;
   }
   public get repeatableUnlocks() : Unlocks[] {
@@ -27,7 +42,6 @@ export class UnlocksComponent {
   public buyUnlock(unlock: Unlocks) {
     if (unlock.buy(this.data.wizard)) {
       this.data.wizard.addUnlock(unlock);
-      this._availableUnlocks.splice(this._availableUnlocks.indexOf(unlock), 1);
     }
   }
 
