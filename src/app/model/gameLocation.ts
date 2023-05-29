@@ -97,6 +97,7 @@ class ExploreResult {
             case ExploreResultType.Random:
                 if (Math.random() < 0.1) {
                     wizard.addResource(ResourceType.Gold, 5);
+                    wizard.notifyEvent("Found 5 gold on the ground");
                 }
                 break;
             case ExploreResultType.Store:

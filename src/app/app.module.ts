@@ -21,6 +21,7 @@ import { UnlocksComponent } from './unlocks/unlocks.component';
 import { DurationActionComponent } from './duration-action/duration-action.component';
 import { SpellIconComponent } from './spell-icon/spell-icon.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { EventListComponent } from './event-list/event-list.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     SpellbookComponent,
     UnlocksComponent,
     DurationActionComponent,
-    SpellIconComponent
+    SpellIconComponent,
+    EventListComponent
   ],
   imports: [
     BrowserModule,

@@ -1,3 +1,4 @@
+import { Subject, Subscribable } from "rxjs";
 import { IActive } from "./active";
 import { GameLocation, LocationType } from "./gameLocation";
 import { Knowledge, KnowledgeType } from "./knowledge";
@@ -15,6 +16,7 @@ class Wizard {
   private _active: IActive[];
   private _location: GameLocation[];
   private _spells: Spell[];
+  private _event: Subject<string> = new Subject();
 
   public constructor(resources: Resource[], skills: Skill[], knowledge: Knowledge[], actives: IActive[], unlocks: Unlocks[], location: GameLocation[], spells: Spell[]) {
       this._resources = resources;
@@ -64,6 +66,14 @@ class Wizard {
 
   public get active(): IActive[] {
     return this._active;
+  }
+
+  public get event() : Subscribable<string> {
+    return this._event;
+  }
+
+  public notifyEvent(description: string) {
+    this._event.next(description);
   }
 
   public setActive(active: IActive) {
