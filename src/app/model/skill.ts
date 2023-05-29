@@ -76,6 +76,14 @@ class Skill implements IActive {
         return this._durationIncreasedOutput;
     }
 
+    public get unlockMessage() : string{
+        switch (this.type) {
+            case SkillType.MagicShow:
+                return "You can now do Magic Shows";
+            default:
+                return "You can now " + this.name;
+        }
+    }
     public earnExp(wizard: Wizard, amount: number) {
         this._exp += amount;
     }

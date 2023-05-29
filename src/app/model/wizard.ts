@@ -129,21 +129,27 @@ class Wizard {
   }
 
   learnSkill(skillType: SkillType) {
-    const skill = this.skills.find(x => x.type == skillType);
+    let skill = this.skills.find(x => x.type == skillType);
     if (skill === undefined) {
-      this.skills.push(new Skill(skillType));
+      skill = new Skill(skillType);
+      this.notifyEvent(skill.unlockMessage);
+      this.skills.push(skill);
     }
   }
   learnSpell(spellType: SpellType) {
-    const spell = this.spells.find(x => x.type == spellType);
+    let spell = this.spells.find(x => x.type == spellType);
     if (spell === undefined) {
-      this.spells.push(new Spell(spellType));
+      spell = new Spell(spellType);
+      this.notifyEvent("Learned the spell " + spell.name);
+      this.spells.push(spell);
     }
   }
   findLocation(locationType: LocationType) {
-    const location = this.location.find(x => x.type == locationType);
+    let location = this.location.find(x => x.type == locationType);
     if (location === undefined) {
-      this.location.push(new GameLocation(locationType));
+      location = new GameLocation(locationType);
+      this.notifyEvent("Got access to " + location.name);
+      this.location.push(location);
     }
   }
   getKnowledgeLevel(type: KnowledgeType) : number|null {
@@ -155,6 +161,7 @@ class Wizard {
     return knowledge.level;
   }
   addUnlock(unlock: Unlocks) {
+    this.notifyEvent("Unlocked " + unlock.name);
     this._unlocks.push(unlock);
     this.unlocked(unlock);
   }
