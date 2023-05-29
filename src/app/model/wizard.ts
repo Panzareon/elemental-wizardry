@@ -35,6 +35,7 @@ class Wizard {
       this._location = location;
       this._spells = spells;
       this._availableUnlocks = availableUnlocks;
+      this._unlocks.forEach(x => this.getUnlockReward(x));
       this.recalculateResources();
   }
 
@@ -193,6 +194,30 @@ class Wizard {
   }
   unlocked(unlock: Unlocks) {
     this.recalculateResources();
+    this.getUnlockReward(unlock);
+  }
+
+  private getUnlockReward(unlock: Unlocks) {
+    switch (unlock.type) {
+      case UnlockType.ChronomancyMentor:
+        this.addAvailableUnlock(UnlockType.Chronomancy);
+        break;
+      case UnlockType.Chronomancy:
+        this.addKnowledge(KnowledgeType.ChronomancyKnowledge);
+        break;
+      case UnlockType.ChronomancyProduction:
+        this.addResource(ResourceType.Chrono, 0);
+        break;
+    }
+  }
+
+  addKnowledge(type: KnowledgeType) {
+    let knowledge = this.knowledge.find(x => x.type == type);
+    if (knowledge === undefined) {
+      knowledge = new Knowledge(type);
+      this.notifyEvent("Learned " + knowledge.name);
+      this.knowledge.push(knowledge);
+    }
   }
   private recalculateResources() {
     this.resources.forEach(x => x.calculate(this));

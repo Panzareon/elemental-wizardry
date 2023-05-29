@@ -8,7 +8,8 @@ import { Wizard } from "./wizard";
 export { Knowledge, KnowledgeType }
 
 enum KnowledgeType {
-    MagicKnowledge,
+    MagicKnowledge = 0,
+    ChronomancyKnowledge = 1,
 }
 
 class Knowledge {
@@ -82,6 +83,12 @@ class Knowledge {
                 if (this.level >= 4) {
                     wizard.addAvailableUnlock(UnlockType.ManaProduction);
                 }
+                break;
+            case KnowledgeType.ChronomancyKnowledge:
+                if (this.level >= 2) {
+                    wizard.addAvailableUnlock(UnlockType.ChronomancyProduction);
+                }
+                break;
         }
     }
 }
@@ -106,10 +113,12 @@ class KnowledgeTraining implements IActive {
             return false;
         }
     }
-    get requiredResource() {
+    get requiredResource() : ResourceType {
         switch (this.knowledge.type) {
             case KnowledgeType.MagicKnowledge:
                 return ResourceType.Mana;
+            case KnowledgeType.ChronomancyKnowledge:
+                return ResourceType.Chrono;
         }
     }
 }

@@ -7,6 +7,8 @@ enum ResourceType {
     Gold = 2,
     Gemstone = 3,
     ManaGem = 4,
+    ChronoGem = 5,
+    Chrono = 6,
 }
 enum ResourceKind {
     Mana = 1,
@@ -79,6 +81,7 @@ class Resource {
     public get kind() {
         switch (this.type) {
             case ResourceType.Mana:
+            case ResourceType.Chrono:
                 return ResourceKind.Mana;
             default:
                 return ResourceKind.Item;
@@ -114,6 +117,12 @@ class Resource {
                 if (x.type == ResourceType.ManaGem) {
                     return [new AdjustMaxAmount(x, 10)];
                 }
+                break;
+            case ResourceType.Chrono:
+                if (x.type == ResourceType.ChronoGem) {
+                    return [new AdjustMaxAmount(x, 10)];
+                }
+                break;
         }
         return [];
     }

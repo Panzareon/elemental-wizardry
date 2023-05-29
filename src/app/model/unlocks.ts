@@ -4,9 +4,11 @@ import { Wizard } from "./wizard";
 export { Unlocks, UnlockType }
 
 enum UnlockType {
-    ManaProduction,
-    Purse,
-    ChronomancyMentor,
+    ManaProduction = 0,
+    Purse = 1,
+    ChronomancyMentor = 2,
+    Chronomancy = 3,
+    ChronomancyProduction = 4,
 }
 
 class Unlocks {
@@ -55,6 +57,15 @@ class Unlocks {
                 if (type == ResourceType.Mana) {
                     return this.numberRepeated * 0.1;
                 }
+                break;
+            case UnlockType.ChronomancyProduction:
+                if (type == ResourceType.Mana) {
+                    return -this.numberRepeated * 0.1;
+                }
+                if (type == ResourceType.Chrono) {
+                    return this.numberRepeated * 0.1;
+                }
+                break;
         }
         return 0;
     }
@@ -76,7 +87,14 @@ class Unlocks {
             case UnlockType.Purse:
                 return [new ResourceAmount(ResourceType.Gold, targetUnlockNumber * 50)];
             case UnlockType.ChronomancyMentor:
-                return [new ResourceAmount(ResourceType.ManaGem, 1)]
+                return [new ResourceAmount(ResourceType.ManaGem, 1)];
+            case UnlockType.Chronomancy:
+                return [new ResourceAmount(ResourceType.Mana, 50)];
+            case UnlockType.ChronomancyProduction:
+                if (targetUnlockNumber == 1) {
+                    return [new ResourceAmount(ResourceType.Mana, 40)];
+                }
+                return [new ResourceAmount(ResourceType.Chrono, targetUnlockNumber * 10)];
         }
     }
 }
