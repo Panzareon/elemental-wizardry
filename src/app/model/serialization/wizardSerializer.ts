@@ -66,6 +66,7 @@ class WizardSerializer {
     serializeUnlocks(x: Unlocks): UnlocksJson {
         return {
             type: x.type,
+            numberRepeated: x.numberRepeated,
         }
     }
 }

@@ -80,6 +80,10 @@ class Unlocks {
 
         return false;
     }
+    load(numberRepeated: number) {
+        this._numberRepeated = numberRepeated;
+        this._cost = this.getCost();
+    }
     private getCost(): ResourceAmount[] {
         const targetUnlockNumber = this.numberRepeated + 1;
         switch (this.type) {

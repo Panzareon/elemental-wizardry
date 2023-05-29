@@ -30,6 +30,7 @@ interface KnowledgeJson {
 }
 interface UnlocksJson {
     type: UnlockType;
+    numberRepeated: number;
 }
 interface SkillJson {
     type: SkillType;

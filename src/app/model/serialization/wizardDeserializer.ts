@@ -58,6 +58,8 @@ class WizardDeserializer {
         return location;
     }
     deserializeUnlocks(x: UnlocksJson): Unlocks {
-        return new Unlocks(x.type);
+        let unlock = new Unlocks(x.type);
+        unlock.load(x.numberRepeated);
+        return unlock;
     }
 }
