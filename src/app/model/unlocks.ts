@@ -34,6 +34,7 @@ class Unlocks {
         switch (this.type) {
             case UnlockType.ManaProduction:
             case UnlockType.Purse:
+            case UnlockType.ChronomancyProduction:
                 return true;
             default:
                 return false;
