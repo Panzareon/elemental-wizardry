@@ -8,7 +8,7 @@
     </mat-card-content>
     <mat-expansion-panel>
         <mat-expansion-panel-header>
-            <mat-panel-title>Use Spells</mat-panel-title>
+            <mat-panel-title>Use Spells ({{activeSpellsInfo}})</mat-panel-title>
         </mat-expansion-panel-header>
         <div *ngFor="let spell of availableSpells" class="spell">
             <app-spell-icon [spell]="spell" #spellIcon></app-spell-icon>

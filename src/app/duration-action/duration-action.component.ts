@@ -30,6 +30,10 @@ export class DurationActionComponent {
   public get availableSpells() : Spell[] {
     return this.data.wizard.spells.filter(x => this.skill.doesImproveDuration(x));
   }
+
+  public get activeSpellsInfo() : string {
+    return this.skill.activeDurationSpells.length + "/" + this.availableSpells.length;
+  }
   
   public toggleSkill(skill: Skill) {
     if (this.isActive(skill)) {
