@@ -36,7 +36,7 @@ class Wizard {
       this._spells = spells;
       this._availableUnlocks = availableUnlocks;
       this._unlocks.forEach(x => this.getUnlockReward(x));
-      this.recalculateResources();
+      this.recalculateStats();
   }
 
   public static createNew() : Wizard {
@@ -138,7 +138,7 @@ class Wizard {
     if (resource === undefined) {
       resource = new Resource(resourceType);
       this.resources.push(resource)
-      this.recalculateResources();
+      this.recalculateStats();
     }
     resource.amount += amount;
   }
@@ -193,7 +193,7 @@ class Wizard {
     this.unlocked(unlock);
   }
   unlocked(unlock: Unlocks) {
-    this.recalculateResources();
+    this.recalculateStats();
     this.getUnlockReward(unlock);
   }
 
@@ -219,7 +219,8 @@ class Wizard {
       this.knowledge.push(knowledge);
     }
   }
-  private recalculateResources() {
+  private recalculateStats() {
     this.resources.forEach(x => x.calculate(this));
+    this.knowledge.forEach(x => x.calculate(this));
   }
 }

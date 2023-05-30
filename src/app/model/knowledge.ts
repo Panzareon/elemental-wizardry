@@ -18,6 +18,7 @@ class Knowledge {
     private _exp: number;
     private _studyActive: IActive;
     private _trainingActive: IActive;
+    private _expMultiplier: number = 1;
     constructor(type: KnowledgeType) {
         this._type = type;
         this._level = 1;
@@ -42,7 +43,7 @@ class Knowledge {
     }
 
     gainExp(exp: number, wizard: Wizard) {
-        this._exp += exp;
+        this._exp += exp * this._expMultiplier;
         var neededExp = this.nextLevelExp;
         if (this._exp >= neededExp) {
             this._exp -= neededExp;
@@ -89,6 +90,12 @@ class Knowledge {
                     wizard.addAvailableUnlock(UnlockType.ChronomancyProduction);
                 }
                 break;
+        }
+    }
+    public calculate(wizard: Wizard) {
+        this._expMultiplier = 1;
+        for (const unlock of wizard.unlocks) {
+            this._expMultiplier *= unlock.knowledgeExpMultiplier(this.type);
         }
     }
 }

@@ -1,3 +1,4 @@
+import { KnowledgeType } from "./knowledge";
 import { ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
@@ -69,6 +70,17 @@ class Unlocks {
                 break;
         }
         return 0;
+    }
+    knowledgeExpMultiplier(type: KnowledgeType) : number {
+        switch (this.type) {
+            case UnlockType.ChronomancyMentor:
+                if (type == KnowledgeType.ChronomancyKnowledge) {
+                    return 3;
+                }
+                
+                return 2;
+        }
+        return 1;
     }
     buy(wizard: Wizard): boolean {
         if (wizard.spendResources(this._cost)) {
