@@ -4,8 +4,9 @@ import { Wizard } from "./wizard";
 export { Spell, SpellType }
 
 enum SpellType {
-    InfuseGem,
-    MagicBolt,
+    InfuseGem = 0,
+    MagicBolt = 1,
+    InfuseChronoGem = 2,
 }
 
 class Spell {
@@ -36,6 +37,10 @@ class Spell {
         switch (this.type) {
             case SpellType.InfuseGem:
                 wizard.addResource(ResourceType.ManaGem, 1);
+                break;
+            case SpellType.InfuseChronoGem:
+                wizard.addResource(ResourceType.ChronoGem, 1);
+                break;
         }
     }
     public canCast(wizard: Wizard) : boolean {
@@ -48,6 +53,8 @@ class Spell {
                 return [new ResourceAmount(ResourceType.Mana, 10), new ResourceAmount(ResourceType.Gemstone, 1)];
             case SpellType.MagicBolt:
                 return [new ResourceAmount(ResourceType.Mana, 2)];
+            case SpellType.InfuseChronoGem:
+                return [new ResourceAmount(ResourceType.Chrono, 10), new ResourceAmount(ResourceType.Gemstone, 1)];
         }
     }
 }

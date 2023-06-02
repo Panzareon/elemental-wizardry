@@ -89,6 +89,9 @@ class Knowledge {
                 if (this.level >= 2) {
                     wizard.addAvailableUnlock(UnlockType.ChronomancyProduction);
                 }
+                if (this.level >= 3) {
+                    wizard.learnSpell(SpellType.InfuseChronoGem);
+                }
                 break;
         }
     }
