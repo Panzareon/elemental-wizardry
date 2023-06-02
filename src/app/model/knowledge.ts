@@ -92,6 +92,9 @@ class Knowledge {
                 if (this.level >= 3) {
                     wizard.learnSpell(SpellType.InfuseChronoGem);
                 }
+                if (this.level >= 4) {
+                    wizard.learnSpell(SpellType.CompressTime);
+                }
                 break;
         }
     }

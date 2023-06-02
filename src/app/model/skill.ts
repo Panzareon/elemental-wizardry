@@ -104,9 +104,9 @@ class Skill implements IActive {
             case SkillType.Meditate:
                 let manaGeneration = (1 + this.level * 0.1) * deltaTime;
                 let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
-                let baseGenerationSum = manaResources.map(x => x.generationPerSecond).reduce((x, y) => x + y, 0);
+                let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard)).reduce((x, y) => x + y, 0);
                 for (let resource of manaResources) {
-                    wizard.addResource(resource.type, manaGeneration * resource.generationPerSecond / baseGenerationSum)
+                    wizard.addResource(resource.type, manaGeneration * resource.getGenerationPerSecond(wizard) / baseGenerationSum)
                 }
                 break;
             case SkillType.MagicShow:

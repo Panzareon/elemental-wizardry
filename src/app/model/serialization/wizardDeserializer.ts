@@ -1,11 +1,12 @@
+import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
 import { Knowledge } from "../knowledge";
 import { Resource } from "../resource";
 import { Skill } from "../skill";
-import { Spell } from "../spell";
+import { Spell, SpellType } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 
 export { WizardDeserializer }
 
@@ -22,6 +23,7 @@ class WizardDeserializer {
             this.json.unlocks.map(x => this.deserializeUnlocks(x)),
             this.json.locations.map(x => this.deserializeLocation(x)),
             spells,
+            this.json.buffs.map(x => this.deserializeBuffs(x, spells)),
             this.json.availableUnlocks,
         );
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
@@ -49,6 +51,10 @@ class WizardDeserializer {
         let knowledge = new Knowledge(x.type);
         knowledge.load(x.level, x.exp);
         return knowledge;
+    }
+    deserializeBuffs(buff: BuffJson, spells: Spell[]) {
+        let spell = spells.find(x => x.type == buff.type);
+        return new Buff(spell!, buff.duration);
     }
     deserializeLocation(x: LocationJson): GameLocation {
         let location = new GameLocation(x.type);

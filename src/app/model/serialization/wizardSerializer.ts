@@ -1,3 +1,4 @@
+import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
 import { Knowledge } from "../knowledge";
 import { Resource } from "../resource";
@@ -5,7 +6,7 @@ import { Skill, SkillActionType } from "../skill";
 import { Spell } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 
 export { WizardSerializer }
 
@@ -21,6 +22,7 @@ class WizardSerializer {
             knowledge: this.wizard.knowledge.map(x => this.serializeKnowledge(x)),
             locations: this.wizard.location.map(x => this.serializeLocation(x)),
             unlocks: this.wizard.unlocks.map(x => this.serializeUnlocks(x)),
+            buffs: this.wizard.buffs.map(x => this.serializeBuff(x)),
             availableUnlocks: this.wizard.availableUnlocks,
         }
     }
@@ -67,6 +69,12 @@ class WizardSerializer {
         return {
             type: x.type,
             numberRepeated: x.numberRepeated,
+        }
+    }
+    serializeBuff(x: Buff): BuffJson {
+        return {
+            type: x.spell.type,
+            duration: x.duration,
         }
     }
 }

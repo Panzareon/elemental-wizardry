@@ -1,3 +1,4 @@
+import { Buff } from "./buff";
 import { ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
@@ -7,6 +8,7 @@ enum SpellType {
     InfuseGem = 0,
     MagicBolt = 1,
     InfuseChronoGem = 2,
+    CompressTime = 3,
 }
 
 class Spell {
@@ -41,6 +43,8 @@ class Spell {
             case SpellType.InfuseChronoGem:
                 wizard.addResource(ResourceType.ChronoGem, 1);
                 break;
+            case SpellType.CompressTime:
+                wizard.addBuff(new Buff(this, 30));
         }
     }
     public canCast(wizard: Wizard) : boolean {
@@ -55,6 +59,8 @@ class Spell {
                 return [new ResourceAmount(ResourceType.Mana, 2)];
             case SpellType.InfuseChronoGem:
                 return [new ResourceAmount(ResourceType.Chrono, 10), new ResourceAmount(ResourceType.Gemstone, 1)];
+            case SpellType.CompressTime:
+                return [new ResourceAmount(ResourceType.Chrono, 2)]
         }
     }
 }

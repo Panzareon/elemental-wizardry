@@ -15,7 +15,7 @@ export class InventoryService {
 
   public produceResources(deltaTime: number) {
     for (const resource of this.getResources()) {
-      resource.produce(deltaTime);
+      resource.produce(deltaTime, this.data.wizard);
     }
   }
 }

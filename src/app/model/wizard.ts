@@ -6,6 +6,7 @@ import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { Skill, SkillType } from "./skill";
 import { Spell, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
+import { Buff } from "./buff";
 export { Wizard }
 
 class Wizard {
@@ -16,6 +17,7 @@ class Wizard {
   private _active: IActive[];
   private _location: GameLocation[];
   private _spells: Spell[];
+  private _buffs: Buff[];
   private _event: Subject<string> = new Subject();
   private _availableUnlocks: UnlockType[] = [];
 
@@ -26,6 +28,7 @@ class Wizard {
     unlocks: Unlocks[],
     location: GameLocation[],
     spells: Spell[],
+    buffs: Buff[],
     availableUnlocks: UnlockType[]) {
       this._resources = resources;
       this._skills = skills;
@@ -34,6 +37,7 @@ class Wizard {
       this._unlocks = unlocks;
       this._location = location;
       this._spells = spells;
+      this._buffs = buffs;
       this._availableUnlocks = availableUnlocks;
       this._unlocks.forEach(x => this.getUnlockReward(x));
       this.recalculateStats();
@@ -47,6 +51,7 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
+      [],
       [],
       [UnlockType.Purse])
   }
@@ -73,6 +78,10 @@ class Wizard {
 
   public get unlocks(): Unlocks[] {
     return this._unlocks;
+  }
+
+  public get buffs(): Buff[] {
+    return this._buffs;
   }
 
   public get availableUnlocks(): UnlockType[] {
@@ -143,6 +152,9 @@ class Wizard {
     resource.amount += amount;
   }
 
+  addBuff(buff: Buff) {
+    this._buffs.push(buff);
+  }
   learnSkill(skillType: SkillType) {
     let skill = this.skills.find(x => x.type == skillType);
     if (skill === undefined) {

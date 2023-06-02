@@ -69,6 +69,14 @@ export class GameLogicService {
         i--;
       }
     }
+    for (let i = 0; i < this.data.wizard.buffs.length; i++)
+    {
+      var buff = this.data.wizard.buffs[i];
+      if (!buff.activate(this.data.wizard, deltaTime)) {
+        this.data.wizard.buffs.splice(i, 1);
+        i--;
+      }
+    }
 
     this.saveService.tick(deltaTime);
   }

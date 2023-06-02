@@ -43,7 +43,15 @@ class Resource {
     public get maxAmount(): number {
         return this._maxAmount + this._adjustMaxAmount.reduce((partial, x) => partial + x.resource.amount * x.maxAmountMultiplier, 0);
     }
-    public get generationPerSecond(): number {
+    public getGenerationPerSecond(wizard: Wizard): number {
+        let generation = this.baseGenerationPerSecond;
+        for (let buff of wizard.buffs) {
+            generation = buff.adjustResourceProduction(this, generation);
+        }
+
+        return generation;
+    }
+    public get baseGenerationPerSecond(): number {
         return this._generationPerSecond;
     }
     public get type(): ResourceType {
@@ -63,8 +71,8 @@ class Resource {
 
         this._amount = value;
     }
-    public produce(deltaTime: number) {
-        this.amount += this.generationPerSecond*deltaTime;
+    public produce(deltaTime: number, wizard: Wizard) {
+        this.amount += this.getGenerationPerSecond(wizard)*deltaTime;
     }
     public calculate(wizard: Wizard) {
         this._maxAmount = this.baseMaxAmount;

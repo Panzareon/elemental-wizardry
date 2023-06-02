@@ -5,7 +5,7 @@ import { SkillType } from "../skill";
 import { SpellType } from "../spell";
 import { UnlockType } from "../unlocks";
 
-export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson }
+export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson }
 
 interface WizardJson {
     resources: ResourceJson[];
@@ -14,6 +14,7 @@ interface WizardJson {
     knowledge: KnowledgeJson[];
     unlocks: UnlocksJson[];
     locations: LocationJson[];
+    buffs: BuffJson[];
     availableUnlocks: UnlockType[];
 }
 interface ResourceJson {
@@ -27,6 +28,10 @@ interface KnowledgeJson {
     type: KnowledgeType;
     level: number;
     exp: number;
+}
+interface BuffJson {
+    type: SpellType;
+    duration: number;
 }
 interface UnlocksJson {
     type: UnlockType;
