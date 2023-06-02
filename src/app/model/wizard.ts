@@ -143,13 +143,19 @@ class Wizard {
     return resources.every(x => this.hasResource(x.resourceType, x.amount));
   }
   addResource(resourceType: ResourceType, amount: number) {
+    let resource = this.addResourceType(resourceType);
+    resource.amount += amount;
+  }
+
+  addResourceType(resourceType: ResourceType) : Resource {
     let resource = this.resources.find(x => x.type == resourceType);
     if (resource === undefined) {
       resource = new Resource(resourceType);
       this.resources.push(resource)
       this.recalculateStats();
     }
-    resource.amount += amount;
+
+    return resource;
   }
 
   addBuff(buff: Buff) {
@@ -218,7 +224,7 @@ class Wizard {
         this.addKnowledge(KnowledgeType.ChronomancyKnowledge);
         break;
       case UnlockType.ChronomancyProduction:
-        this.addResource(ResourceType.Chrono, 0);
+        this.addResourceType(ResourceType.Chrono);
         break;
     }
   }
