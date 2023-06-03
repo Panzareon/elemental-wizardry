@@ -23,6 +23,7 @@ class AdjustMaxAmount {
 }
 
 class Resource {
+    public static readonly BaseManaGeneration = 0.1;
     private _type: ResourceType;
     private _amount: number;
     private _maxAmount: number;
@@ -114,7 +115,7 @@ class Resource {
     private get baseGeneration() : number {
         switch (this.type) {
             case ResourceType.Mana:
-                return 0.1;
+                return Resource.BaseManaGeneration;
             default:
                 return 0;
         }

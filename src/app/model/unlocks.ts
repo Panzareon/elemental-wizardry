@@ -1,5 +1,5 @@
 import { KnowledgeType } from "./knowledge";
-import { ResourceAmount, ResourceType } from "./resource";
+import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
 export { Unlocks, UnlockType }
@@ -60,15 +60,15 @@ class Unlocks {
         switch (this.type) {
             case UnlockType.ManaProduction:
                 if (type == ResourceType.Mana) {
-                    return this.numberRepeated * 0.1;
+                    return this.numberRepeated * Resource.BaseManaGeneration;
                 }
                 break;
             case UnlockType.ChronomancyProduction:
                 if (type == ResourceType.Mana) {
-                    return -this.numberRepeated * 0.1;
+                    return -this.numberRepeated * Resource.BaseManaGeneration;
                 }
                 if (type == ResourceType.Chrono) {
-                    return this.numberRepeated * 0.1;
+                    return this.numberRepeated * Resource.BaseManaGeneration;
                 }
                 break;
         }
