@@ -2,7 +2,7 @@ import { IActive } from "./active";
 import { KnowledgeType } from "./knowledge";
 import { ResourceType } from "./resource";
 import { UnlockType } from "./unlocks";
-import { Wizard } from "./wizard";
+import { EventInfo, EventInfoType, Wizard } from "./wizard";
 
 export { GameLocation, Offer, LocationType, ExploreResultType }
 
@@ -116,8 +116,8 @@ class ExploreResult {
         switch (this._type) {
             case ExploreResultType.Random:
                 if (Math.random() < 0.1) {
-                    wizard.addResource(ResourceType.Gold, 5);
-                    wizard.notifyEvent("Found 5 gold on the ground");
+                    let resource = wizard.addResource(ResourceType.Gold, 5);
+                    wizard.notifyEvent(EventInfo.gainResource(resource, "Found 5 gold on the ground"));
                 }
                 break;
             case ExploreResultType.Store:

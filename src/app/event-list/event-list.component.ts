@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../data.service';
 import { Unsubscribable } from 'rxjs';
+import { EventInfo, EventInfoType } from '../model/wizard';
 
 @Component({
   selector: 'app-event-list',
@@ -21,7 +22,9 @@ export class EventListComponent {
   public get events() : string[] {
     return this._events;
   }
-  private notifyEvent(x: string) {
-    this._events.unshift(x);
+  private notifyEvent(x: EventInfo) {
+    if (x.type == EventInfoType.Unlock) {
+      this._events.unshift(x.text);
+    }
   }
 }

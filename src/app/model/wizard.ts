@@ -7,7 +7,7 @@ import { Skill, SkillType } from "./skill";
 import { Spell, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
 import { Buff } from "./buff";
-export { Wizard }
+export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
   private _resources: Resource[];
@@ -18,7 +18,7 @@ class Wizard {
   private _location: GameLocation[];
   private _spells: Spell[];
   private _buffs: Buff[];
-  private _event: Subject<string> = new Subject();
+  private _event: Subject<EventInfo> = new Subject();
   private _availableUnlocks: UnlockType[] = [];
 
   public constructor(resources: Resource[],
@@ -92,12 +92,12 @@ class Wizard {
     return this._active;
   }
 
-  public get event() : Subscribable<string> {
+  public get event() : Subscribable<EventInfo> {
     return this._event;
   }
 
-  public notifyEvent(description: string) {
-    this._event.next(description);
+  public notifyEvent(eventInfo: EventInfo) {
+    this._event.next(eventInfo);
   }
 
   public setActive(active: IActive) {
@@ -142,9 +142,10 @@ class Wizard {
   hasResources(resources: ResourceAmount[]) : boolean {
     return resources.every(x => this.hasResource(x.resourceType, x.amount));
   }
-  addResource(resourceType: ResourceType, amount: number) {
+  addResource(resourceType: ResourceType, amount: number) : Resource {
     let resource = this.addResourceType(resourceType);
     resource.amount += amount;
+    return resource;
   }
 
   addResourceType(resourceType: ResourceType) : Resource {
@@ -165,7 +166,7 @@ class Wizard {
     let skill = this.skills.find(x => x.type == skillType);
     if (skill === undefined) {
       skill = new Skill(skillType);
-      this.notifyEvent(skill.unlockMessage);
+      this.notifyEvent(EventInfo.unlocked(skill.unlockMessage));
       this.skills.push(skill);
     }
   }
@@ -173,7 +174,7 @@ class Wizard {
     let spell = this.spells.find(x => x.type == spellType);
     if (spell === undefined) {
       spell = new Spell(spellType);
-      this.notifyEvent("Learned the spell " + spell.name);
+      this.notifyEvent(EventInfo.unlocked("Learned the spell " + spell.name));
       this.spells.push(spell);
     }
   }
@@ -181,7 +182,7 @@ class Wizard {
     let location = this.location.find(x => x.type == locationType);
     if (location === undefined) {
       location = new GameLocation(locationType);
-      this.notifyEvent("Got access to " + location.name);
+      this.notifyEvent(EventInfo.unlocked("Got access to " + location.name));
       this.location.push(location);
     }
   }
@@ -198,11 +199,11 @@ class Wizard {
       return;
     }
 
-    this.notifyEvent(new Unlocks(unlockType).name + " available");
+    this.notifyEvent(EventInfo.unlocked(new Unlocks(unlockType).name + " available"));
     this._availableUnlocks.push(unlockType);
   }
   addUnlock(unlock: Unlocks) {
-    this.notifyEvent("Unlocked " + unlock.name);
+    this.notifyEvent(EventInfo.unlocked("Unlocked " + unlock.name));
     this._unlocks.push(unlock);
     let availableUnlockIndex = this._availableUnlocks.indexOf(unlock.type);
     if (availableUnlockIndex >= 0) {
@@ -233,12 +234,49 @@ class Wizard {
     let knowledge = this.knowledge.find(x => x.type == type);
     if (knowledge === undefined) {
       knowledge = new Knowledge(type);
-      this.notifyEvent("Learned " + knowledge.name);
+      this.notifyEvent(EventInfo.unlocked("Learned " + knowledge.name));
       this.knowledge.push(knowledge);
     }
   }
   private recalculateStats() {
     this.resources.forEach(x => x.calculate(this));
     this.knowledge.forEach(x => x.calculate(this));
+  }
+}
+enum EventInfoType {
+  Unlock,
+  GainResource,
+}
+class EventInfo {
+  private _positionX? : number;
+  private _positionY? : number;
+  private constructor(private _text: string, private _type: EventInfoType){
+  }
+
+  public get text() : string {
+    return this._text;
+  }
+
+  public get type() : EventInfoType {
+    return this._type;
+  }
+
+  public get positionX() : number | undefined {
+    return this._positionX;
+  }
+
+  public get positionY() : number | undefined {
+    return this._positionY;
+  }
+
+  public static unlocked(text: string) : EventInfo{
+    return new EventInfo(text, EventInfoType.Unlock);
+  }
+
+  public static gainResource(resource: Resource, text: string, positionX?: number, positionY?: number) : EventInfo {
+    let eventInfo = new EventInfo(text, EventInfoType.GainResource);
+    eventInfo._positionX = positionX;
+    eventInfo._positionY = positionY;
+    return eventInfo;
   }
 }
