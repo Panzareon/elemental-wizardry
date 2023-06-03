@@ -148,8 +148,11 @@ class Wizard {
     return resource;
   }
 
+  getResource(resourceType: ResourceType): Resource | undefined{
+    return this.resources.find(x => x.type == resourceType);
+  }
   addResourceType(resourceType: ResourceType) : Resource {
-    let resource = this.resources.find(x => x.type == resourceType);
+    let resource = this.getResource(resourceType);
     if (resource === undefined) {
       resource = new Resource(resourceType);
       this.resources.push(resource)

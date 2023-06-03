@@ -12,7 +12,7 @@ export class SpellbookComponent {
   constructor(private data: DataService) {
   }
 
-  public get spells() {
+  public get spells() : Spell[] {
     return this.data.wizard.spells;
   }
 

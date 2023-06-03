@@ -23,6 +23,7 @@ import { SpellIconComponent } from './spell-icon/spell-icon.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { EventListComponent } from './event-list/event-list.component';
 import { PopupInfoComponent } from './popup-info/popup-info.component';
+import { ResourceCostComponent } from './resource-cost/resource-cost.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { PopupInfoComponent } from './popup-info/popup-info.component';
     DurationActionComponent,
     SpellIconComponent,
     EventListComponent,
-    PopupInfoComponent
+    PopupInfoComponent,
+    ResourceCostComponent
   ],
   imports: [
     BrowserModule,

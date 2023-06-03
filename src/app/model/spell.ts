@@ -32,6 +32,10 @@ class Spell {
         return name + ".png";
     }
 
+    public get cost() : ResourceAmount[] {
+        return this._cost;
+    }
+
     public cast(wizard: Wizard) {
         if (!wizard.spendResources(this._cost)){
             return;
