@@ -44,8 +44,17 @@ class Unlocks {
     public get cost() : ResourceAmount[] {
         return this._cost;
     }
-    public canUnlock(wizard: Wizard) {
-        return wizard.hasResources(this._cost);
+    public canUnlock(wizard: Wizard) : boolean {
+        if (!wizard.hasResources(this._cost)) {
+            return false;
+        }
+
+        switch (this.type) {
+            case UnlockType.ChronomancyProduction:
+                return (wizard.getResource(ResourceType.Mana)?.baseGenerationPerSecond ?? 0) > Resource.BaseManaGeneration;
+        }
+
+        return true;
     }
     increaseMaxResourceAmount(type: ResourceType) : number {
         switch (this.type) {
