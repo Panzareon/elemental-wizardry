@@ -1,9 +1,15 @@
 <div>
-    <button mat-raised-button *ngFor="let unlock of availableUnlocks" (click)="buyUnlock(unlock)" [disabled]="!canUnlock(unlock)">
+    <button mat-raised-button *ngFor="let unlock of availableUnlocks" (click)="buyUnlock(unlock)" [disabled]="!canUnlock(unlock)" class="unlock">
         {{unlock.name}}
+        <div class="cost">
+            <app-resource-cost *ngFor="let cost of unlock.cost" [cost]="cost"></app-resource-cost>
+        </div>
     </button>
-    <button mat-raised-button *ngFor="let unlock of repeatableUnlocks" (click)="repeatUnlock(unlock)" [disabled]="!canUnlock(unlock)">
+    <button mat-raised-button *ngFor="let unlock of repeatableUnlocks" (click)="repeatUnlock(unlock)" [disabled]="!canUnlock(unlock)" class="unlock">
         {{unlock.name}}
+        <div class="cost">
+            <app-resource-cost *ngFor="let cost of unlock.cost" [cost]="cost"></app-resource-cost>
+        </div>
     </button>
 </div>
 <ng-container *ngIf="completedUnlocks.length > 0">

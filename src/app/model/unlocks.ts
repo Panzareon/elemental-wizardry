@@ -41,6 +41,9 @@ class Unlocks {
                 return false;
         }
     }
+    public get cost() : ResourceAmount[] {
+        return this._cost;
+    }
     public canUnlock(wizard: Wizard) {
         return wizard.hasResources(this._cost);
     }
