@@ -23,7 +23,7 @@ class Buff {
 
         this._duration -= deltaTime
         switch (this._spell.type) {
-            case SpellType.CompressTime:
+            case SpellType.ExpediteGeneration:
                 if (!wizard.spendResource(ResourceType.Chrono, deltaTime * 0.2)) {
                     return false;
                 }
@@ -33,7 +33,7 @@ class Buff {
 
     public adjustResourceProduction(resource: Resource, production : number) : number {
         switch (this._spell.type) {
-            case SpellType.CompressTime:
+            case SpellType.ExpediteGeneration:
                 if (resource.kind == ResourceKind.Mana) {
                     return production * 1.5;
                 }
