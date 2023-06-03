@@ -1,7 +1,10 @@
-<mat-card *ngFor="let resource of getManaResources()" class="resource resource-{{resource.type.toLowerCase()}}">
-    <div class="resource-amount" style="width:{{resource.amount/resource.maxAmount*100}}%"></div>
-    <span>{{resource.amountDisplay}}</span>
-</mat-card>
+<div *ngFor="let resource of getManaResources()" class="resource">
+    <img src="assets/icons/{{resource.type.toLowerCase()}}.svg" class="mana-icon"/>
+    <mat-card class="resource-{{resource.type.toLowerCase()}}">
+        <div class="resource-amount" [style.width.percent]="resource.amount/resource.maxAmount*100"></div>
+        <span>{{resource.amountDisplay}}</span>
+    </mat-card>
+</div>
 <mat-card>
     <mat-card-content *ngFor="let resource of getItemResources()">
         {{resource.name}}: {{resource.amountDisplay}}
