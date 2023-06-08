@@ -1,14 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { InventoryService } from "../inventory.service";
 import { Resource, ResourceKind, ResourceType } from "../model/resource";
-
-interface IInventoryResource {
-  name: string;
-  amountDisplay: string;
-  amount: number;
-  maxAmount: number;
-  type: string;
-}
+import { MatDialog } from '@angular/material/dialog';
+import { ResourceInfoComponent } from '../resource-info/resource-info.component';
 
 @Component({
   selector: 'app-inventory',
@@ -17,29 +11,26 @@ interface IInventoryResource {
 })
 export class InventoryComponent implements OnInit {
 
-  constructor(private inventory: InventoryService) { }
+  constructor(private inventory: InventoryService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
 
-  public getManaResources() : IInventoryResource[] {
-    return this.inventory.getResources().filter(x => x.kind == ResourceKind.Mana).map(x => this.toInventoryResource(x));
+  public getManaResources() : Resource[] {
+    return this.inventory.getResources().filter(x => x.kind == ResourceKind.Mana);
   }
 
-  public getItemResources() : IInventoryResource[] {
-    return this.inventory.getResources().filter(x => x.kind == ResourceKind.Item).map(x => this.toInventoryResource(x));
+  public getItemResources() : Resource[] {
+    return this.inventory.getResources().filter(x => x.kind == ResourceKind.Item);
   }
-
-  private toInventoryResource(resource : Resource) : IInventoryResource {
-    return {
-      name: resource.name,
-      amount: resource.amount,
-      maxAmount: resource.maxAmount,
-      type: ResourceType[resource.type],
-      amountDisplay: this.amountDisplay(resource),
-    };
+  public clickResource(resource: Resource) {
+    let dialogRef = this.dialog.open(ResourceInfoComponent);
+    dialogRef.componentInstance.resource = resource;
   }
-  private amountDisplay(resource : Resource) : string {
+  public amountDisplay(resource : Resource) : string {
     return Math.floor(resource.amount) + "/" + Math.floor(resource.maxAmount);
+  }
+  public resourceType(resource : Resource) : string {
+    return ResourceType[resource.type];
   }
 }

@@ -24,6 +24,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { EventListComponent } from './event-list/event-list.component';
 import { PopupInfoComponent } from './popup-info/popup-info.component';
 import { ResourceCostComponent } from './resource-cost/resource-cost.component';
+import { ResourceInfoComponent } from './resource-info/resource-info.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { ResourceCostComponent } from './resource-cost/resource-cost.component';
     SpellIconComponent,
     EventListComponent,
     PopupInfoComponent,
-    ResourceCostComponent
+    ResourceCostComponent,
+    ResourceInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -51,6 +54,7 @@ import { ResourceCostComponent } from './resource-cost/resource-cost.component';
     MatExpansionModule,
     BrowserAnimationsModule,
     MatCheckboxModule,
+    MatDialogModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,
