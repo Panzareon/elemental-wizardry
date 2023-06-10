@@ -31,7 +31,9 @@ class WizardDeserializer {
         return wizard;
     }
     deserializeSpell(x: SpellJson): Spell {
-        return new Spell(x.type);
+        let spell = new Spell(x.type);
+        spell.load(x.level, x.exp);
+        return spell;
     }
     deserializeSkills(x: SkillJson, spells: Spell[]): Skill {
         let skill = new Skill(x.type);
@@ -54,7 +56,7 @@ class WizardDeserializer {
     }
     deserializeBuffs(buff: BuffJson, spells: Spell[]) {
         let spell = spells.find(x => x.type == buff.type);
-        return new Buff(spell!, buff.duration);
+        return new Buff(spell!, buff.duration, buff.power, buff.costMultiplier);
     }
     deserializeLocation(x: LocationJson): GameLocation {
         let location = new GameLocation(x.type);

@@ -149,7 +149,7 @@ class Skill implements IActive {
     private getDurationReward(wizard: Wizard) {
         switch (this.type) {
             case SkillType.MagicShow:
-                wizard.addResource(ResourceType.Gold, 20 + this._durationIncreasedOutput * 10);
+                wizard.addResource(ResourceType.Gold, 20 + Math.round(this._durationIncreasedOutput * 10));
         }
     }
     
@@ -174,16 +174,17 @@ class Skill implements IActive {
     private triggerDurationSpell(wizard: Wizard) {
         for (let spell of this.activeDurationSpells) {
             let chance = this.durationSpellChance(spell);
+            let previousPower = spell.getSpellPower(wizard);
             if (Math.random() < chance && spell.canCast(wizard)) {
                 spell.cast(wizard);
-                this.getDurationBenefit(spell);
+                this.getDurationBenefit(spell, previousPower);
                 this.durationSpellCast.next([this, spell]);
             }
         }
     }
-    private getDurationBenefit(spell: Spell) {
-        // TODO: should depend on spell, spell level and skill type
-        this._durationIncreasedOutput += 1;
+    private getDurationBenefit(spell: Spell, power: number) {
+        // TODO: should depend on spell and skill type
+        this._durationIncreasedOutput += power;
     }
 
     // Gets the chance per second that the given spell will be cast during the active duration.

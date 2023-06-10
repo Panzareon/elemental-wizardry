@@ -23,6 +23,8 @@ interface ResourceJson {
 }
 interface SpellJson {
     type: SpellType;
+    level: number;
+    exp: number;
 }
 interface KnowledgeJson {
     type: KnowledgeType;
@@ -32,6 +34,8 @@ interface KnowledgeJson {
 interface BuffJson {
     type: SpellType;
     duration: number;
+    power: number;
+    costMultiplier: number;
 }
 interface UnlocksJson {
     type: UnlockType;

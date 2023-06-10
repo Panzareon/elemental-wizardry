@@ -50,6 +50,8 @@ class WizardSerializer {
     serializeSpell(x: Spell): SpellJson {
         return {
             type: x.type,
+            level: x.level,
+            exp: x.exp,
         }
     }
     serializeKnowledge(x: Knowledge): KnowledgeJson {
@@ -75,6 +77,8 @@ class WizardSerializer {
         return {
             type: x.spell.type,
             duration: x.duration,
+            power: x.power,
+            costMultiplier: x.costMultiplier,
         }
     }
 }

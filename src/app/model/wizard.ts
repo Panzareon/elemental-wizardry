@@ -4,7 +4,7 @@ import { GameLocation, LocationType } from "./gameLocation";
 import { Knowledge, KnowledgeType } from "./knowledge";
 import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { Skill, SkillType } from "./skill";
-import { Spell, SpellType } from "./spell";
+import { Spell, SpellSource, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
 import { Buff } from "./buff";
 export { Wizard, EventInfo, EventInfoType }
@@ -98,6 +98,10 @@ class Wizard {
 
   public notifyEvent(eventInfo: EventInfo) {
     this._event.next(eventInfo);
+  }
+
+  public getSpellPower(spellSource: SpellSource) {
+    return 1;
   }
 
   public setActive(active: IActive) {
