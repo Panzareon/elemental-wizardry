@@ -26,6 +26,8 @@ import { PopupInfoComponent } from './popup-info/popup-info.component';
 import { ResourceCostComponent } from './resource-cost/resource-cost.component';
 import { ResourceInfoComponent } from './resource-info/resource-info.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SpellTooltipComponent } from './tooltip/spell-tooltip/spell-tooltip.component';
+import { SpellTooltipDirective } from './tooltip/spell-tooltip/spell-tooltip.directive';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     EventListComponent,
     PopupInfoComponent,
     ResourceCostComponent,
-    ResourceInfoComponent
+    ResourceInfoComponent,
+    SpellTooltipComponent,
+    SpellTooltipDirective
   ],
   imports: [
     BrowserModule,

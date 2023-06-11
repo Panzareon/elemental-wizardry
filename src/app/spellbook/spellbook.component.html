@@ -1,14 +1,16 @@
 
-<button mat-stroked-button *ngFor="let spell of spells" (click)="cast(spell, icon)" [disabled]="!canCast(spell)" class="spell">
-    <span class="spell-content">
-        <app-spell-icon [spell]="spell" #icon></app-spell-icon>
-        <div class="description">
-            <div class="name">
-                {{spell.name}}
+<div *ngFor="let spell of spells" appSpellTooltip [spell]="spell" class="tooltip-wrapper">
+    <button mat-stroked-button (click)="cast(spell, icon)" [disabled]="!canCast(spell)" class="spell">
+        <span class="spell-content">
+            <app-spell-icon [spell]="spell" #icon></app-spell-icon>
+            <div class="description">
+                <div class="name">
+                    {{spell.name}}
+                </div>
+                <div class="cost">
+                    <app-resource-cost *ngFor="let cost of spell.cost" [cost]="cost"></app-resource-cost>
+                </div>
             </div>
-            <div class="cost">
-                <app-resource-cost *ngFor="let cost of spell.cost" [cost]="cost"></app-resource-cost>
-            </div>
-        </div>
-    </span>
-</button>
+        </span>
+    </button>
+</div>
