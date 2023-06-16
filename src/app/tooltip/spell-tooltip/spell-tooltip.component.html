@@ -1,5 +1,13 @@
 <mat-card class="tooltip" [style.left]="left + 'px'" [style.top]="top + 'px'" [class.visible]="visible">
+  <mat-card-header>
+    {{spell.name}} Lvl {{spell.level}}
+  </mat-card-header>
   <mat-card-content>
-    {{spell.name}}
+    <mat-card class="exp">
+      <div class="progress" [style.width.%]="spell.levelUpProgress * 100"></div>
+    </mat-card>
+  </mat-card-content>
+  <mat-card-content>
+    {{spell.description}}
   </mat-card-content>
 </mat-card>

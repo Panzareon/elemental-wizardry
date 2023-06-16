@@ -31,7 +31,18 @@ class Spell {
     }
 
     public get name() {
-        return SpellType[this.type];
+        switch (this.type) {
+            case SpellType.MagicBolt:
+                return "Magic Bolt";
+            case SpellType.InfuseGem:
+                return "Infuse Gem";
+            case SpellType.InfuseChronoGem:
+                return "Infuse Chrono Gem";
+            case SpellType.ExpediteGeneration:
+                return "Expedite Generation";
+            default:
+                return SpellType[this.type];
+        }
     }
 
     public get type() : SpellType {
@@ -63,6 +74,27 @@ class Spell {
         return Math.pow(3, this._level - 1);;
     }
 
+    public get levelUpProgress() {
+        return this.exp / this.levelUpExp;
+    }
+
+    public get levelUpExp() {
+        return Math.pow(20, this.level);
+    }
+
+    public get description() : string {
+        switch (this.type) {
+            case SpellType.MagicBolt:
+                return "Conjures a small magic bolt, might be helpful in some situations";
+            case SpellType.InfuseGem:
+                return "Infuses a gemstone with mana to create a Mana Gem";
+            case SpellType.InfuseChronoGem:
+                return "Infuses a gemstone with chrono to create a Chrono Gem";
+            case SpellType.ExpediteGeneration:
+                return "Compresses the time in your body to increase magic generation";
+        }
+    }
+
     public getSpellPower(wizard: Wizard) {
         return Math.pow(1.3, this._level - 1) * wizard.getSpellPower(this._source);
     }
@@ -91,7 +123,7 @@ class Spell {
 
     public getExp(exp: number) {
         this._exp += exp * this.expGainMultiplier;
-        let lvlUpExp = Math.pow(20, this.level);
+        let lvlUpExp = this.levelUpExp;
         if (this._exp >= lvlUpExp) {
             this._exp -= lvlUpExp;
             this._level++;
