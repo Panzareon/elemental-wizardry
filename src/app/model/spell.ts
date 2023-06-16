@@ -1,6 +1,7 @@
 import { Buff } from "./buff";
+import { IKnowledgeAction } from "./knowledge";
 import { ResourceAmount, ResourceType } from "./resource";
-import { Wizard } from "./wizard";
+import { EventInfo, Wizard } from "./wizard";
 
 export { Spell, SpellType, SpellSource }
 
@@ -9,6 +10,7 @@ enum SpellType {
     MagicBolt = 1,
     InfuseChronoGem = 2,
     ExpediteGeneration = 3,
+    ConverseWithFutureSelf = 4,
 }
 
 enum SpellSource {
@@ -40,6 +42,8 @@ class Spell {
                 return "Infuse Chrono Gem";
             case SpellType.ExpediteGeneration:
                 return "Expedite Generation";
+            case SpellType.ConverseWithFutureSelf:
+                return "Converse With Future Self";
             default:
                 return SpellType[this.type];
         }
@@ -92,6 +96,8 @@ class Spell {
                 return "Infuses a gemstone with chrono to create a Chrono Gem";
             case SpellType.ExpediteGeneration:
                 return "Compresses the time in your body to increase magic generation";
+            case SpellType.ConverseWithFutureSelf:
+                return "Talk with a future version of yourself gaining knowledge that you would have learned in the future";
         }
     }
 
@@ -113,6 +119,20 @@ class Spell {
                 break;
             case SpellType.ExpediteGeneration:
                 wizard.addBuff(new Buff(this, 30, spellPower, this.costMultiplier));
+                break;
+            case SpellType.ConverseWithFutureSelf:
+                let knowledgeActions = wizard.active.map(x => (<IKnowledgeAction>x).knowledge).filter(x => x !== undefined);
+                let knowledge;
+                if (knowledgeActions.length == 0) {
+                    knowledge = wizard.knowledge[Math.random() * wizard.knowledge.length >> 0];
+                }
+                else {
+                    knowledge = knowledgeActions[Math.random() * knowledgeActions.length >> 0];
+                }
+
+                let amount = knowledge.gainExp(5, wizard);
+                wizard.notifyEvent(EventInfo.gainKnowledge(knowledge, amount));
+                break;
         }
 
         this.getExp(1);
@@ -148,6 +168,8 @@ class Spell {
                 return [new ResourceAmount(ResourceType.Chrono, 10), new ResourceAmount(ResourceType.Gemstone, 1)];
             case SpellType.ExpediteGeneration:
                 return [new ResourceAmount(ResourceType.Chrono, 2 * costMultiplier)]
+            case SpellType.ConverseWithFutureSelf:
+                return [new ResourceAmount(ResourceType.Chrono, 5 * costMultiplier)]
         }
     }
 
@@ -158,6 +180,7 @@ class Spell {
                 return SpellSource.Mana;
             case SpellType.InfuseChronoGem:
             case SpellType.ExpediteGeneration:
+            case SpellType.ConverseWithFutureSelf:
                 return SpellSource.Chronomancy;
         }
     }

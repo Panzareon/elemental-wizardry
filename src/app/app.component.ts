@@ -30,7 +30,7 @@ export class AppComponent {
   }
 
   private showPopupInfo(info: EventInfo) {
-    if (info.type !== EventInfoType.GainResource) {
+    if (info.type !== EventInfoType.GainResource && info.type !== EventInfoType.GainKnowledge) {
       return;
     }
     const ref = this.vcr.createComponent(PopupInfoComponent);

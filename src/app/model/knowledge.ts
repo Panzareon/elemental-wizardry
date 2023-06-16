@@ -5,7 +5,7 @@ import { SpellType } from "./spell";
 import { UnlockType } from "./unlocks";
 import { Wizard } from "./wizard";
 
-export { Knowledge, KnowledgeType }
+export { Knowledge, KnowledgeType, IKnowledgeAction }
 
 enum KnowledgeType {
     MagicKnowledge = 0,
@@ -42,14 +42,16 @@ class Knowledge {
         return KnowledgeType[this._type];
     }
 
-    gainExp(exp: number, wizard: Wizard) {
-        this._exp += exp * this._expMultiplier;
+    gainExp(exp: number, wizard: Wizard) : number {
+        let gainedExp = exp * this._expMultiplier
+        this._exp += gainedExp;
         var neededExp = this.nextLevelExp;
         if (this._exp >= neededExp) {
             this._exp -= neededExp;
             this._level++;
             this.getUnlocks(wizard);
         }
+        return gainedExp;
     }
     
     get nextLevelExp() : number {
@@ -95,6 +97,9 @@ class Knowledge {
                 if (this.level >= 4) {
                     wizard.learnSpell(SpellType.ExpediteGeneration);
                 }
+                if (this.level >= 5) {
+                    wizard.learnSpell(SpellType.ConverseWithFutureSelf);
+                }
                 break;
         }
     }
@@ -105,16 +110,25 @@ class Knowledge {
         }
     }
 }
-class KnowledgeStudy implements IActive {
-    constructor(private knowledge: Knowledge) {
+interface IKnowledgeAction extends IActive {
+    get knowledge() : Knowledge;
+}
+class KnowledgeStudy implements IKnowledgeAction {
+    constructor(private _knowledge: Knowledge) {
+    }
+    public get knowledge(): Knowledge {
+        return this._knowledge;
     }
     activate(wizard: Wizard, deltaTime: number): boolean {
         this.knowledge.gainExp(deltaTime, wizard);
         return true;
     }
 }
-class KnowledgeTraining implements IActive {
-    constructor(private knowledge: Knowledge) {
+class KnowledgeTraining implements IKnowledgeAction {
+    constructor(private _knowledge: Knowledge) {
+    }
+    public get knowledge(): Knowledge {
+        return this._knowledge;
     }
     activate(wizard: Wizard, deltaTime: number): boolean {
         var resource = this.requiredResource;

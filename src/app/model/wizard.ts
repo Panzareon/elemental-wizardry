@@ -253,6 +253,7 @@ class Wizard {
 enum EventInfoType {
   Unlock,
   GainResource,
+  GainKnowledge,
 }
 class EventInfo {
   private _positionX? : number;
@@ -282,6 +283,14 @@ class EventInfo {
 
   public static gainResource(resource: Resource, text: string, positionX?: number, positionY?: number) : EventInfo {
     let eventInfo = new EventInfo(text, EventInfoType.GainResource);
+    eventInfo._positionX = positionX;
+    eventInfo._positionY = positionY;
+    return eventInfo;
+  }
+
+  public static gainKnowledge(knowledge: Knowledge, amount: number, positionX?: number, positionY?: number) : EventInfo {
+    let text = "Gained " + amount + " experience in " + knowledge.name;
+    let eventInfo = new EventInfo(text, EventInfoType.GainKnowledge);
     eventInfo._positionX = positionX;
     eventInfo._positionY = positionY;
     return eventInfo;
