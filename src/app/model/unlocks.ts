@@ -65,7 +65,7 @@ class Unlocks {
 
         switch (this.type) {
             case UnlockType.ChronomancyProduction:
-                return (wizard.getResource(ResourceType.Mana)?.baseGenerationPerSecond ?? 0) > Resource.BaseManaGeneration;
+                return (wizard.getResource(ResourceType.Mana)?.baseGenerationPerSecond ?? 0) > Resource.BaseManaGeneration * 1.5;
         }
 
         return true;
