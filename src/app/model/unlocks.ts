@@ -44,6 +44,20 @@ class Unlocks {
     public get cost() : ResourceAmount[] {
         return this._cost;
     }
+    public get description() : string {
+        switch (this.type) {
+            case UnlockType.Purse:
+                return "Increases gold storage by 100";
+            case UnlockType.ManaProduction:
+                return "Converts Mana Gems into 0.1 passive Mana generation per second.";
+            case UnlockType.Chronomancy:
+                return "Unlocks Chronomancy as a new field to study";
+            case UnlockType.ChronomancyMentor:
+                return "Get a Mentor to help study Chronomancy and other magic";
+            case UnlockType.ChronomancyProduction:
+                return "Converts 0.1 Mana generation into 0.1 Chrono generation per second";
+        }
+    }
     public canUnlock(wizard: Wizard) : boolean {
         if (!wizard.hasResources(this._cost)) {
             return false;

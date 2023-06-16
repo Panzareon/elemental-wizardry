@@ -28,6 +28,8 @@ import { ResourceInfoComponent } from './resource-info/resource-info.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SpellTooltipComponent } from './tooltip/spell-tooltip/spell-tooltip.component';
 import { SpellTooltipDirective } from './tooltip/spell-tooltip/spell-tooltip.directive';
+import { UnlockTooltipComponent } from './tooltip/unlock-tooltip/unlock-tooltip.component';
+import { UnlockTooltipDirective } from './tooltip/unlock-tooltip/unlock-tooltip.directive';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { SpellTooltipDirective } from './tooltip/spell-tooltip/spell-tooltip.dir
     ResourceCostComponent,
     ResourceInfoComponent,
     SpellTooltipComponent,
-    SpellTooltipDirective
+    SpellTooltipDirective,
+    UnlockTooltipComponent,
+    UnlockTooltipDirective
   ],
   imports: [
     BrowserModule,

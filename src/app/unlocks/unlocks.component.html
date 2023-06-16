@@ -1,16 +1,20 @@
 <div>
-    <button mat-raised-button *ngFor="let unlock of availableUnlocks" (click)="buyUnlock(unlock)" [disabled]="!canUnlock(unlock)" class="unlock">
-        {{unlock.name}}
-        <div class="cost">
-            <app-resource-cost *ngFor="let cost of unlock.cost" [cost]="cost"></app-resource-cost>
-        </div>
-    </button>
-    <button mat-raised-button *ngFor="let unlock of repeatableUnlocks" (click)="repeatUnlock(unlock)" [disabled]="!canUnlock(unlock)" class="unlock">
-        {{unlock.name}}
-        <div class="cost">
-            <app-resource-cost *ngFor="let cost of unlock.cost" [cost]="cost"></app-resource-cost>
-        </div>
-    </button>
+    <div *ngFor="let unlock of availableUnlocks" class="tooltip-wrapper" appUnlockTooltip [unlock]="unlock">
+        <button mat-raised-button (click)="buyUnlock(unlock)" [disabled]="!canUnlock(unlock)" class="unlock">
+            {{unlock.name}}
+            <div class="cost">
+                <app-resource-cost *ngFor="let cost of unlock.cost" [cost]="cost"></app-resource-cost>
+            </div>
+        </button>
+    </div>
+    <div *ngFor="let unlock of repeatableUnlocks" class="tooltip-wrapper" appUnlockTooltip [unlock]="unlock">
+        <button mat-raised-button (click)="repeatUnlock(unlock)" [disabled]="!canUnlock(unlock)" class="unlock">
+            {{unlock.name}}
+            <div class="cost">
+                <app-resource-cost *ngFor="let cost of unlock.cost" [cost]="cost"></app-resource-cost>
+            </div>
+        </button>
+    </div>
 </div>
 <ng-container *ngIf="completedUnlocks.length > 0">
     Unlocked:
