@@ -7,12 +7,13 @@ import { Wizard } from "./wizard";
 export { Skill, SkillType, SkillActionType }
 
 enum SkillType {
-    Meditate,
-    MagicShow,
+    Meditate = 0,
+    MagicShow = 1,
+    ChopWood = 2,
 }
 enum SkillActionType {
-    Ongoing,
-    Duration,
+    Ongoing = 0,
+    Duration = 1,
 }
 
 class Skill implements IActive {
@@ -63,6 +64,8 @@ class Skill implements IActive {
         switch (this.type) {
             case SkillType.MagicShow:
                 return 10;
+            case SkillType.ChopWood:
+                return 20;
         }
 
         return 0;
@@ -150,6 +153,10 @@ class Skill implements IActive {
         switch (this.type) {
             case SkillType.MagicShow:
                 wizard.addResource(ResourceType.Gold, 20 + Math.round(this._durationIncreasedOutput * 10));
+                break;
+            case SkillType.ChopWood:
+                wizard.addResource(ResourceType.Wood, 1 + Math.round(this._durationIncreasedOutput));
+                break;
         }
     }
     
@@ -158,6 +165,7 @@ class Skill implements IActive {
             case SkillType.Meditate:
                 return SkillActionType.Ongoing;
             case SkillType.MagicShow:
+            case SkillType.ChopWood:
                 return SkillActionType.Duration;
         }
     }
@@ -165,6 +173,8 @@ class Skill implements IActive {
     private getAvailableDurationSpells(): SpellType[] {
         switch (this.type) {
             case SkillType.MagicShow:
+                return [SpellType.MagicBolt];
+            case SkillType.ChopWood:
                 return [SpellType.MagicBolt];
             default:
                 return [];

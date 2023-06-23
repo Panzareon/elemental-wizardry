@@ -3,12 +3,14 @@
     <mat-button-toggle *ngFor="let skill of getOngoingSkills()" class="action skill" checked="{{isActive(skill)}}" (change)="toggleSkill(skill)">
         {{skill.name}}
     </mat-button-toggle>
-    <app-duration-action *ngFor="let skill of getDurationSkills()" [skill]="skill">
+</div>
+<div class="action-list duration-skills">
+    <app-duration-action *ngFor="let skill of getDurationSkills()" [skill]="skill" class="skill">
     </app-duration-action>
 </div>
 
+<h4>Explore Locations</h4>
 <div class="action-list locations">
-    <h4>Explore Locations</h4>
     <mat-button-toggle *ngFor="let location of getExplorableLocations()" class="action location" checked="{{isExploreActive(location)}}" (change)="toggleExplore(location)">
         {{location.name}}
     </mat-button-toggle>

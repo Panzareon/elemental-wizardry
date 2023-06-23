@@ -1,14 +1,16 @@
 import { IActive } from "./active";
 import { KnowledgeType } from "./knowledge";
 import { ResourceType } from "./resource";
+import { SkillType } from "./skill";
 import { UnlockType } from "./unlocks";
 import { EventInfo, EventInfoType, Wizard } from "./wizard";
 
 export { GameLocation, Offer, LocationType, ExploreResultType }
 
 enum LocationType {
-    Store,
-    Village,
+    Store = 0,
+    Village = 1,
+    Forest = 2,
 }
 
 class Offer {
@@ -29,9 +31,10 @@ class Offer {
 }
 
 enum ExploreResultType {
-    Random,
-    Store,
-    ChronomancyMentor,
+    Random = 0,
+    Store = 1,
+    ChronomancyMentor = 2,
+    Forest = 3,
 }
 
 class ExploreResult {
@@ -100,6 +103,8 @@ class ExploreResult {
                 return 10;
             case ExploreResultType.ChronomancyMentor:
                 return 12;
+            case ExploreResultType.Forest:
+                return 10;
         }
     }
 
@@ -116,8 +121,16 @@ class ExploreResult {
         switch (this._type) {
             case ExploreResultType.Random:
                 if (Math.random() < 0.1) {
-                    let resource = wizard.addResource(ResourceType.Gold, 5);
-                    wizard.notifyEvent(EventInfo.gainResource(resource, "Found 5 gold on the ground"));
+                    switch (this._locationType) {
+                        case LocationType.Village:
+                            let resource = wizard.addResource(ResourceType.Gold, 5);
+                            wizard.notifyEvent(EventInfo.gainResource(resource, "Found 5 gold on the ground"));
+                            break;
+                        case LocationType.Forest:
+                            resource = wizard.addResource(ResourceType.Wood, 1);
+                            wizard.notifyEvent(EventInfo.gainResource(resource, "Found some firewood on the ground"));
+                            break;
+                    }
                 }
                 break;
             case ExploreResultType.Store:
@@ -126,6 +139,10 @@ class ExploreResult {
             case ExploreResultType.ChronomancyMentor:
                 wizard.addAvailableUnlock(UnlockType.ChronomancyMentor);
                 break;
+            case ExploreResultType.Forest:
+                wizard.findLocation(LocationType.Forest);
+                wizard.learnSkill(SkillType.ChopWood)
+                break;
         }
     }
     
@@ -133,6 +150,8 @@ class ExploreResult {
         switch (this._type) {
             case ExploreResultType.ChronomancyMentor:
                 return (wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge) ?? 0) >= 4;
+            case ExploreResultType.Forest:
+                return wizard.unlocks.some(x => x.type === UnlockType.ChronomancyMentor);
             default:
                 return true;
         }
@@ -173,6 +192,11 @@ class ExploreLocation implements IActive {
                 result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
                 result.push(new ExploreResult(ExploreResultType.Store, this.location.type));
                 result.push(new ExploreResult(ExploreResultType.ChronomancyMentor, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.Forest, this.location.type));
+                break;
+            case LocationType.Forest:
+                result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
+                break;
         }
         return result;
     }
@@ -204,6 +228,7 @@ class GameLocation {
     public get canExplore(): boolean {
         switch (this.type) {
             case LocationType.Village:
+            case LocationType.Forest:
                 return true;
             default:
                 return false;

@@ -9,6 +9,7 @@ enum ResourceType {
     ManaGem = 4,
     ChronoGem = 5,
     Chrono = 6,
+    Wood = 7,
 }
 enum ResourceKind {
     Mana = 1,
