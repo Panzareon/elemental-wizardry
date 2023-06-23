@@ -10,6 +10,7 @@ enum UnlockType {
     ChronomancyMentor = 2,
     Chronomancy = 3,
     ChronomancyProduction = 4,
+    WoodStorage = 5,
 }
 
 class Unlocks {
@@ -56,6 +57,8 @@ class Unlocks {
                 return "Get a Mentor to help study Chronomancy and other magic";
             case UnlockType.ChronomancyProduction:
                 return "Converts 0.1 Mana generation into 0.1 Chrono generation per second";
+            case UnlockType.WoodStorage:
+                return "Increase wood storage by 10";
         }
     }
     public canUnlock(wizard: Wizard) : boolean {
@@ -76,6 +79,12 @@ class Unlocks {
                 if (type == ResourceType.Gold) {
                     return this.numberRepeated * 100;
                 }
+                break;
+            case UnlockType.WoodStorage:
+                if (type == ResourceType.Wood) {
+                    return this.numberRepeated * 10;
+                }
+                break;
         }
         return 0;
     }
@@ -138,6 +147,8 @@ class Unlocks {
                     return [new ResourceAmount(ResourceType.Mana, 40)];
                 }
                 return [new ResourceAmount(ResourceType.Chrono, targetUnlockNumber * 10)];
+            case UnlockType.WoodStorage:
+                return [new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 5), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.2, this.numberRepeated)))];
         }
     }
 }

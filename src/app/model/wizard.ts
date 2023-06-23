@@ -40,6 +40,9 @@ class Wizard {
       this._buffs = buffs;
       this._availableUnlocks = availableUnlocks;
       this._unlocks.forEach(x => this.getUnlockReward(x));
+      for (let resource of this._resources) {
+        this.resourceAdded(resource);
+      }
       this.recalculateStats();
   }
 
@@ -53,7 +56,7 @@ class Wizard {
       [new GameLocation(LocationType.Village)],
       [],
       [],
-      [UnlockType.Purse])
+      [])
   }
 
   public get resources(): Resource[] {
@@ -159,11 +162,23 @@ class Wizard {
     let resource = this.getResource(resourceType);
     if (resource === undefined) {
       resource = new Resource(resourceType);
-      this.resources.push(resource)
+      this.resources.push(resource);
+      this.resourceAdded(resource);
       this.recalculateStats();
     }
 
     return resource;
+  }
+  resourceAdded(resource: Resource) {
+    switch (resource.type) {
+      case ResourceType.Gold:
+        this.addAvailableUnlock(UnlockType.Purse);
+        break;
+      case ResourceType.Wood:
+        this.addAvailableUnlock(UnlockType.WoodStorage);
+        break;
+
+    }
   }
 
   addBuff(buff: Buff) {
