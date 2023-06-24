@@ -30,6 +30,8 @@ import { SpellTooltipComponent } from './tooltip/spell-tooltip/spell-tooltip.com
 import { SpellTooltipDirective } from './tooltip/spell-tooltip/spell-tooltip.directive';
 import { UnlockTooltipComponent } from './tooltip/unlock-tooltip/unlock-tooltip.component';
 import { UnlockTooltipDirective } from './tooltip/unlock-tooltip/unlock-tooltip.directive';
+import { ExplorationTooltipComponent } from './tooltip/exploration-tooltip/exploration-tooltip.component';
+import { ExplorationTooltipDirective } from './tooltip/exploration-tooltip/exploration-tooltip.directive';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { UnlockTooltipDirective } from './tooltip/unlock-tooltip/unlock-tooltip.
     SpellTooltipComponent,
     SpellTooltipDirective,
     UnlockTooltipComponent,
-    UnlockTooltipDirective
+    UnlockTooltipDirective,
+    ExplorationTooltipComponent,
+    ExplorationTooltipDirective
   ],
   imports: [
     BrowserModule,

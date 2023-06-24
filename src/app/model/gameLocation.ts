@@ -5,7 +5,7 @@ import { SkillType } from "./skill";
 import { UnlockType } from "./unlocks";
 import { EventInfo, EventInfoType, Wizard } from "./wizard";
 
-export { GameLocation, Offer, LocationType, ExploreResultType }
+export { GameLocation, Offer, LocationType, ExploreResultType, ExploreResult }
 
 enum LocationType {
     Store = 0,
@@ -58,12 +58,23 @@ class ExploreResult {
         return this._progress;
     }
 
+    public get progressRatio() : number {
+        return this._progress / this._targetProgress;
+    }
+
     public get done() : boolean {
         return this._done;
     }
 
     public get available() : boolean {
         return this._available;
+    }
+
+    public get name() : string {
+        switch (this.type) {
+            default:
+                return ExploreResultType[this.type];
+        }
     }
     public activate(wizard: Wizard, deltaTime: number) {
         if (this._done) {
@@ -166,6 +177,10 @@ class ExploreLocation implements IActive {
 
     public get progress() : [ExploreResultType, number, boolean, boolean][] {
         return this._rewards.map(x => [x.type, x.progress, x.done, x.available]);
+    }
+
+    public get rewards() : ExploreResult[] {
+        return this._rewards;
     }
     
     public activate(wizard: Wizard, deltaTime: number): boolean {
