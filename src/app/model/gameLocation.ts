@@ -76,18 +76,25 @@ class ExploreResult {
                 return ExploreResultType[this.type];
         }
     }
+    public isAvailable(wizard: Wizard) : boolean {
+        if (this._available === false) {
+            if (this.isAvailableInternal(wizard)[0]) {
+                this._available = true;
+            }
+        }
+
+        return this._available;
+    }
+    getUnlockConditionText(wizard: Wizard): string {
+        return this.isAvailableInternal(wizard)[1]
+    }
     public activate(wizard: Wizard, deltaTime: number) {
         if (this._done) {
             return;
         }
 
-        if (this._available === false) {
-            if (this.isAvailable(wizard)) {
-                this._available = true;
-            }
-            else {
-                return;
-            }
+        if (!this.isAvailable(wizard)) {
+            return;
         }
 
         this._progress += deltaTime;
@@ -157,14 +164,14 @@ class ExploreResult {
         }
     }
     
-    private isAvailable(wizard: Wizard) : boolean {
+    private isAvailableInternal(wizard: Wizard) : [boolean, string] {
         switch (this._type) {
             case ExploreResultType.ChronomancyMentor:
-                return (wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge) ?? 0) >= 4;
+                return [(wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge) ?? 0) >= 4, "Need Magic Knowledge level 4"];
             case ExploreResultType.Forest:
-                return wizard.unlocks.some(x => x.type === UnlockType.ChronomancyMentor);
+                return [wizard.unlocks.some(x => x.type === UnlockType.ChronomancyMentor), "Need a Mentor"];
             default:
-                return true;
+                return [true, ""];
         }
     }
 }
