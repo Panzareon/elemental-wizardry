@@ -1,11 +1,25 @@
+@progress-bar-height: 10px;
+@progress-bar-margin: 5px;
+@progress-icon-height: 20px;
+
 .tooltip {
     .explore-progress {
-      height: 10px;
-      margin: 5px;
-      overflow: hidden;
-      .progress {
-        height: 100%;
-        background-color: rgb(11, 55, 121);
-      }
+        position: relative;
+        .progress-bar {
+            height: @progress-bar-height;
+            margin: @progress-bar-margin;
+            overflow: hidden;
+            .progress {
+                height: 100%;
+                background-color: rgb(11, 55, 121);
+            }
+        }
+        .progress-icon {
+            position: absolute;
+            height: @progress-icon-height;
+            left: 50%;
+            margin-left: (@progress-icon-height/-2);
+            margin-top: (@progress-icon-height/-2 - (@progress-bar-height/2) - @progress-bar-margin);
+        }
     }
-  }
+}

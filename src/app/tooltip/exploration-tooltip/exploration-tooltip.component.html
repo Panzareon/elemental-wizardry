@@ -4,8 +4,11 @@
     </mat-card-header>
     <mat-card-content *ngFor="let target of location.exploreActive?.rewards" >
       {{target.name}}
-      <mat-card class="explore-progress">
-        <div class="progress" [style.width.%]="target.progressRatio * 100"></div>
-      </mat-card>
+      <div class="explore-progress">
+        <mat-card class="progress-bar">
+            <div class="progress" [style.width.%]="target.progressRatio * 100"></div>
+        </mat-card>
+        <img class="progress-icon" src="assets/icons/check-mark.svg" *ngIf="target.done"/>
+      </div>
     </mat-card-content>
   </mat-card>
