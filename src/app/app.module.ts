@@ -32,6 +32,8 @@ import { UnlockTooltipComponent } from './tooltip/unlock-tooltip/unlock-tooltip.
 import { UnlockTooltipDirective } from './tooltip/unlock-tooltip/unlock-tooltip.directive';
 import { ExplorationTooltipComponent } from './tooltip/exploration-tooltip/exploration-tooltip.component';
 import { ExplorationTooltipDirective } from './tooltip/exploration-tooltip/exploration-tooltip.directive';
+import { CreditsComponent } from './credits/credits.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,8 @@ import { ExplorationTooltipDirective } from './tooltip/exploration-tooltip/explo
     UnlockTooltipComponent,
     UnlockTooltipDirective,
     ExplorationTooltipComponent,
-    ExplorationTooltipDirective
+    ExplorationTooltipDirective,
+    CreditsComponent
   ],
   imports: [
     BrowserModule,
@@ -67,6 +70,7 @@ import { ExplorationTooltipDirective } from './tooltip/exploration-tooltip/explo
     BrowserAnimationsModule,
     MatCheckboxModule,
     MatDialogModule,
+    MatToolbarModule,
   ],
   providers: [{
     provide: APP_INITIALIZER,

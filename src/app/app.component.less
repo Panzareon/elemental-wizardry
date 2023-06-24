@@ -1,8 +1,14 @@
 .app {
-    display: flex;
     min-height: 100%;
-    div {
-        margin: 5px;
+    display: flex;
+    flex-direction: column;
+    .main {
+        display: flex;
+        flex: 1;
+        min-height: 100%;
+        div {
+            margin: 5px;
+        }
     }
 }
 
@@ -14,7 +20,7 @@
 mat-divider {
     margin: 0 5px;
 }
-.main {
+.content {
     flex: 1 60%;
     overflow-x: hidden;
 }
