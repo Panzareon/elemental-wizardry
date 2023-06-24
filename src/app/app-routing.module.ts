@@ -6,6 +6,7 @@ import { StoreComponent } from './store/store.component';
 import { SpellbookComponent } from './spellbook/spellbook.component';
 import { UnlocksComponent } from './unlocks/unlocks.component';
 import { CreditsComponent } from './credits/credits.component';
+import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/actions", pathMatch: "full" },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: "store", component: StoreComponent },
   { path: "unlocks", component: UnlocksComponent },
   { path: "credits", component: CreditsComponent },
+  { path: "about", component: AboutComponent },
 ];
 
 @NgModule({
