@@ -12,7 +12,7 @@
             <a mat-tab-link routerLink="knowledge">Knowledge</a>
             <a mat-tab-link routerLink="spellbook" *ngIf="hasSpell">Spellbook</a>
             <a mat-tab-link routerLink="store" *ngIf="hasUnlockedShop">Store</a>
-            <a mat-tab-link routerLink="unlocks">Unlocks</a>
+            <a mat-tab-link routerLink="unlocks" *ngIf="hasUnlocks">Unlocks</a>
         </nav>
         <mat-tab-nav-panel #tabPanel>
             <router-outlet></router-outlet>
