@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "build:gh-pages": "ng build --configuration production --base-href https://panzareon.github.io/elemental-wizardry/",
     "test": "ng test"
   },
   "private": true,
