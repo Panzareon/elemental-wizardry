@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ITooltipBase } from '../tooltip-base';
+import { TooltipBase } from '../tooltip-base';
 import { ExploreResult, GameLocation } from 'src/app/model/gameLocation';
 import { DataService } from 'src/app/data.service';
 
@@ -8,12 +8,11 @@ import { DataService } from 'src/app/data.service';
   templateUrl: './exploration-tooltip.component.html',
   styleUrls: ['./exploration-tooltip.component.less']
 })
-export class ExplorationTooltipComponent implements ITooltipBase {
-  constructor(private _data: DataService){}
+export class ExplorationTooltipComponent extends TooltipBase {
+  constructor(private _data: DataService){
+    super();
+  }
   location!: GameLocation;
-  left: number = 0;
-  top: number = 0;
-  visible: boolean = false;
   isLocked(exploreResult: ExploreResult): boolean {
     return !exploreResult.isAvailable(this._data.wizard);
   }

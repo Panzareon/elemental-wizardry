@@ -27,11 +27,12 @@ mat-card.progress-card {
 
 mat-card.tooltip {
     position: fixed;
-    margin-top: 5px;
+    margin: 5px;
     transform:translateX(-50%);
     opacity: 0;
     z-index: 90;
-    &::before {
+    pointer-events: none;
+    &:not(.moved-position)::before {
       content: '';
       width: 0;
       height: 0;
