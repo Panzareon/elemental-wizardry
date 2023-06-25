@@ -1,3 +1,5 @@
+@import "../globals.less";
+
 .app {
     min-height: 100%;
     display: flex;
@@ -6,6 +8,22 @@
         display: flex;
         flex: 1;
         min-height: 100%;
+
+        .content {
+            flex: 1 60%;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            min-width: 200px;
+            flex: 1 20%;
+        }
+        .left {
+            
+        }
+
+        mat-divider {
+            margin: 0 5px;
+        }
         div {
             margin: 5px;
         }
@@ -20,19 +38,19 @@
         }
     }
 }
-
-.sidebar {
-    min-width: 200px;
-    flex: 1 20%;
-}
-
-mat-divider {
-    margin: 0 5px;
-}
-.content {
-    flex: 1 60%;
-    overflow-x: hidden;
-}
 .popup-parent {
     position: absolute;
+}
+
+@media (max-width: @mobile-breakpoint) {
+    .app .main {
+        flex-direction: column;
+        .sidebar {
+            order: 1;
+            flex: none;
+        }
+        mat-divide {
+            display: none;
+        }
+    }
 }
