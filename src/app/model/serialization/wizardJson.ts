@@ -1,11 +1,12 @@
 import { ExploreResultType, LocationType } from "../gameLocation";
+import { InfluenceType } from "../influence";
 import { KnowledgeType } from "../knowledge";
 import { ResourceType } from "../resource";
 import { SkillType } from "../skill";
 import { SpellType } from "../spell";
 import { UnlockType } from "../unlocks";
 
-export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson }
+export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson }
 
 interface WizardJson {
     resources: ResourceJson[];
@@ -16,6 +17,7 @@ interface WizardJson {
     locations: LocationJson[];
     buffs: BuffJson[];
     availableUnlocks: UnlockType[];
+    influence: InfluenceJson[];
 }
 interface ResourceJson {
     type: ResourceType;
@@ -54,4 +56,8 @@ interface SkillDurationInfo {
 interface LocationJson {
     type: LocationType;
     exploreProgress: [ExploreResultType, number, boolean, boolean][];
+}
+interface InfluenceJson {
+    type: InfluenceType;
+    amount: number;
 }

@@ -28,6 +28,9 @@ export class AppComponent {
   public get hasSpell() {
     return this.data.wizard.spells.length > 0;
   }
+  public get hasInfluence() {
+    return this.data.wizard.influence.length > 0;
+  }
   public get hasUnlocks() {
     return this.data.wizard.unlocks.length > 0 || this.data.wizard.availableUnlocks.length > 0;
   }

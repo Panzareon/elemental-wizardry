@@ -8,6 +8,7 @@ import { UnlocksComponent } from './unlocks/unlocks.component';
 import { CreditsComponent } from './credits/credits.component';
 import { AboutComponent } from './about/about.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { InfluenceComponent } from './influence/influence.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/actions", pathMatch: "full" },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: "spellbook", component: SpellbookComponent },
   { path: "store", component: StoreComponent },
   { path: "unlocks", component: UnlocksComponent },
+  { path: "influence", component: InfluenceComponent },
   { path: "credits", component: CreditsComponent },
   { path: "about", component: AboutComponent },
   { path: "privacy-policy", component: PrivacyPolicyComponent },

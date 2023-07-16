@@ -36,6 +36,7 @@ import { CreditsComponent } from './credits/credits.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AboutComponent } from './about/about.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { InfluenceComponent } from './influence/influence.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
     ExplorationTooltipDirective,
     CreditsComponent,
     AboutComponent,
-    PrivacyPolicyComponent
+    PrivacyPolicyComponent,
+    InfluenceComponent
   ],
   imports: [
     BrowserModule,

@@ -7,6 +7,7 @@ import { Skill, SkillType } from "./skill";
 import { Spell, SpellSource, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
 import { Buff } from "./buff";
+import { Influence } from "./influence";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -20,6 +21,7 @@ class Wizard {
   private _buffs: Buff[];
   private _event: Subject<EventInfo> = new Subject();
   private _availableUnlocks: UnlockType[] = [];
+  private _influence: Influence[];
 
   public constructor(resources: Resource[],
     skills: Skill[],
@@ -29,7 +31,8 @@ class Wizard {
     location: GameLocation[],
     spells: Spell[],
     buffs: Buff[],
-    availableUnlocks: UnlockType[]) {
+    availableUnlocks: UnlockType[],
+    influence: Influence[]) {
       this._resources = resources;
       this._skills = skills;
       this._knowldege = knowledge;
@@ -39,6 +42,7 @@ class Wizard {
       this._spells = spells;
       this._buffs = buffs;
       this._availableUnlocks = availableUnlocks;
+      this._influence = influence;
       this._unlocks.forEach(x => this.getUnlockReward(x));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
@@ -54,6 +58,7 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
+      [],
       [],
       [],
       [])
@@ -85,6 +90,10 @@ class Wizard {
 
   public get buffs(): Buff[] {
     return this._buffs;
+  }
+
+  public get influence(): Influence[] {
+    return this._influence;
   }
 
   public get availableUnlocks(): UnlockType[] {

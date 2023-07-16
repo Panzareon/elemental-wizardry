@@ -1,12 +1,13 @@
 import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
+import { Influence } from "../influence";
 import { Knowledge } from "../knowledge";
 import { Resource } from "../resource";
 import { Skill } from "../skill";
 import { Spell, SpellType } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, InfluenceJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 
 export { WizardDeserializer }
 
@@ -25,6 +26,7 @@ class WizardDeserializer {
             spells,
             this.json.buffs.map(x => this.deserializeBuffs(x, spells)),
             this.json.availableUnlocks,
+            this.json.influence?.map(x => this.deserializeInfluence(x)) ?? [],
         );
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
@@ -69,5 +71,10 @@ class WizardDeserializer {
         let unlock = new Unlocks(x.type);
         unlock.load(x.numberRepeated);
         return unlock;
+    }
+    deserializeInfluence(x: InfluenceJson): Influence {
+        let influence = new Influence(x.type);
+        influence.load(x.amount);
+        return influence;
     }
 }
