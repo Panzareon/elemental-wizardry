@@ -1,0 +1,12 @@
+<mat-card>
+    <mat-card-header>
+        {{unlock.name}}
+    </mat-card-header>
+    <mat-card-content>
+        <button mat-raised-button (click)="buyUnlock(unlock)" [disabled]="!canUnlock(unlock)" class="unlock">
+            <div class="cost">
+                <app-resource-cost *ngFor="let cost of unlock.cost" [cost]="cost"></app-resource-cost>
+            </div>
+        </button>
+    </mat-card-content>
+</mat-card>

@@ -37,6 +37,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { AboutComponent } from './about/about.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { InfluenceComponent } from './influence/influence.component';
+import { UnlockCardComponent } from './unlock-card/unlock-card.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { InfluenceComponent } from './influence/influence.component';
     CreditsComponent,
     AboutComponent,
     PrivacyPolicyComponent,
-    InfluenceComponent
+    InfluenceComponent,
+    UnlockCardComponent
   ],
   imports: [
     BrowserModule,

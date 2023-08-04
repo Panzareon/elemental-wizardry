@@ -38,18 +38,4 @@ export class UnlocksComponent {
   public get completedUnlocks() : Unlocks[] {
     return this.data.wizard.unlocks.filter(x => !x.repeatable);
   }
-
-  public buyUnlock(unlock: Unlocks) {
-    if (unlock.buy(this.data.wizard)) {
-      this.data.wizard.addUnlock(unlock);
-    }
-  }
-
-  public repeatUnlock(unlock: Unlocks) {
-    unlock.buy(this.data.wizard);
-  }
-
-  public canUnlock(unlock: Unlocks) : boolean {
-    return unlock.canUnlock(this.data.wizard);
-  }
 }
