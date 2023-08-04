@@ -1,1 +1,9 @@
-<p>influence works!</p>
+<mat-expansion-panel *ngFor="let influence of influences" expanded="true">
+    <mat-expansion-panel-header>
+        <mat-panel-title>{{influence.name}} ({{influence.amount}} Influence)</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div *ngFor="let donation of influence.donations" class="donation">
+        <span>{{getName(donation.resource)}}</span>
+        <button mat-stroked-button (click)="donate(donation)" [disabled]="!hasResource(donation)">Donate ({{donation.reward}} Influence)</button>
+    </div>
+</mat-expansion-panel>

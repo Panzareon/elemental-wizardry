@@ -1,4 +1,5 @@
 import { IActive } from "./active";
+import { InfluenceType } from "./influence";
 import { KnowledgeType } from "./knowledge";
 import { ResourceType } from "./resource";
 import { SkillType } from "./skill";
@@ -35,6 +36,7 @@ enum ExploreResultType {
     Store = 1,
     ChronomancyMentor = 2,
     Forest = 3,
+    ArtisanGuild = 4,
 }
 
 class ExploreResult {
@@ -72,6 +74,10 @@ class ExploreResult {
 
     public get name() : string {
         switch (this.type) {
+            case ExploreResultType.ChronomancyMentor:
+                return "Chronomancy Mentor";
+            case ExploreResultType.ArtisanGuild:
+                return "Artisan Guild";
             default:
                 return ExploreResultType[this.type];
         }
@@ -123,6 +129,8 @@ class ExploreResult {
                 return 12;
             case ExploreResultType.Forest:
                 return 10;
+            case ExploreResultType.ArtisanGuild:
+                return 15;
         }
     }
 
@@ -161,6 +169,8 @@ class ExploreResult {
                 wizard.findLocation(LocationType.Forest);
                 wizard.learnSkill(SkillType.ChopWood)
                 break;
+            case ExploreResultType.ArtisanGuild:
+                wizard.addInfluence(InfluenceType.ArtisanGuild);
         }
     }
     
@@ -215,6 +225,7 @@ class ExploreLocation implements IActive {
                 result.push(new ExploreResult(ExploreResultType.Store, this.location.type));
                 result.push(new ExploreResult(ExploreResultType.ChronomancyMentor, this.location.type));
                 result.push(new ExploreResult(ExploreResultType.Forest, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.ArtisanGuild, this.location.type));
                 break;
             case LocationType.Forest:
                 result.push(new ExploreResult(ExploreResultType.Random, this.location.type));

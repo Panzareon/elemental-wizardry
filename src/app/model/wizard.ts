@@ -7,7 +7,7 @@ import { Skill, SkillType } from "./skill";
 import { Spell, SpellSource, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
 import { Buff } from "./buff";
-import { Influence } from "./influence";
+import { Influence, InfluenceType } from "./influence";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -267,6 +267,14 @@ class Wizard {
       knowledge = new Knowledge(type);
       this.notifyEvent(EventInfo.unlocked("Learned " + knowledge.name));
       this.knowledge.push(knowledge);
+    }
+  }
+  addInfluence(influenceType: InfluenceType) {
+    if (!this.influence.some(x => x.type == influenceType))
+    {
+      let influence = new Influence(influenceType);
+      this.notifyEvent(EventInfo.unlocked("Encountered " + influence.name))
+      this.influence.push(influence);
     }
   }
   private recalculateStats() {

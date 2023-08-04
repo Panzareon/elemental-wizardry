@@ -1,10 +1,10 @@
 import { ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
-export { Influence, InfluenceType }
+export { Influence, InfluenceType,InfluenceDonation }
 
 enum InfluenceType {
-    ArtisanGuid = 0,
+    ArtisanGuild = 0,
 }
 
 class Influence {
@@ -29,6 +29,14 @@ class Influence {
     public get donations() : InfluenceDonation[] {
         return this._donations;
     }
+    public get name(): string {
+        switch (this.type) {
+            case InfluenceType.ArtisanGuild:
+                return "Artisan Guild";
+            default:
+                return InfluenceType[this.type];
+        }
+    }
 
     public load(amount: number) {
         this._amount = amount;
@@ -44,7 +52,7 @@ class Influence {
     
     getDonations(): InfluenceDonation[] {
         switch (this._type) {
-            case InfluenceType.ArtisanGuid:
+            case InfluenceType.ArtisanGuild:
                 return [new InfluenceDonation(this, ResourceType.Wood)];
         }
     }
@@ -60,12 +68,20 @@ class InfluenceDonation {
         this._softCap = this.getSoftCap();
     }
 
-    public donate(wizard: Wizard, resource: ResourceAmount) {
-        if (!wizard.spendResource(resource.resourceType, resource.amount)) {
+    public get resource() : ResourceType {
+        return this._resource;
+    }
+
+    public get reward() : number {
+        return this.getAddValue();
+    }
+
+    public donate(wizard: Wizard, amount: number) {
+        if (!wizard.spendResource(this._resource, amount)) {
             return;
         }
 
-        let reward = this._addValue * resource.amount;
+        let reward = this._addValue * amount;
         if (this._influence.amount + reward <= this._softCap) {
             this._influence.amount += reward;
             return;
@@ -80,7 +96,7 @@ class InfluenceDonation {
     }
     private getAddValue(): number {
         switch (this._influence.type) {
-            case InfluenceType.ArtisanGuid:
+            case InfluenceType.ArtisanGuild:
                 switch (this._resource) {
                     case ResourceType.Wood:
                         return 1;
@@ -91,7 +107,7 @@ class InfluenceDonation {
     }
     private getSoftCap(): number {
         switch (this._influence.type) {
-            case InfluenceType.ArtisanGuid:
+            case InfluenceType.ArtisanGuild:
                 switch (this._resource) {
                     case ResourceType.Wood:
                         return 100;
