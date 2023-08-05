@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Unlocks } from '../model/unlocks';
 import { DataService } from '../data.service';
+import { Costs } from '../model/costs';
 
 @Component({
   selector: 'app-unlock-card',
@@ -13,23 +14,23 @@ export class UnlockCardComponent {
   
   @Input() unlock!: Unlocks;
 
-  public canUnlock(unlock: Unlocks) : boolean {
-    return unlock.canUnlock(this._data.wizard);
+  public canUnlock(unlock: Unlocks, costs: Costs) : boolean {
+    return unlock.canUnlock(this._data.wizard) && costs.canSpend(this._data.wizard);
   }
 
 
-  public buyUnlock(unlock: Unlocks) {
+  public buyUnlock(unlock: Unlocks, costs: Costs) {
     if (this._data.wizard.unlocks.includes(unlock)) {
-      this.repeatUnlock(unlock);
+      this.repeatUnlock(unlock, costs);
       return;
     }
 
-    if (unlock.buy(this._data.wizard)) {
+    if (unlock.buy(this._data.wizard, costs)) {
       this._data.wizard.addUnlock(unlock);
     }
   }
 
-  public repeatUnlock(unlock: Unlocks) {
-    unlock.buy(this._data.wizard);
+  public repeatUnlock(unlock: Unlocks, costs: Costs) {
+    unlock.buy(this._data.wizard, costs);
   }
 }

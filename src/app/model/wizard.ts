@@ -7,7 +7,7 @@ import { Skill, SkillType } from "./skill";
 import { Spell, SpellSource, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
 import { Buff } from "./buff";
-import { Influence, InfluenceType } from "./influence";
+import { Influence, InfluenceAmount, InfluenceType } from "./influence";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -144,8 +144,11 @@ class Wizard {
       return false;
     }
 
-    resources.forEach(x => this.addResource(x.resourceType, -x.amount));
+    this.removeResources(resources);
     return true;
+  }
+  removeResources(resources: ResourceAmount[]) {
+    resources.forEach(x => this.addResource(x.resourceType, -x.amount));
   }
   hasResource(resourceType: ResourceType, amount: number) {
     const resource = this.resources.find(x => x.type == resourceType);
@@ -190,6 +193,37 @@ class Wizard {
     }
   }
 
+  getInfluence(influenceType: InfluenceType): Influence | undefined{
+    return this.influence.find(x => x.type == influenceType);
+  }
+  hasInfluences(influences: InfluenceAmount[]) {
+    return influences.every(x => this.hasInfluence(x.type, Math.max(x.cost, x.requiredAmount)));
+  }
+  hasInfluence(type: InfluenceType, amount: number): boolean {
+    let influence = this.getInfluence(type);
+    if (influence !== undefined) {
+      return influence.amount >= amount; 
+    }
+
+    return false;
+  }
+  spendInfluences(influences: InfluenceAmount[]) : boolean {
+    if (!this.hasInfluences(influences)) {
+      return false;
+    }
+
+    this.removeInfluences(influences);
+    return true;
+  }
+  removeInfluences(influences: InfluenceAmount[]) {
+    for (let influenceAmount of influences) {
+      let influence = this.getInfluence(influenceAmount.type);
+      if (influence === undefined) {
+        influence = this.addInfluence(influenceAmount.type);
+      }
+      influence.amount -= influenceAmount.cost;
+    }
+  }
   addBuff(buff: Buff) {
     this._buffs.push(buff);
   }
@@ -269,13 +303,16 @@ class Wizard {
       this.knowledge.push(knowledge);
     }
   }
-  addInfluence(influenceType: InfluenceType) {
-    if (!this.influence.some(x => x.type == influenceType))
+  addInfluence(influenceType: InfluenceType) : Influence {
+    let influence = this.getInfluence(influenceType);
+    if (influence === undefined)
     {
-      let influence = new Influence(influenceType);
+      influence = new Influence(influenceType);
       this.notifyEvent(EventInfo.unlocked("Encountered " + influence.name))
       this.influence.push(influence);
     }
+
+    return influence;
   }
   private recalculateStats() {
     this.resources.forEach(x => x.calculate(this));

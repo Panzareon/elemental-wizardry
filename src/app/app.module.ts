@@ -38,6 +38,7 @@ import { AboutComponent } from './about/about.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { InfluenceComponent } from './influence/influence.component';
 import { UnlockCardComponent } from './unlock-card/unlock-card.component';
+import { InfluenceCostComponent } from './influence-cost/influence-cost.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { UnlockCardComponent } from './unlock-card/unlock-card.component';
     AboutComponent,
     PrivacyPolicyComponent,
     InfluenceComponent,
-    UnlockCardComponent
+    UnlockCardComponent,
+    InfluenceCostComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,7 @@
 import { ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
-export { Influence, InfluenceType,InfluenceDonation }
+export { Influence, InfluenceType, InfluenceDonation, InfluenceAmount }
 
 enum InfluenceType {
     ArtisanGuild = 0,
@@ -116,4 +116,7 @@ class InfluenceDonation {
                 }
         }
     }
+}
+class InfluenceAmount {
+    constructor(public type: InfluenceType, public cost: number, public requiredAmount: number) {}
 }

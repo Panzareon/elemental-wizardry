@@ -1,3 +1,5 @@
+import { Costs } from "./costs";
+import { InfluenceType } from "./influence";
 import { KnowledgeType } from "./knowledge";
 import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
@@ -16,7 +18,7 @@ enum UnlockType {
 class Unlocks {
     private _type: UnlockType;
     private _numberRepeated: number;
-    private _cost: ResourceAmount[]; 
+    private _cost: Costs[]; 
     public constructor(type: UnlockType) {
         this._type = type;
         this._numberRepeated = 0;
@@ -42,7 +44,7 @@ class Unlocks {
                 return false;
         }
     }
-    public get cost() : ResourceAmount[] {
+    public get cost() : Costs[] {
         return this._cost;
     }
     public get description() : string {
@@ -62,10 +64,6 @@ class Unlocks {
         }
     }
     public canUnlock(wizard: Wizard) : boolean {
-        if (!wizard.hasResources(this._cost)) {
-            return false;
-        }
-
         switch (this.type) {
             case UnlockType.ChronomancyProduction:
                 return (wizard.getResource(ResourceType.Mana)?.baseGenerationPerSecond ?? 0) > Resource.BaseManaGeneration * 1.5;
@@ -117,8 +115,11 @@ class Unlocks {
         }
         return 1;
     }
-    buy(wizard: Wizard): boolean {
-        if (wizard.spendResources(this._cost)) {
+    buy(wizard: Wizard, costs: Costs): boolean {
+        if (!this._cost.includes(costs)) {
+            throw new Error("Not matching costs given");
+        }
+        if (costs.spend(wizard)) {
             this._numberRepeated++;
             this._cost = this.getCost();
             wizard.unlocked(this);
@@ -131,24 +132,25 @@ class Unlocks {
         this._numberRepeated = numberRepeated;
         this._cost = this.getCost();
     }
-    private getCost(): ResourceAmount[] {
+    private getCost(): Costs[] {
         const targetUnlockNumber = this.numberRepeated + 1;
         switch (this.type) {
             case UnlockType.ManaProduction:
-                return [new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, targetUnlockNumber * 10)]
+                return [Costs.fromResources([new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, targetUnlockNumber * 10)])];
             case UnlockType.Purse:
-                return [new ResourceAmount(ResourceType.Gold, targetUnlockNumber * 50)];
+                return [Costs.fromResource(ResourceType.Gold, targetUnlockNumber * 50)];
             case UnlockType.ChronomancyMentor:
-                return [new ResourceAmount(ResourceType.ManaGem, 1)];
+                return [Costs.fromResource(ResourceType.ManaGem, 1)];
             case UnlockType.Chronomancy:
-                return [new ResourceAmount(ResourceType.Mana, 50)];
+                return [Costs.fromResource(ResourceType.Mana, 50)];
             case UnlockType.ChronomancyProduction:
                 if (targetUnlockNumber == 1) {
-                    return [new ResourceAmount(ResourceType.Mana, 40)];
+                    return [Costs.fromResource(ResourceType.Mana, 40)];
                 }
-                return [new ResourceAmount(ResourceType.Chrono, targetUnlockNumber * 10)];
+                return [Costs.fromResource(ResourceType.Chrono, targetUnlockNumber * 10)];
             case UnlockType.WoodStorage:
-                return [new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 5), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.2, this.numberRepeated)))];
+                return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 5), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.2, this.numberRepeated)))]),
+                        Costs.fromInfluence(InfluenceType.ArtisanGuild, targetUnlockNumber * 20, targetUnlockNumber * 5)];
         }
     }
 }
