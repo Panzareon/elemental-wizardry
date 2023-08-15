@@ -9,6 +9,6 @@
 <ng-container *ngIf="completedUnlocks.length > 0">
     Unlocked:
     <div *ngFor="let unlock of completedUnlocks">
-        {{unlock.name}}
+        {{unlock.name}} {{unlock.numberRepeated}}/{{unlock.maxRepeats}}
     </div>
 </ng-container>
