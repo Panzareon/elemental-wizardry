@@ -33,9 +33,9 @@ export class UnlocksComponent {
     return this._availableUnlocks;
   }
   public get repeatableUnlocks() : Unlocks[] {
-    return this.data.wizard.unlocks.filter(x => x.repeatable);
+    return this.data.wizard.unlocks.filter(x => x.canRepeat);
   }
   public get completedUnlocks() : Unlocks[] {
-    return this.data.wizard.unlocks.filter(x => !x.repeatable);
+    return this.data.wizard.unlocks.filter(x => !x.canRepeat);
   }
 }

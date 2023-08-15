@@ -34,14 +34,18 @@ class Unlocks {
     public get name(): string {
         return UnlockType[this.type];
     }
-    public get repeatable(): boolean {
+    public get canRepeat(): boolean {
+        return this.maxRepeats > this.numberRepeated;
+    }
+    public get maxRepeats(): number {
         switch (this.type) {
+            case UnlockType.WoodStorage:
             case UnlockType.ManaProduction:
             case UnlockType.Purse:
             case UnlockType.ChronomancyProduction:
-                return true;
+                return 5;
             default:
-                return false;
+                return 1;
         }
     }
     public get cost() : Costs[] {
