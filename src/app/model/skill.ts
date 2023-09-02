@@ -25,6 +25,7 @@ class Skill implements IActive {
     private _durationIncreasedOutput: number;
     private _availableDurationSpells: SpellType[];
     private _activeDurationSpells: Spell[];
+    private _repeat: boolean;
     constructor(type: SkillType) {
         this._type = type;
         this._actionType = this.toActiontype(type);
@@ -34,6 +35,7 @@ class Skill implements IActive {
         this._durationIncreasedOutput = 0;
         this._availableDurationSpells = this.getAvailableDurationSpells();
         this._activeDurationSpells = [];
+        this._repeat = true;
     }
 
     public get type() : SkillType {
@@ -87,6 +89,15 @@ class Skill implements IActive {
                 return "You can now " + this.name;
         }
     }
+
+    public get repeat() : boolean {
+        return this._repeat;
+    }
+
+    public set repeat(value: boolean) {
+        this._repeat = value;
+    }
+
     public earnExp(wizard: Wizard, amount: number) {
         this._exp += amount;
     }
@@ -131,7 +142,9 @@ class Skill implements IActive {
                 this.getDurationReward(wizard);
                 this._durationTimeSpent -= this.duration;
                 this._durationIncreasedOutput = 0;
-                return false;
+                if (!this.repeat) {
+                    return false;
+                }
             }
         }
 

@@ -27,6 +27,14 @@ export class DurationActionComponent {
     return this.skill.name;
   }
 
+  public get repeat() : boolean {
+    return this.skill.repeat;
+  }
+
+  public set repeat(value: boolean) {
+    this.skill.repeat = value;
+  }
+
   public get availableSpells() : Spell[] {
     return this.data.wizard.spells.filter(x => this.skill.doesImproveDuration(x));
   }
