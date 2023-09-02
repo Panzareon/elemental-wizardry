@@ -1,5 +1,5 @@
 import { Costs } from "./costs";
-import { InfluenceType } from "./influence";
+import { InfluenceAmount, InfluenceType } from "./influence";
 import { KnowledgeType } from "./knowledge";
 import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
@@ -13,6 +13,7 @@ enum UnlockType {
     Chronomancy = 3,
     ChronomancyProduction = 4,
     WoodStorage = 5,
+    CraftingMentor = 6,
 }
 
 class Unlocks {
@@ -65,6 +66,8 @@ class Unlocks {
                 return "Converts 0.1 Mana generation into 0.1 Chrono generation per second";
             case UnlockType.WoodStorage:
                 return "Increase wood storage by 10";
+            case UnlockType.CraftingMentor:
+                return "Get a Mentor to help study crafting";
         }
     }
     public canUnlock(wizard: Wizard) : boolean {
@@ -155,6 +158,8 @@ class Unlocks {
             case UnlockType.WoodStorage:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 5), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.2, this.numberRepeated)))]),
                         Costs.fromInfluence(InfluenceType.ArtisanGuild, targetUnlockNumber * 20, targetUnlockNumber * 5)];
+            case UnlockType.CraftingMentor:
+                return [new Costs([new ResourceAmount(ResourceType.Gold, 100)], [new InfluenceAmount(InfluenceType.ArtisanGuild, 10, 100)])]
         }
     }
 }

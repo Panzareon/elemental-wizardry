@@ -221,7 +221,7 @@ class Wizard {
       if (influence === undefined) {
         influence = this.addInfluence(influenceAmount.type);
       }
-      influence.amount -= influenceAmount.cost;
+      influence.addAmount(-influenceAmount.cost, this);
     }
   }
   addBuff(buff: Buff) {

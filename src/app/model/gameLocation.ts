@@ -179,7 +179,7 @@ class ExploreResult {
             case ExploreResultType.ChronomancyMentor:
                 return [(wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge) ?? 0) >= 4, "Need Magic Knowledge level 4"];
             case ExploreResultType.Forest:
-                return [wizard.unlocks.some(x => x.type === UnlockType.ChronomancyMentor), "Need a Mentor"];
+                return [wizard.unlocks.some(x => x.type === UnlockType.ChronomancyMentor || x.type == UnlockType.CraftingMentor), "Need a Mentor"];
             default:
                 return [true, ""];
         }

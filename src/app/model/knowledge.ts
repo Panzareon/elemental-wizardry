@@ -10,6 +10,7 @@ export { Knowledge, KnowledgeType, IKnowledgeAction }
 enum KnowledgeType {
     MagicKnowledge = 0,
     ChronomancyKnowledge = 1,
+    CraftingKnowledge = 2,
 }
 
 class Knowledge {
@@ -146,6 +147,8 @@ class KnowledgeTraining implements IKnowledgeAction {
                 return ResourceType.Mana;
             case KnowledgeType.ChronomancyKnowledge:
                 return ResourceType.Chrono;
+            case KnowledgeType.CraftingKnowledge:
+                return ResourceType.Mana;
         }
     }
 }
