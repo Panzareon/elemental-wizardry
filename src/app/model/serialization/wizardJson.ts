@@ -1,4 +1,5 @@
 import { ExploreResultType, LocationType } from "../gameLocation";
+import { GardenPlotPlant, GrowState } from "../garden-plot";
 import { InfluenceType } from "../influence";
 import { KnowledgeType } from "../knowledge";
 import { ResourceType } from "../resource";
@@ -6,7 +7,7 @@ import { SkillType } from "../skill";
 import { SpellType } from "../spell";
 import { UnlockType } from "../unlocks";
 
-export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson }
+export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson, GardenPlotJson }
 
 interface WizardJson {
     resources: ResourceJson[];
@@ -18,6 +19,7 @@ interface WizardJson {
     buffs: BuffJson[];
     availableUnlocks: UnlockType[];
     influence: InfluenceJson[];
+    gardenPlots: GardenPlotJson[];
 }
 interface ResourceJson {
     type: ResourceType;
@@ -60,4 +62,11 @@ interface LocationJson {
 interface InfluenceJson {
     type: InfluenceType;
     amount: number;
+}
+interface GardenPlotJson {
+    type: GardenPlotPlant;
+    state: GrowState;
+    remainingPlantTime: number;
+    remainingGrowTime: number;
+    remainingHarvestTime: number;
 }

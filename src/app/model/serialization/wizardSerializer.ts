@@ -1,5 +1,6 @@
 import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
+import { GardenPlot } from "../garden-plot";
 import { Influence } from "../influence";
 import { Knowledge } from "../knowledge";
 import { Resource } from "../resource";
@@ -7,7 +8,7 @@ import { Skill, SkillActionType } from "../skill";
 import { Spell } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, InfluenceJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, GardenPlotJson, InfluenceJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 
 export { WizardSerializer }
 
@@ -25,7 +26,8 @@ class WizardSerializer {
             unlocks: this.wizard.unlocks.map(x => this.serializeUnlocks(x)),
             buffs: this.wizard.buffs.map(x => this.serializeBuff(x)),
             availableUnlocks: this.wizard.availableUnlocks,
-            influence: this.wizard.influence.map(x => this.serializeInfluence(x))
+            influence: this.wizard.influence.map(x => this.serializeInfluence(x)),
+            gardenPlots: this.wizard.gardenPlots.map(x => this.serializeGardenPlot(x)),
         }
     }
     serializeResource(x: Resource): ResourceJson {
@@ -88,5 +90,14 @@ class WizardSerializer {
             type: x.type,
             amount: x.amount,
         };
+    }
+    serializeGardenPlot(x: GardenPlot): GardenPlotJson {
+        return  {
+            type: x.plantType,
+            state: x.state,
+            remainingPlantTime: x.remainingPlantTime,
+            remainingGrowTime: x.remainingGrowTime,
+            remainingHarvestTime: x.remainingHarvestTime,
+        }
     }
 }

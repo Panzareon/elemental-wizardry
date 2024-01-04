@@ -10,6 +10,7 @@ enum ResourceType {
     ChronoGem = 5,
     Chrono = 6,
     Wood = 7,
+    MandrakeRoot = 8,
 }
 enum ResourceKind {
     Mana = 1,
@@ -107,6 +108,8 @@ class Resource {
             case ResourceType.Mana:
                 return 10;
             case ResourceType.Gold:
+                return 100;
+            case ResourceType.MandrakeRoot:
                 return 100;
             default:
                 return 10;

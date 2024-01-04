@@ -1,5 +1,6 @@
 import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
+import { GardenPlot } from "../garden-plot";
 import { Influence } from "../influence";
 import { Knowledge } from "../knowledge";
 import { Resource } from "../resource";
@@ -7,7 +8,7 @@ import { Skill } from "../skill";
 import { Spell, SpellType } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, InfluenceJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, GardenPlotJson, InfluenceJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 
 export { WizardDeserializer }
 
@@ -27,6 +28,7 @@ class WizardDeserializer {
             this.json.buffs.map(x => this.deserializeBuffs(x, spells)),
             this.json.availableUnlocks,
             this.json.influence?.map(x => this.deserializeInfluence(x)) ?? [],
+            this.json.gardenPlots?.map(x => this.deserializeGardenPlot(x)) ?? [],
         );
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
@@ -76,5 +78,11 @@ class WizardDeserializer {
         let influence = new Influence(x.type);
         influence.load(x.amount);
         return influence;
+    }
+    deserializeGardenPlot(x: GardenPlotJson): GardenPlot {
+        let gardenPlot = new GardenPlot();
+        gardenPlot.plant(x.type);
+        gardenPlot.load(x.state, x.remainingPlantTime, x.remainingGrowTime, x.remainingHarvestTime);
+        return gardenPlot;
     }
 }

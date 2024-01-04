@@ -8,6 +8,7 @@ import { Spell, SpellSource, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
 import { Buff } from "./buff";
 import { Influence, InfluenceAmount, InfluenceType } from "./influence";
+import { GardenPlot } from "./garden-plot";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -21,6 +22,7 @@ class Wizard {
   private _buffs: Buff[];
   private _event: Subject<EventInfo> = new Subject();
   private _availableUnlocks: UnlockType[] = [];
+  private _gardenPlots: GardenPlot[];
   private _influence: Influence[];
 
   public constructor(resources: Resource[],
@@ -32,7 +34,8 @@ class Wizard {
     spells: Spell[],
     buffs: Buff[],
     availableUnlocks: UnlockType[],
-    influence: Influence[]) {
+    influence: Influence[],
+    gardenPlots: GardenPlot[]) {
       this._resources = resources;
       this._skills = skills;
       this._knowldege = knowledge;
@@ -43,6 +46,7 @@ class Wizard {
       this._buffs = buffs;
       this._availableUnlocks = availableUnlocks;
       this._influence = influence;
+      this._gardenPlots = gardenPlots;
       this._unlocks.forEach(x => this.getUnlockReward(x));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
@@ -58,6 +62,7 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
+      [],
       [],
       [],
       [],
@@ -98,6 +103,10 @@ class Wizard {
 
   public get availableUnlocks(): UnlockType[] {
     return this._availableUnlocks;
+  }
+
+  public get gardenPlots(): GardenPlot[] {
+    return this._gardenPlots;
   }
 
   public get active(): IActive[] {
