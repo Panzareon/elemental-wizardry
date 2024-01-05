@@ -47,7 +47,7 @@ class Wizard {
       this._availableUnlocks = availableUnlocks;
       this._influence = influence;
       this._gardenPlots = gardenPlots;
-      this._unlocks.forEach(x => this.getUnlockReward(x));
+      this._unlocks.forEach(x => this.getUnlockReward(x, true));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
       }
@@ -197,6 +197,7 @@ class Wizard {
         break;
       case ResourceType.Wood:
         this.addAvailableUnlock(UnlockType.WoodStorage);
+        this.addAvailableUnlock(UnlockType.GardenPlot);
         break;
 
     }
@@ -287,10 +288,10 @@ class Wizard {
   }
   unlocked(unlock: Unlocks) {
     this.recalculateStats();
-    this.getUnlockReward(unlock);
+    this.getUnlockReward(unlock, false);
   }
 
-  private getUnlockReward(unlock: Unlocks) {
+  private getUnlockReward(unlock: Unlocks, onLoad: boolean) {
     switch (unlock.type) {
       case UnlockType.ChronomancyMentor:
         this.addAvailableUnlock(UnlockType.Chronomancy);
@@ -300,6 +301,11 @@ class Wizard {
         break;
       case UnlockType.ChronomancyProduction:
         this.addResourceType(ResourceType.Chrono);
+        break;
+      case UnlockType.GardenPlot:
+        if (!onLoad) {
+          this._gardenPlots.push(new GardenPlot());
+        }
         break;
     }
   }

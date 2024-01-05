@@ -14,6 +14,7 @@ enum UnlockType {
     ChronomancyProduction = 4,
     WoodStorage = 5,
     CraftingMentor = 6,
+    GardenPlot = 7,
 }
 
 class Unlocks {
@@ -44,6 +45,7 @@ class Unlocks {
             case UnlockType.ManaProduction:
             case UnlockType.Purse:
             case UnlockType.ChronomancyProduction:
+            case UnlockType.GardenPlot:
                 return 5;
             default:
                 return 1;
@@ -68,6 +70,8 @@ class Unlocks {
                 return "Increase wood storage by 10";
             case UnlockType.CraftingMentor:
                 return "Get a Mentor to help study crafting";
+            case UnlockType.GardenPlot:
+                return "Build a plot for gardening";
         }
     }
     public canUnlock(wizard: Wizard) : boolean {
@@ -160,6 +164,8 @@ class Unlocks {
                         Costs.fromInfluence(InfluenceType.ArtisanGuild, targetUnlockNumber * 20, targetUnlockNumber * 5)];
             case UnlockType.CraftingMentor:
                 return [new Costs([new ResourceAmount(ResourceType.Gold, 100)], [new InfluenceAmount(InfluenceType.ArtisanGuild, 10, 100)])]
+            case UnlockType.GardenPlot:
+                return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 3), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.3, this.numberRepeated)))])];
         }
     }
 }

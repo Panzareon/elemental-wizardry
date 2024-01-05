@@ -25,6 +25,9 @@ export class AppComponent {
   public get hasUnlockedShop() {
     return this.data.wizard.location.find(x => x.offers.length > 0) !== undefined;
   }
+  public get hasGardenPlots() {
+    return this.data.wizard.gardenPlots.length > 0;
+  }
   public get hasSpell() {
     return this.data.wizard.spells.length > 0;
   }

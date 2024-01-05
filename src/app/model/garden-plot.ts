@@ -29,6 +29,9 @@ class GardenPlot implements IActive
     public get plantType() : GardenPlotPlant {
         return this._plant;
     }
+    public get plantName() : string {
+        return GardenPlotPlant[this._plant];
+    }
     public get state() : GrowState {
         return this._state;
     }
