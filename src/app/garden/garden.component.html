@@ -1,3 +1,14 @@
-<div *ngFor="let plot of plots">
-    {{plot.plantName}}
-</div>
+<mat-card class="progress-card" *ngFor="let plot of plots">
+    <div class="progress" [style.width.%]="getProgress(plot)*100"></div>
+    <mat-card-header>
+        {{plot.plantName}}
+    </mat-card-header>
+    <mat-card-content>
+        <ng-container *ngIf="showPlanting(plot)">
+            <mat-button-toggle checked="{{isActive(plot)}}" (change)="plant(plot)">Plant</mat-button-toggle>
+        </ng-container>
+        <ng-container *ngIf="showHarvest(plot)">
+            <mat-button-toggle checked="{{isActive(plot)}}" (change)="harvest(plot)">Harvest</mat-button-toggle>
+        </ng-container>
+    </mat-card-content>
+</mat-card>

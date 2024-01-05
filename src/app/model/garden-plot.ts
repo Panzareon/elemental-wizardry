@@ -23,7 +23,7 @@ class GardenPlot implements IActive
     private _remainingGrowTime : number = 0;
     private _remainingPlantTime : number = 0;
     private _remainingHarvestTime : number = 0;
-    private _state : GrowState = GrowState.Planting;
+    private _state : GrowState = GrowState.Nothing;
     constructor() {
     }
     public get plantType() : GardenPlotPlant {
@@ -44,6 +44,36 @@ class GardenPlot implements IActive
     public get remainingHarvestTime() : number {
         return this._remainingHarvestTime;
     }
+
+    public get plantTime(): number {
+        switch (this._plant) {
+            case GardenPlotPlant.Mandrake:
+                return 10;
+            default:
+                console.error("Cannot plant " + this._plant);
+                return 0;
+        }
+    }
+
+    public get growTime(): number {
+        switch (this._plant) {
+            case GardenPlotPlant.Mandrake:
+                return 2 * 60;
+            default:
+                console.error("Cannot grow " + this._plant);
+                return 0;
+        }
+    }
+
+    public get harvestTime(): number {
+        switch (this._plant) {
+            case GardenPlotPlant.Mandrake:
+                return 15;
+            default:
+                console.error("Cannot harvest " + this._plant);
+                return 0;
+        }
+    }
     public plant(plant: GardenPlotPlant) : void
     {
         if (this._plant != GardenPlotPlant.Empty) {
@@ -52,7 +82,8 @@ class GardenPlot implements IActive
         }
 
         this._plant = plant;
-        this._remainingPlantTime = this.getPlantTime();
+        this._remainingPlantTime = this.plantTime;
+        this._state = GrowState.Planting;
     }
 
     public activate(wizard: Wizard, deltaTime: number): boolean {
@@ -60,7 +91,7 @@ class GardenPlot implements IActive
             case GrowState.Planting:
                 this._remainingPlantTime -= deltaTime;
                 if (this._remainingPlantTime <= 0) {
-                    this._remainingGrowTime = this.getGrowTime();
+                    this._remainingGrowTime = this.growTime;
                     this._state = GrowState.Growing;
                     return false;
                 }
@@ -84,7 +115,7 @@ class GardenPlot implements IActive
 
         this._remainingGrowTime -= deltaTime;
         if (this._remainingGrowTime <= 0) {
-            this._remainingHarvestTime = this.getHarvestTime();
+            this._remainingHarvestTime = this.harvestTime;
             this._state = GrowState.Harvesting;
         }
     }
@@ -96,7 +127,11 @@ class GardenPlot implements IActive
                 break;
             default:
                 console.error("Cannot get harvested item of " + this._plant);
+                return;
         }
+
+        this._state = GrowState.Nothing;
+        this._plant = GardenPlotPlant.Empty;
     }
 
     public load(state: GrowState, remainingPlantTime: number, remainingGrowTime: number, remainingHarvestTime: number) {
@@ -104,35 +139,5 @@ class GardenPlot implements IActive
         this._remainingPlantTime = remainingPlantTime;
         this._remainingGrowTime = remainingGrowTime;
         this._remainingHarvestTime = remainingHarvestTime;
-    }
-
-    private getPlantTime(): number {
-        switch (this._plant) {
-            case GardenPlotPlant.Mandrake:
-                return 10;
-            default:
-                console.error("Cannot plant " + this._plant);
-                return 0;
-        }
-    }
-
-    private getGrowTime(): number {
-        switch (this._plant) {
-            case GardenPlotPlant.Mandrake:
-                return 2 * 60;
-            default:
-                console.error("Cannot grow " + this._plant);
-                return 0;
-        }
-    }
-
-    private getHarvestTime(): number {
-        switch (this._plant) {
-            case GardenPlotPlant.Mandrake:
-                return 15;
-            default:
-                console.error("Cannot harvest " + this._plant);
-                return 0;
-        }
     }
 }

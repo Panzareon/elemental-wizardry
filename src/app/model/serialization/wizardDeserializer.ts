@@ -1,6 +1,6 @@
 import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
-import { GardenPlot } from "../garden-plot";
+import { GardenPlot, GardenPlotPlant } from "../garden-plot";
 import { Influence } from "../influence";
 import { Knowledge } from "../knowledge";
 import { Resource } from "../resource";
@@ -81,7 +81,9 @@ class WizardDeserializer {
     }
     deserializeGardenPlot(x: GardenPlotJson): GardenPlot {
         let gardenPlot = new GardenPlot();
-        gardenPlot.plant(x.type);
+        if (x.type !== GardenPlotPlant.Empty) {
+            gardenPlot.plant(x.type);
+        }
         gardenPlot.load(x.state, x.remainingPlantTime, x.remainingGrowTime, x.remainingHarvestTime);
         return gardenPlot;
     }

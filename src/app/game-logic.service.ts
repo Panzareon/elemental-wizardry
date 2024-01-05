@@ -77,6 +77,11 @@ export class GameLogicService {
         i--;
       }
     }
+    for (let i = 0; i < this.data.wizard.gardenPlots.length; i++)
+    {
+      var plot = this.data.wizard.gardenPlots[i];
+      plot.update(this.data.wizard, deltaTime);
+    }
 
     this.saveService.tick(deltaTime);
   }
