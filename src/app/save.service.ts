@@ -8,7 +8,7 @@ import { WizardDeserializer } from './model/serialization/wizardDeserializer';
 })
 export class SaveService {
   private saveItemName = "save";
-  private saveIntervalInSeconds = 60;
+  private saveIntervalInSeconds = 10;
   private toNextSave: number = this.saveIntervalInSeconds;
   constructor(private data: DataService) { }
 
