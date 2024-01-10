@@ -1,3 +1,4 @@
+import { LocationType } from "./gameLocation";
 import { ResourceAmount, ResourceType } from "./resource";
 import { UnlockType } from "./unlocks";
 import { Wizard } from "./wizard";
@@ -6,6 +7,7 @@ export { Influence, InfluenceType, InfluenceDonation, InfluenceAmount }
 
 enum InfluenceType {
     ArtisanGuild = 0,
+    AlchemistGuild = 1,
 }
 
 class Influence {
@@ -37,6 +39,8 @@ class Influence {
         switch (this.type) {
             case InfluenceType.ArtisanGuild:
                 return "Artisan Guild";
+            case InfluenceType.AlchemistGuild:
+                return "Alchemist Guild";
             default:
                 return InfluenceType[this.type];
         }
@@ -58,12 +62,16 @@ class Influence {
         switch (this._type) {
             case InfluenceType.ArtisanGuild:
                 return [new InfluenceDonation(this, ResourceType.Wood)];
+            case InfluenceType.AlchemistGuild:
+                return [new InfluenceDonation(this, ResourceType.MandrakeRoot)];
         }
     }
     private createUnlocks() : InfluenceUnlock[] {
         switch (this.type) {
             case InfluenceType.ArtisanGuild:
                 return [new InfluenceUnlock(50, InfluenceUnlockType.CraftingMentor)];
+            case InfluenceType.AlchemistGuild:
+                return [new InfluenceUnlock(10, InfluenceUnlockType.AlchemistStore)];
         }
     }
     private checkUnlocks(wizard: Wizard) {
@@ -121,6 +129,13 @@ class InfluenceDonation {
                     default:
                         return 0;
                 }
+            case InfluenceType.AlchemistGuild:
+                switch (this._resource) {
+                    case ResourceType.MandrakeRoot:
+                        return 1;
+                    default:
+                        return 0;
+                }
         }
     }
     private getSoftCap(): number {
@@ -128,6 +143,13 @@ class InfluenceDonation {
             case InfluenceType.ArtisanGuild:
                 switch (this._resource) {
                     case ResourceType.Wood:
+                        return 100;
+                    default:
+                        return 0;
+                }
+            case InfluenceType.AlchemistGuild:
+                switch (this._resource) {
+                    case ResourceType.MandrakeRoot:
                         return 100;
                     default:
                         return 0;
@@ -140,6 +162,7 @@ class InfluenceAmount {
 }
 enum InfluenceUnlockType {
     CraftingMentor,
+    AlchemistStore,
 }
 class InfluenceUnlock {
     constructor(public amount: number, public type: InfluenceUnlockType) {}
@@ -148,6 +171,10 @@ class InfluenceUnlock {
         switch (this.type) {
             case InfluenceUnlockType.CraftingMentor:
                 wizard.addAvailableUnlock(UnlockType.CraftingMentor);
+                break;
+            case InfluenceUnlockType.AlchemistStore:
+                wizard.findLocation(LocationType.AlchemistStore);
+                break;
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../data.service';
-import { ResourceType } from '../model/resource';
+import { Resource, ResourceType } from '../model/resource';
 import { Offer } from '../model/gameLocation';
 
 @Component({
@@ -17,7 +17,7 @@ export class StoreComponent {
   }
 
   public getName(resourceType: ResourceType) {
-    return ResourceType[resourceType];
+    return new Resource(resourceType).name;
   }
 
   public buy(offer: Offer){

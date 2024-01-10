@@ -12,6 +12,7 @@ enum LocationType {
     Store = 0,
     Village = 1,
     Forest = 2,
+    AlchemistStore = 3,
 }
 
 class Offer {
@@ -37,6 +38,7 @@ enum ExploreResultType {
     ChronomancyMentor = 2,
     Forest = 3,
     ArtisanGuild = 4,
+    AlchemistGuild = 5,
 }
 
 class ExploreResult {
@@ -78,6 +80,8 @@ class ExploreResult {
                 return "Chronomancy Mentor";
             case ExploreResultType.ArtisanGuild:
                 return "Artisan Guild";
+            case ExploreResultType.AlchemistGuild:
+                return "Alchemist Guild";
             default:
                 return ExploreResultType[this.type];
         }
@@ -131,6 +135,8 @@ class ExploreResult {
                 return 10;
             case ExploreResultType.ArtisanGuild:
                 return 15;
+            case ExploreResultType.AlchemistGuild:
+                return 15;
         }
     }
 
@@ -171,6 +177,10 @@ class ExploreResult {
                 break;
             case ExploreResultType.ArtisanGuild:
                 wizard.addInfluence(InfluenceType.ArtisanGuild);
+                break;
+            case ExploreResultType.AlchemistGuild:
+                wizard.addInfluence(InfluenceType.AlchemistGuild);
+                break;
         }
     }
     
@@ -178,6 +188,7 @@ class ExploreResult {
         switch (this._type) {
             case ExploreResultType.ChronomancyMentor:
                 return [(wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge) ?? 0) >= 4, "Need Magic Knowledge level 4"];
+            case ExploreResultType.AlchemistGuild:
             case ExploreResultType.Forest:
                 return [wizard.unlocks.some(x => x.type === UnlockType.ChronomancyMentor || x.type == UnlockType.CraftingMentor), "Need a Mentor"];
             default:
@@ -226,6 +237,7 @@ class ExploreLocation implements IActive {
                 result.push(new ExploreResult(ExploreResultType.ChronomancyMentor, this.location.type));
                 result.push(new ExploreResult(ExploreResultType.Forest, this.location.type));
                 result.push(new ExploreResult(ExploreResultType.ArtisanGuild, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.AlchemistGuild, this.location.type));
                 break;
             case LocationType.Forest:
                 result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
@@ -248,7 +260,13 @@ class GameLocation {
     }
 
     public get name(): string {
-        return LocationType[this.type];
+        switch (this.type)
+        {
+            case LocationType.AlchemistStore:
+                return "Alchemist Store";
+            default:
+                return LocationType[this.type];
+        }
     }
 
     public get type(): LocationType {
@@ -276,7 +294,10 @@ class GameLocation {
         switch (this.type) {
             case LocationType.Store:
                 return [new Offer(ResourceType.Gold, 50, ResourceType.Gemstone)];
-            default:
+            case LocationType.AlchemistStore:
+                return [new Offer(ResourceType.Gold, 10, ResourceType.MandrakeRoot)];
+            case LocationType.Forest:
+            case LocationType.Village:
                 return [];
         }
     }

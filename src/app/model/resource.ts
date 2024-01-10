@@ -41,7 +41,17 @@ class Resource {
 
     public get name(): string
     {
-        return ResourceType[this.type];
+        switch (this.type)
+        {
+            case ResourceType.ChronoGem:
+                return "Chrono Gem";
+            case ResourceType.ManaGem:
+                return "Mana Gem";
+            case ResourceType.MandrakeRoot:
+                return "Mandrake Root";
+            default:
+                return ResourceType[this.type];
+        }
     }
     public get maxAmount(): number {
         return this._maxAmount + this._adjustMaxAmount.reduce((partial, x) => partial + x.resource.amount * x.maxAmountMultiplier, 0);
