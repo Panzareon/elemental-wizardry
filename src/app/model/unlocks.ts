@@ -15,6 +15,7 @@ enum UnlockType {
     WoodStorage = 5,
     CraftingMentor = 6,
     GardenPlot = 7,
+    SimpleWorkshop = 8,
 }
 
 class Unlocks {
@@ -34,6 +35,22 @@ class Unlocks {
         return this._numberRepeated;
     }
     public get name(): string {
+        switch (this.type) {
+            case UnlockType.ChronomancyMentor:
+                return "Chronomancy Mentor";
+            case UnlockType.ChronomancyProduction:
+                return "Chronomancy Production";
+            case UnlockType.CraftingMentor:
+                return "Crafting Mentor";
+            case UnlockType.ManaProduction:
+                return "Mana Production";
+            case UnlockType.GardenPlot:
+                return "Garden Plot";
+            case UnlockType.WoodStorage:
+                return "Wood Storage";
+            case UnlockType.SimpleWorkshop:
+                return "Simple Workshop";
+        }
         return UnlockType[this.type];
     }
     public get canRepeat(): boolean {
@@ -72,6 +89,8 @@ class Unlocks {
                 return "Get a Mentor to help study crafting";
             case UnlockType.GardenPlot:
                 return "Build a plot for gardening";
+            case UnlockType.SimpleWorkshop:
+                return "Allows crafting of simple items";
         }
     }
     public canUnlock(wizard: Wizard) : boolean {
@@ -123,6 +142,12 @@ class Unlocks {
                 }
                 
                 return 2;
+            case UnlockType.CraftingMentor:
+                if (type == KnowledgeType.CraftingKnowledge) {
+                    return 3;
+                }
+                
+                break;
         }
         return 1;
     }
@@ -163,9 +188,11 @@ class Unlocks {
                 return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 5), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.2, this.numberRepeated)))]),
                         Costs.fromInfluence(InfluenceType.ArtisanGuild, targetUnlockNumber * 20, targetUnlockNumber * 5)];
             case UnlockType.CraftingMentor:
-                return [new Costs([new ResourceAmount(ResourceType.Gold, 100)], [new InfluenceAmount(InfluenceType.ArtisanGuild, 10, 100)])]
+                return [new Costs([new ResourceAmount(ResourceType.Gold, 100)], [new InfluenceAmount(InfluenceType.ArtisanGuild, 10, 50)])]
             case UnlockType.GardenPlot:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 3), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.3, this.numberRepeated)))])];
+            case UnlockType.SimpleWorkshop:
+                return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, 50), new ResourceAmount(ResourceType.Gold, 200)])];
         }
     }
 }

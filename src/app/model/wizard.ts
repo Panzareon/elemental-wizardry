@@ -307,6 +307,9 @@ class Wizard {
           this._gardenPlots.push(new GardenPlot());
         }
         break;
+      case UnlockType.CraftingMentor:
+        this.addKnowledge(KnowledgeType.CraftingKnowledge);
+        break;
     }
   }
 

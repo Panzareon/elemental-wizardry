@@ -102,6 +102,11 @@ class Knowledge {
                     wizard.learnSpell(SpellType.ConverseWithFutureSelf);
                 }
                 break;
+            case KnowledgeType.CraftingKnowledge:
+                if (this.level >= 2) {
+                    wizard.addAvailableUnlock(UnlockType.SimpleWorkshop);
+                }
+                break;
         }
     }
     public calculate(wizard: Wizard) {
