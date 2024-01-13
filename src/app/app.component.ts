@@ -37,6 +37,9 @@ export class AppComponent {
   public get hasUnlocks() {
     return this.data.wizard.unlocks.length > 0 || this.data.wizard.availableUnlocks.length > 0;
   }
+  public get hasRecipe() {
+    return this.data.wizard.recipe.length > 0;
+  }
 
   private showPopupInfo(info: EventInfo) {
     if (info.type !== EventInfoType.GainResource && info.type !== EventInfoType.GainKnowledge) {

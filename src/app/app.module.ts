@@ -40,6 +40,8 @@ import { InfluenceComponent } from './influence/influence.component';
 import { UnlockCardComponent } from './unlock-card/unlock-card.component';
 import { InfluenceCostComponent } from './influence-cost/influence-cost.component';
 import { GardenComponent } from './garden/garden.component';
+import { CraftingComponent } from './crafting/crafting.component';
+import { CostsComponent } from './costs/costs.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,9 @@ import { GardenComponent } from './garden/garden.component';
     InfluenceComponent,
     UnlockCardComponent,
     InfluenceCostComponent,
-    GardenComponent
+    GardenComponent,
+    CraftingComponent,
+    CostsComponent
   ],
   imports: [
     BrowserModule,

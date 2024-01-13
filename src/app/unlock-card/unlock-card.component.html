@@ -4,10 +4,7 @@
     </mat-card-header>
     <mat-card-content>
         <button mat-raised-button (click)="buyUnlock(unlock, cost)" [disabled]="!canUnlock(unlock, cost)" class="unlock" *ngFor="let cost of unlock.cost">
-            <div class="cost">
-                <app-resource-cost *ngFor="let resource of cost.resources" [cost]="resource"></app-resource-cost>
-                <app-influence-cost *ngFor="let influence of cost.influence" [cost]="influence"></app-influence-cost>
-            </div>
+            <app-costs [cost]="cost"></app-costs>
         </button>
     </mat-card-content>
 </mat-card>

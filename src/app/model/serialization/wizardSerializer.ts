@@ -3,6 +3,7 @@ import { GameLocation } from "../gameLocation";
 import { GardenPlot } from "../garden-plot";
 import { Influence } from "../influence";
 import { Knowledge } from "../knowledge";
+import { Recipe } from "../recipe";
 import { Resource } from "../resource";
 import { Skill, SkillActionType } from "../skill";
 import { Spell } from "../spell";
@@ -28,6 +29,7 @@ class WizardSerializer {
             availableUnlocks: this.wizard.availableUnlocks,
             influence: this.wizard.influence.map(x => this.serializeInfluence(x)),
             gardenPlots: this.wizard.gardenPlots.map(x => this.serializeGardenPlot(x)),
+            recipe: this.wizard.recipe.map(x => this.serializeRecipe(x)),
         }
     }
     serializeResource(x: Resource): ResourceJson {
@@ -99,5 +101,8 @@ class WizardSerializer {
             remainingGrowTime: x.remainingGrowTime,
             remainingHarvestTime: x.remainingHarvestTime,
         }
+    }
+    serializeRecipe(x: Recipe) {
+        return {type: x.type};
     }
 }

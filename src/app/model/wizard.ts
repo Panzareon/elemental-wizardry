@@ -9,6 +9,7 @@ import { UnlockType, Unlocks } from "./unlocks";
 import { Buff } from "./buff";
 import { Influence, InfluenceAmount, InfluenceType } from "./influence";
 import { GardenPlot } from "./garden-plot";
+import { Recipe, RecipeType } from "./recipe";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -23,6 +24,7 @@ class Wizard {
   private _event: Subject<EventInfo> = new Subject();
   private _availableUnlocks: UnlockType[] = [];
   private _gardenPlots: GardenPlot[];
+  private _recipe: Recipe[];
   private _influence: Influence[];
 
   public constructor(resources: Resource[],
@@ -35,7 +37,8 @@ class Wizard {
     buffs: Buff[],
     availableUnlocks: UnlockType[],
     influence: Influence[],
-    gardenPlots: GardenPlot[]) {
+    gardenPlots: GardenPlot[],
+    recipe: Recipe[]) {
       this._resources = resources;
       this._skills = skills;
       this._knowldege = knowledge;
@@ -47,6 +50,7 @@ class Wizard {
       this._availableUnlocks = availableUnlocks;
       this._influence = influence;
       this._gardenPlots = gardenPlots;
+      this._recipe = recipe;
       this._unlocks.forEach(x => this.getUnlockReward(x, true));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
@@ -62,6 +66,7 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
+      [],
       [],
       [],
       [],
@@ -107,6 +112,10 @@ class Wizard {
 
   public get gardenPlots(): GardenPlot[] {
     return this._gardenPlots;
+  }
+
+  public get recipe(): Recipe[] {
+    return this._recipe;
   }
 
   public get active(): IActive[] {
@@ -310,6 +319,9 @@ class Wizard {
       case UnlockType.CraftingMentor:
         this.addKnowledge(KnowledgeType.CraftingKnowledge);
         break;
+      case UnlockType.SimpleWorkshop:
+        this.addRecipe(RecipeType.WoodenWand);
+        break;
     }
   }
 
@@ -331,6 +343,20 @@ class Wizard {
     }
 
     return influence;
+  }
+  getRecipe(recipeType: RecipeType): Recipe | undefined{
+    return this.recipe.find(x => x.type == recipeType);
+  }
+  addRecipe(recipeType: RecipeType) : Recipe {
+    let recipe = this.getRecipe(recipeType);
+    if (recipe === undefined)
+    {
+      recipe = new Recipe(recipeType);
+      this.notifyEvent(EventInfo.unlocked("Can now create " + recipe.name))
+      this.recipe.push(recipe);
+    }
+
+    return recipe;
   }
   private recalculateStats() {
     this.resources.forEach(x => x.calculate(this));

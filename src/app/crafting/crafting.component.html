@@ -1,0 +1,9 @@
+<div *ngFor="let source of sources">
+    {{getName(source)}}
+    <mat-card *ngFor="let recipe of getRecipes(source)">
+        <mat-card-header>{{recipe.name}}</mat-card-header>
+        <mat-card-content>
+            <app-costs [cost]="recipe.costs"></app-costs>
+        </mat-card-content>
+    </mat-card>
+</div>
