@@ -26,5 +26,10 @@ export class CraftingComponent {
         return "Simple Workshop";
     }
   }
-  
+  public canCraft(recipe: Recipe) : boolean {
+    return recipe.costs.canSpend(this._data.wizard);
+  }
+  public craft(recipe: Recipe) {
+    recipe.craft(this._data.wizard);
+  }
 }

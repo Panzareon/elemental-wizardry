@@ -10,6 +10,7 @@ import { Buff } from "./buff";
 import { Influence, InfluenceAmount, InfluenceType } from "./influence";
 import { GardenPlot } from "./garden-plot";
 import { Recipe, RecipeType } from "./recipe";
+import { Item } from "./item";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -26,6 +27,7 @@ class Wizard {
   private _gardenPlots: GardenPlot[];
   private _recipe: Recipe[];
   private _influence: Influence[];
+  private _items: Item[];
 
   public constructor(resources: Resource[],
     skills: Skill[],
@@ -38,7 +40,8 @@ class Wizard {
     availableUnlocks: UnlockType[],
     influence: Influence[],
     gardenPlots: GardenPlot[],
-    recipe: Recipe[]) {
+    recipe: Recipe[],
+    items: Item[]) {
       this._resources = resources;
       this._skills = skills;
       this._knowldege = knowledge;
@@ -51,6 +54,7 @@ class Wizard {
       this._influence = influence;
       this._gardenPlots = gardenPlots;
       this._recipe = recipe;
+      this._items = items;
       this._unlocks.forEach(x => this.getUnlockReward(x, true));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
@@ -66,6 +70,7 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
+      [],
       [],
       [],
       [],
@@ -118,6 +123,10 @@ class Wizard {
     return this._recipe;
   }
 
+  public get items(): Item[] {
+    return this._items;
+  }
+
   public get active(): IActive[] {
     return this._active;
   }
@@ -148,7 +157,7 @@ class Wizard {
       this._active.splice(index, 1);
     }
   }
-  spendResource(resourceType: ResourceType, amount: number): boolean {
+  public spendResource(resourceType: ResourceType, amount: number): boolean {
     const resource = this.resources.find(x => x.type == resourceType);
     if (resource !== undefined && resource.amount >= amount) {
       resource.amount -= amount;
@@ -157,7 +166,7 @@ class Wizard {
 
     return false;
   }
-  spendResources(resources: ResourceAmount[]) : boolean {
+  public spendResources(resources: ResourceAmount[]) : boolean {
     if (!this.hasResources(resources)) {
       return false;
     }
@@ -165,10 +174,10 @@ class Wizard {
     this.removeResources(resources);
     return true;
   }
-  removeResources(resources: ResourceAmount[]) {
+  public removeResources(resources: ResourceAmount[]) {
     resources.forEach(x => this.addResource(x.resourceType, -x.amount));
   }
-  hasResource(resourceType: ResourceType, amount: number) {
+  public hasResource(resourceType: ResourceType, amount: number) {
     const resource = this.resources.find(x => x.type == resourceType);
     if (resource !== undefined && resource.amount >= amount) {
       return true;
@@ -176,19 +185,19 @@ class Wizard {
 
     return false;
   }
-  hasResources(resources: ResourceAmount[]) : boolean {
+  public hasResources(resources: ResourceAmount[]) : boolean {
     return resources.every(x => this.hasResource(x.resourceType, x.amount));
   }
-  addResource(resourceType: ResourceType, amount: number) : Resource {
+  public addResource(resourceType: ResourceType, amount: number) : Resource {
     let resource = this.addResourceType(resourceType);
     resource.amount += amount;
     return resource;
   }
 
-  getResource(resourceType: ResourceType): Resource | undefined{
+  public getResource(resourceType: ResourceType): Resource | undefined{
     return this.resources.find(x => x.type == resourceType);
   }
-  addResourceType(resourceType: ResourceType) : Resource {
+  public addResourceType(resourceType: ResourceType) : Resource {
     let resource = this.getResource(resourceType);
     if (resource === undefined) {
       resource = new Resource(resourceType);
@@ -199,7 +208,7 @@ class Wizard {
 
     return resource;
   }
-  resourceAdded(resource: Resource) {
+  public resourceAdded(resource: Resource) {
     switch (resource.type) {
       case ResourceType.Gold:
         this.addAvailableUnlock(UnlockType.Purse);
@@ -212,13 +221,13 @@ class Wizard {
     }
   }
 
-  getInfluence(influenceType: InfluenceType): Influence | undefined{
+  public getInfluence(influenceType: InfluenceType): Influence | undefined{
     return this.influence.find(x => x.type == influenceType);
   }
-  hasInfluences(influences: InfluenceAmount[]) {
+  public hasInfluences(influences: InfluenceAmount[]) {
     return influences.every(x => this.hasInfluence(x.type, Math.max(x.cost, x.requiredAmount)));
   }
-  hasInfluence(type: InfluenceType, amount: number): boolean {
+  public hasInfluence(type: InfluenceType, amount: number): boolean {
     let influence = this.getInfluence(type);
     if (influence !== undefined) {
       return influence.amount >= amount; 
@@ -226,7 +235,7 @@ class Wizard {
 
     return false;
   }
-  spendInfluences(influences: InfluenceAmount[]) : boolean {
+  public spendInfluences(influences: InfluenceAmount[]) : boolean {
     if (!this.hasInfluences(influences)) {
       return false;
     }
@@ -234,7 +243,7 @@ class Wizard {
     this.removeInfluences(influences);
     return true;
   }
-  removeInfluences(influences: InfluenceAmount[]) {
+  public removeInfluences(influences: InfluenceAmount[]) {
     for (let influenceAmount of influences) {
       let influence = this.getInfluence(influenceAmount.type);
       if (influence === undefined) {
@@ -243,10 +252,10 @@ class Wizard {
       influence.addAmount(-influenceAmount.cost, this);
     }
   }
-  addBuff(buff: Buff) {
+  public addBuff(buff: Buff) {
     this._buffs.push(buff);
   }
-  learnSkill(skillType: SkillType) {
+  public learnSkill(skillType: SkillType) {
     let skill = this.skills.find(x => x.type == skillType);
     if (skill === undefined) {
       skill = new Skill(skillType);
@@ -254,7 +263,7 @@ class Wizard {
       this.skills.push(skill);
     }
   }
-  learnSpell(spellType: SpellType) {
+  public learnSpell(spellType: SpellType) {
     let spell = this.spells.find(x => x.type == spellType);
     if (spell === undefined) {
       spell = new Spell(spellType);
@@ -262,7 +271,7 @@ class Wizard {
       this.spells.push(spell);
     }
   }
-  findLocation(locationType: LocationType) {
+  public findLocation(locationType: LocationType) {
     let location = this.location.find(x => x.type == locationType);
     if (location === undefined) {
       location = new GameLocation(locationType);
@@ -270,7 +279,7 @@ class Wizard {
       this.location.push(location);
     }
   }
-  getKnowledgeLevel(type: KnowledgeType) : number|null {
+  public getKnowledgeLevel(type: KnowledgeType) : number|null {
     const knowledge = this.knowledge.find(x => x.type == type);
     if (knowledge === undefined){
       return null;
@@ -278,7 +287,7 @@ class Wizard {
 
     return knowledge.level;
   }
-  addAvailableUnlock(unlockType: UnlockType) {
+  public addAvailableUnlock(unlockType: UnlockType) {
     if (this._availableUnlocks.includes(unlockType) || this._unlocks.some(x => x.type == unlockType)) {
       return;
     }
@@ -286,7 +295,7 @@ class Wizard {
     this.notifyEvent(EventInfo.unlocked(new Unlocks(unlockType).name + " available"));
     this._availableUnlocks.push(unlockType);
   }
-  addUnlock(unlock: Unlocks) {
+  public addUnlock(unlock: Unlocks) {
     this.notifyEvent(EventInfo.unlocked("Unlocked " + unlock.name));
     this._unlocks.push(unlock);
     let availableUnlockIndex = this._availableUnlocks.indexOf(unlock.type);
@@ -295,9 +304,13 @@ class Wizard {
     }
     this.unlocked(unlock);
   }
-  unlocked(unlock: Unlocks) {
+  public unlocked(unlock: Unlocks) {
     this.recalculateStats();
     this.getUnlockReward(unlock, false);
+  }
+
+  public addItem(item: Item) {
+    this._items.push(item);
   }
 
   private getUnlockReward(unlock: Unlocks, onLoad: boolean) {

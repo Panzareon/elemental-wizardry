@@ -1,5 +1,7 @@
 import { Costs } from "./costs";
+import { Item, ItemType } from "./item";
 import { ResourceAmount, ResourceType } from "./resource";
+import { Wizard } from "./wizard";
 
 export { Recipe, RecipeType, RecipeSource }
 
@@ -37,6 +39,21 @@ class Recipe
 
     public get costs() : Costs {
         return this._costs;
+    }
+
+    public craft(wizard: Wizard) {
+        if (!this.costs.spend(wizard)) {
+            return;
+        }
+
+        this.getResult(wizard);
+    }
+    private getResult(wizard: Wizard) {
+        switch (this._type) {
+            case RecipeType.WoodenWand:
+                wizard.addItem(new Item(ItemType.WoodenWand, 1 + Math.floor(Math.random() * 3)));
+                break;
+        }
     }
 
     private getSource(): RecipeSource {

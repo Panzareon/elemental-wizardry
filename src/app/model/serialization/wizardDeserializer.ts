@@ -2,6 +2,7 @@ import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
 import { GardenPlot, GardenPlotPlant } from "../garden-plot";
 import { Influence } from "../influence";
+import { Item } from "../item";
 import { Knowledge } from "../knowledge";
 import { Recipe } from "../recipe";
 import { Resource } from "../resource";
@@ -9,7 +10,7 @@ import { Skill } from "../skill";
 import { Spell, SpellType } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, GardenPlotJson, InfluenceJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 
 export { WizardDeserializer }
 
@@ -31,6 +32,7 @@ class WizardDeserializer {
             this.json.influence?.map(x => this.deserializeInfluence(x)) ?? [],
             this.json.gardenPlots?.map(x => this.deserializeGardenPlot(x)) ?? [],
             this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [],
+            this.json.items?.map(x => this.deserializeItems(x)) ?? [],
         );
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
@@ -91,5 +93,8 @@ class WizardDeserializer {
     }
     deserializeRecipe(x: RecipeJson): Recipe {
         return new Recipe(x.type);
+    }
+    deserializeItems(x: ItemJson): Item {
+        return new Item(x.type, x.level);
     }
 }

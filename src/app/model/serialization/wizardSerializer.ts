@@ -2,6 +2,7 @@ import { Buff } from "../buff";
 import { GameLocation } from "../gameLocation";
 import { GardenPlot } from "../garden-plot";
 import { Influence } from "../influence";
+import { Item } from "../item";
 import { Knowledge } from "../knowledge";
 import { Recipe } from "../recipe";
 import { Resource } from "../resource";
@@ -9,7 +10,7 @@ import { Skill, SkillActionType } from "../skill";
 import { Spell } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, GardenPlotJson, InfluenceJson, KnowledgeJson, LocationJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 
 export { WizardSerializer }
 
@@ -30,6 +31,7 @@ class WizardSerializer {
             influence: this.wizard.influence.map(x => this.serializeInfluence(x)),
             gardenPlots: this.wizard.gardenPlots.map(x => this.serializeGardenPlot(x)),
             recipe: this.wizard.recipe.map(x => this.serializeRecipe(x)),
+            items: this.wizard.items.map(x => this.serializeItem(x))
         }
     }
     serializeResource(x: Resource): ResourceJson {
@@ -102,7 +104,13 @@ class WizardSerializer {
             remainingHarvestTime: x.remainingHarvestTime,
         }
     }
-    serializeRecipe(x: Recipe) {
+    serializeRecipe(x: Recipe): RecipeJson {
         return {type: x.type};
+    }
+    serializeItem(x: Item): ItemJson {
+        return {
+            type: x.type,
+            level: x.level,
+        }
     }
 }
