@@ -31,6 +31,9 @@ export class AppComponent {
   public get hasSpell() {
     return this.data.wizard.spells.length > 0;
   }
+  public get hasItems() {
+    return this.data.wizard.items.length > 0;
+  }
   public get hasInfluence() {
     return this.data.wizard.influence.length > 0;
   }

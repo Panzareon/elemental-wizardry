@@ -80,4 +80,5 @@ interface RecipeJson {
 interface ItemJson {
     type: ItemType;
     level: number;
+    isAttuned: boolean;
 }

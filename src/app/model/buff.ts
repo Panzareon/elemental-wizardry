@@ -1,53 +1,50 @@
 import { Resource, ResourceKind, ResourceType } from "./resource";
-import { Spell, SpellType } from "./spell";
-import { Wizard } from "./wizard";
+import { SpellSource } from "./spell";
 
-export { Buff }
+export { Buff, ResourceProductionBuff, SpellPowerBuff }
 
-class Buff {
-    constructor(private _spell: Spell, private _duration: number, private _power: number, private _costMultiplier: number) {
-    }
-
-    public get spell() : Spell {
-        return this._spell;
-    }
-
-    public get duration() : number {
-        return this._duration;
-    }
-
-    public get power() : number {
-        return this._power;
-    }
-
-    public get costMultiplier() : number {
-        return this._costMultiplier;
-    }
-
-    public activate(wizard: Wizard, deltaTime: number): boolean {
-        if (deltaTime > this._duration) {
-            deltaTime = this._duration;
-        }
-
-        this._duration -= deltaTime
-        switch (this._spell.type) {
-            case SpellType.ExpediteGeneration:
-                if (!wizard.spendResource(ResourceType.Chrono, deltaTime * 0.2 * this.costMultiplier)) {
-                    return false;
-                }
-        }
-        return this._duration > 0;
-    }
-
+abstract class Buff {
+    public abstract get description(): string;
     public adjustResourceProduction(resource: Resource, production : number) : number {
-        switch (this._spell.type) {
-            case SpellType.ExpediteGeneration:
-                if (resource.kind == ResourceKind.Mana) {
-                    return production * (1 + 0.5 * this.power);
-                }
-                break;
+        return production;
+    }
+    public adjustSpellPower(spellPower: number, spellSource: SpellSource): number {
+        return spellPower;
+    }
+}
+
+class ResourceProductionBuff extends Buff {
+    public constructor(private _power : number, private _resource : ResourceType | undefined = undefined, private _resourceKind : ResourceKind | undefined = undefined) {
+        super();
+    }
+
+    public override get description(): string {
+        throw new Error("Method not implemented.");
+    }
+
+    public override adjustResourceProduction(resource: Resource, production : number) : number {
+        if ((this._resource === undefined || this._resource === resource.type)
+             && this._resourceKind === undefined || this._resourceKind === resource.kind) {
+            return production * this._power;
         }
 
         return production;
+    }
+}
+class SpellPowerBuff extends Buff {
+    public constructor(private _power : number, private _source : SpellSource | undefined = undefined) {
+        super();
+    }
+
+    public override get description(): string {
+        throw new Error("Method not implemented.");
+    }
+
+    public override adjustSpellPower(spellPower: number, spellSource: SpellSource): number {
+        if (this._source === undefined || this._source === spellSource) {
+            return spellPower * this._power;
+        }
+
+        return spellPower;
     }
 }

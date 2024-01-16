@@ -1,4 +1,4 @@
-import { Buff } from "../buff";
+import { SpellBuff } from "../spell-buff";
 import { GameLocation } from "../gameLocation";
 import { GardenPlot, GardenPlotPlant } from "../garden-plot";
 import { Influence } from "../influence";
@@ -19,6 +19,7 @@ class WizardDeserializer {
 
     public deserialize() : Wizard {
         let spells = this.json.spells.map(x => this.deserializeSpell(x));
+        let items = this.json.items?.map(x => this.deserializeItems(x)) ?? [];
         var wizard = new Wizard(
             this.json.resources.map(x => this.deserializeResource(x)),
             this.json.skills.map(x => this.deserializeSkills(x, spells)),
@@ -32,8 +33,9 @@ class WizardDeserializer {
             this.json.influence?.map(x => this.deserializeInfluence(x)) ?? [],
             this.json.gardenPlots?.map(x => this.deserializeGardenPlot(x)) ?? [],
             this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [],
-            this.json.items?.map(x => this.deserializeItems(x)) ?? [],
+            items.map(x => x[0]),
         );
+        items.filter(x => x[1]).forEach(x => wizard.attuneItem(x[0]));
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
         return wizard;
@@ -64,7 +66,7 @@ class WizardDeserializer {
     }
     deserializeBuffs(buff: BuffJson, spells: Spell[]) {
         let spell = spells.find(x => x.type == buff.type);
-        return new Buff(spell!, buff.duration, buff.power, buff.costMultiplier);
+        return new SpellBuff(spell!, buff.duration, buff.power, buff.costMultiplier);
     }
     deserializeLocation(x: LocationJson): GameLocation {
         let location = new GameLocation(x.type);
@@ -94,7 +96,7 @@ class WizardDeserializer {
     deserializeRecipe(x: RecipeJson): Recipe {
         return new Recipe(x.type);
     }
-    deserializeItems(x: ItemJson): Item {
-        return new Item(x.type, x.level);
+    deserializeItems(x: ItemJson): [Item,boolean] {
+        return [new Item(x.type, x.level), x.isAttuned];
     }
 }

@@ -42,6 +42,8 @@ import { InfluenceCostComponent } from './influence-cost/influence-cost.componen
 import { GardenComponent } from './garden/garden.component';
 import { CraftingComponent } from './crafting/crafting.component';
 import { CostsComponent } from './costs/costs.component';
+import { EquipmentComponent } from './equipment/equipment.component';
+import { ItemComponent } from './item/item.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +74,9 @@ import { CostsComponent } from './costs/costs.component';
     InfluenceCostComponent,
     GardenComponent,
     CraftingComponent,
-    CostsComponent
+    CostsComponent,
+    EquipmentComponent,
+    ItemComponent
   ],
   imports: [
     BrowserModule,

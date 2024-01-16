@@ -1,4 +1,4 @@
-import { Buff } from "./buff";
+import { SpellBuff } from "./spell-buff";
 import { IKnowledgeAction } from "./knowledge";
 import { ResourceAmount, ResourceType } from "./resource";
 import { EventInfo, Wizard } from "./wizard";
@@ -118,7 +118,7 @@ class Spell {
                 wizard.addResource(ResourceType.ChronoGem, 1);
                 break;
             case SpellType.ExpediteGeneration:
-                wizard.addBuff(new Buff(this, 30, spellPower, this.costMultiplier));
+                wizard.addBuff(new SpellBuff(this, 30, spellPower, this.costMultiplier));
                 break;
             case SpellType.ConverseWithFutureSelf:
                 let knowledgeActions = wizard.active.map(x => (<IKnowledgeAction>x).knowledge).filter(x => x !== undefined);

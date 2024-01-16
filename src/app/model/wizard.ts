@@ -6,11 +6,12 @@ import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { Skill, SkillType } from "./skill";
 import { Spell, SpellSource, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
-import { Buff } from "./buff";
+import { SpellBuff } from "./spell-buff";
 import { Influence, InfluenceAmount, InfluenceType } from "./influence";
 import { GardenPlot } from "./garden-plot";
 import { Recipe, RecipeType } from "./recipe";
 import { Item } from "./item";
+import { Buff } from "./buff";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -21,13 +22,14 @@ class Wizard {
   private _active: IActive[];
   private _location: GameLocation[];
   private _spells: Spell[];
-  private _buffs: Buff[];
+  private _buffs: SpellBuff[];
   private _event: Subject<EventInfo> = new Subject();
   private _availableUnlocks: UnlockType[] = [];
   private _gardenPlots: GardenPlot[];
   private _recipe: Recipe[];
   private _influence: Influence[];
   private _items: Item[];
+  private _attunedItems: Item[] = [];
 
   public constructor(resources: Resource[],
     skills: Skill[],
@@ -36,7 +38,7 @@ class Wizard {
     unlocks: Unlocks[],
     location: GameLocation[],
     spells: Spell[],
-    buffs: Buff[],
+    buffs: SpellBuff[],
     availableUnlocks: UnlockType[],
     influence: Influence[],
     gardenPlots: GardenPlot[],
@@ -103,8 +105,12 @@ class Wizard {
     return this._unlocks;
   }
 
-  public get buffs(): Buff[] {
+  public get spellBuffs(): SpellBuff[] {
     return this._buffs;
+  }
+
+  public get buffs(): Buff[] {
+    return this._buffs.flatMap(x => x.buffs).concat(this._attunedItems.flatMap(x => x.buffs));
   }
 
   public get influence(): Influence[] {
@@ -126,6 +132,9 @@ class Wizard {
   public get items(): Item[] {
     return this._items;
   }
+  public get attunedItems(): Item[] {
+    return this._attunedItems;
+  }
 
   public get active(): IActive[] {
     return this._active;
@@ -140,7 +149,11 @@ class Wizard {
   }
 
   public getSpellPower(spellSource: SpellSource) {
-    return 1;
+    let spellPower = 1;
+    for (let buff of this.buffs) {
+      spellPower = buff.adjustSpellPower(spellPower, spellSource);
+    }
+    return spellPower;
   }
 
   public setActive(active: IActive) {
@@ -252,7 +265,7 @@ class Wizard {
       influence.addAmount(-influenceAmount.cost, this);
     }
   }
-  public addBuff(buff: Buff) {
+  public addBuff(buff: SpellBuff) {
     this._buffs.push(buff);
   }
   public learnSkill(skillType: SkillType) {
@@ -311,6 +324,9 @@ class Wizard {
 
   public addItem(item: Item) {
     this._items.push(item);
+  }
+  public attuneItem(item: Item) {
+    this._attunedItems.push(item);
   }
 
   private getUnlockReward(unlock: Unlocks, onLoad: boolean) {

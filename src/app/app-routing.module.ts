@@ -11,6 +11,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { InfluenceComponent } from './influence/influence.component';
 import { GardenComponent } from './garden/garden.component';
 import { CraftingComponent } from './crafting/crafting.component';
+import { EquipmentComponent } from './equipment/equipment.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/actions", pathMatch: "full" },
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: "privacy-policy", component: PrivacyPolicyComponent },
   { path: "garden", component: GardenComponent },
   { path: "crafting", component: CraftingComponent },
+  { path: "equipment", component: EquipmentComponent },
 ];
 
 @NgModule({
