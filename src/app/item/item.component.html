@@ -1,1 +1,8 @@
-{{item.name}}
+<mat-card>
+    <mat-card-header>
+        {{item.name}}
+    </mat-card-header>
+    <mat-card-content *ngFor="let buff of item.buffs">
+        {{buff.description}}
+    </mat-card-content>
+</mat-card>
