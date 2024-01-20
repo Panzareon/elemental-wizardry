@@ -8,4 +8,7 @@
     <mat-card-content *ngIf="canAttune">
         <button mat-stroked-button (click)="attune()">Attune</button>
     </mat-card-content>
+    <mat-card-content *ngIf="canEndAttunement">
+        <button mat-stroked-button (click)="remove()">Remove</button>
+    </mat-card-content>
 </mat-card>

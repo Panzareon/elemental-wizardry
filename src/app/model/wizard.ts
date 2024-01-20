@@ -328,6 +328,12 @@ class Wizard {
   public attuneItem(item: Item) {
     this._attunedItems.push(item);
   }
+  public removeAttunedItem(item: Item) {
+    let itemIndex = this._attunedItems.indexOf(item);
+    if (itemIndex >= 0) {
+      this._attunedItems.splice(itemIndex, 1);
+    }
+  }
 
   private getUnlockReward(unlock: Unlocks, onLoad: boolean) {
     switch (unlock.type) {

@@ -15,7 +15,13 @@ export class ItemComponent {
   public get canAttune() : boolean {
     return !this._data.wizard.attunedItems.includes(this.item);
   }
+  public get canEndAttunement() : boolean {
+    return this._data.wizard.attunedItems.includes(this.item);
+  }
   public attune() {
     this._data.wizard.attuneItem(this.item);
+  }  
+  public remove() {
+    this._data.wizard.removeAttunedItem(this.item);
   }  
 }
