@@ -112,10 +112,10 @@ class Spell {
         let spellPower = this.getSpellPower(wizard);
         switch (this.type) {
             case SpellType.InfuseGem:
-                wizard.addResource(ResourceType.ManaGem, 1);
+                wizard.addResource(ResourceType.ManaGem, (1 + (spellPower - 1)/ 2));
                 break;
             case SpellType.InfuseChronoGem:
-                wizard.addResource(ResourceType.ChronoGem, 1);
+                wizard.addResource(ResourceType.ChronoGem, (1 + (spellPower - 1)/ 2));
                 break;
             case SpellType.ExpediteGeneration:
                 wizard.addBuff(new SpellBuff(this, 30, spellPower, this.costMultiplier));
