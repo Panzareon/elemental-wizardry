@@ -144,6 +144,10 @@ class Wizard {
     return this._event;
   }
 
+  public get attunementSlots() : number {
+    return 3;
+  }
+
   public notifyEvent(eventInfo: EventInfo) {
     this._event.next(eventInfo);
   }

@@ -13,7 +13,8 @@ export class ItemComponent {
   @Input() item!: Item;
 
   public get canAttune() : boolean {
-    return !this._data.wizard.attunedItems.includes(this.item);
+    return this._data.wizard.attunedItems.length < this._data.wizard.attunementSlots
+        && !this._data.wizard.attunedItems.includes(this.item);
   }
   public get canEndAttunement() : boolean {
     return this._data.wizard.attunedItems.includes(this.item);

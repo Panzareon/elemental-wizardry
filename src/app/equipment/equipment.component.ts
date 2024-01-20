@@ -17,4 +17,7 @@ export class EquipmentComponent {
   public get notAttunedItems() : Item[] {
     return this._data.wizard.items.filter(x => !this.attunedItems.includes(x));
   }
+  public get attunementSlots() : number {
+    return this._data.wizard.attunementSlots;
+  }
 }
