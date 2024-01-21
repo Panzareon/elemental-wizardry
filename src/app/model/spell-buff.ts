@@ -13,7 +13,7 @@ class SpellBuff {
     getBuffs(): Buff[] {
         switch (this._spell.type) {
             case SpellType.ExpediteGeneration:
-                return [new ResourceProductionBuff((1 + 0.5 * this.power), undefined, ResourceKind.Mana)];
+                return [new ResourceProductionBuff((1 + 0.5 * this.power), undefined, ResourceKind.Mana, ResourceType.Chrono)];
             default:
                 return [];
         }

@@ -14,7 +14,11 @@ abstract class Buff {
 }
 
 class ResourceProductionBuff extends Buff {
-    public constructor(private _power : number, private _resource : ResourceType | undefined = undefined, private _resourceKind : ResourceKind | undefined = undefined) {
+    public constructor(
+        private _power : number,
+        private _resource : ResourceType | undefined = undefined,
+        private _resourceKind : ResourceKind | undefined = undefined,
+        private _excludeResource : ResourceType | undefined = undefined) {
         super();
     }
 
@@ -24,12 +28,16 @@ class ResourceProductionBuff extends Buff {
          : this._resourceKind === undefined
            ? "all"
            : ResourceKind[this._resourceKind];
+        if (this._excludeResource !== undefined) {
+            productionSource += " except " + new Resource(this._excludeResource).name;
+        }
         return "Increases " + productionSource + " production by " + (this._power * 100 - 100) + "%";
     }
 
     public override adjustResourceProduction(resource: Resource, production : number) : number {
         if ((this._resource === undefined || this._resource === resource.type)
-             && this._resourceKind === undefined || this._resourceKind === resource.kind) {
+             && this._resourceKind === undefined || this._resourceKind === resource.kind
+             && this._excludeResource === undefined || this._excludeResource !== resource.type) {
             return production * this._power;
         }
 
