@@ -28,9 +28,14 @@ export class InventoryComponent implements OnInit {
     dialogRef.componentInstance.resource = resource;
   }
   public amountDisplay(resource : Resource) : string {
-    return (Math.floor(resource.amount * 10)/10) + "/" + (Math.floor(resource.maxAmount* 10)/10);
+    return this.roundResourceAmount(resource.amount) + "/" + this.roundResourceAmount(resource.maxAmount);
   }
+
   public resourceType(resource : Resource) : string {
     return ResourceType[resource.type];
+  }
+
+  private roundResourceAmount(amount: number) {
+    return Math.floor(amount * 10) / 10;
   }
 }
