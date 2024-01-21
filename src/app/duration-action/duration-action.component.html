@@ -1,4 +1,4 @@
-<mat-card class="progress-card">
+<mat-card class="progress-card stackable-card">
     <div class="progress" [style.width.%]="skill.durationTimeSpent/skill.duration*100"></div>
     <mat-card-header class="header"><span>{{name}}</span> <span class="repeat">Repeat:<mat-checkbox [checked]="repeat" (change)="repeat=!repeat"></mat-checkbox></span></mat-card-header>
     <mat-card-content>

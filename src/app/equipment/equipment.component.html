@@ -1,8 +1,8 @@
 <div class="attuned">
     Attuned ({{attunedItems.length}}/{{attunementSlots}}):
-    <app-item [item]="item" *ngFor="let item of attunedItems"></app-item>
+    <app-item [item]="item" *ngFor="let item of attunedItems" class="stackable-card"></app-item>
 </div>
 <div class="not-attuned">
     Inventory:
-    <app-item [item]="item" *ngFor="let item of notAttunedItems"></app-item>
+    <app-item [item]="item" *ngFor="let item of notAttunedItems" class="stackable-card"></app-item>
 </div>
