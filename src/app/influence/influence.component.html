@@ -1,4 +1,4 @@
-<mat-expansion-panel *ngFor="let influence of influences" expanded="true">
+<mat-expansion-panel *ngFor="let influence of influences" expanded="true" appInfluenceTooltip [influence]="influence">
     <mat-expansion-panel-header>
         <mat-panel-title>{{influence.name}} ({{influence.amount}} Influence)</mat-panel-title>
     </mat-expansion-panel-header>

@@ -326,6 +326,9 @@ class Wizard {
     this.getUnlockReward(unlock, false);
   }
 
+  public hasUnlockAvailable(unlock: UnlockType): boolean {
+    return this.availableUnlocks.includes(unlock) || this.unlocks.find(x => x.type == unlock) !== undefined;
+  }
   public addItem(item: Item) {
     this._items.push(item);
   }

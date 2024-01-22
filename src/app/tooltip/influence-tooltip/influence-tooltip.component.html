@@ -1,0 +1,13 @@
+<mat-card class="tooltip" [style.left]="left + 'px'" [style.top]="top + 'px'" [class.visible]="visible" [class.moved-position]="movedPosition">
+    <mat-card-header>
+        <h2>{{influence.name}}</h2>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngFor="let unlock of unlocks">
+            {{unlock.amount}} : {{unlock.name}} ({{unlock.desciption}})
+        </div>
+        <div *ngFor="let donation of influence.donations">
+            {{getName(donation.resource)}} donation soft cap at {{donation.softCap}}
+        </div>
+    </mat-card-content>
+</mat-card>

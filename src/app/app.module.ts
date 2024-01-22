@@ -44,6 +44,8 @@ import { CraftingComponent } from './crafting/crafting.component';
 import { CostsComponent } from './costs/costs.component';
 import { EquipmentComponent } from './equipment/equipment.component';
 import { ItemComponent } from './item/item.component';
+import { InfluenceTooltipComponent } from './tooltip/influence-tooltip/influence-tooltip.component';
+import { InfluenceTooltipDirective } from './tooltip/influence-tooltip/influence-tooltip.directive';
 
 @NgModule({
   declarations: [
@@ -76,7 +78,9 @@ import { ItemComponent } from './item/item.component';
     CraftingComponent,
     CostsComponent,
     EquipmentComponent,
-    ItemComponent
+    ItemComponent,
+    InfluenceTooltipComponent,
+    InfluenceTooltipDirective
   ],
   imports: [
     BrowserModule,

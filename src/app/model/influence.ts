@@ -3,7 +3,7 @@ import { ResourceAmount, ResourceType } from "./resource";
 import { UnlockType } from "./unlocks";
 import { Wizard } from "./wizard";
 
-export { Influence, InfluenceType, InfluenceDonation, InfluenceAmount }
+export { Influence, InfluenceType, InfluenceDonation, InfluenceAmount, InfluenceUnlock }
 
 enum InfluenceType {
     ArtisanGuild = 0,
@@ -46,6 +46,10 @@ class Influence {
         }
     }
 
+    public get unlocks() : InfluenceUnlock[] {
+        return this._unlocks;
+    }
+
     public load(amount: number) {
         this._amount = amount;
     }
@@ -56,6 +60,14 @@ class Influence {
         }
 
         return false;
+    }
+    public checkFinishedUnlocks(wizard: Wizard) {
+        for (let i = this._unlocks.length - 1; i >= 0; i--) {
+            const element = this._unlocks[i];
+            if (element !== undefined && element.hasUnlocked(wizard)) {
+                delete this._unlocks[i];
+            }
+        }
     }
     
     getDonations(): InfluenceDonation[] {
@@ -100,6 +112,10 @@ class InfluenceDonation {
 
     public get reward() : number {
         return this.getAddValue();
+    }
+
+    public get softCap() : number {
+        return this._softCap;
     }
 
     public donate(wizard: Wizard, amount: number) {
@@ -167,6 +183,24 @@ enum InfluenceUnlockType {
 class InfluenceUnlock {
     constructor(public amount: number, public type: InfluenceUnlockType) {}
 
+    public get name() : string {
+        switch (this.type) {
+            case InfluenceUnlockType.CraftingMentor:
+                return "Crafting Mentor";
+            case InfluenceUnlockType.AlchemistStore:
+                return "Alchemist Store";
+        }
+    }
+
+    public get desciption() : string {
+        switch (this.type) {
+            case InfluenceUnlockType.CraftingMentor:
+                return "Meet a master artisan you can hire as your mentor.";
+            case InfluenceUnlockType.AlchemistStore:
+                return "Get access to the store";
+        }
+    }
+
     public unlock(wizard: Wizard) {
         switch (this.type) {
             case InfluenceUnlockType.CraftingMentor:
@@ -175,6 +209,14 @@ class InfluenceUnlock {
             case InfluenceUnlockType.AlchemistStore:
                 wizard.findLocation(LocationType.AlchemistStore);
                 break;
+        }
+    }
+    public hasUnlocked(wizard: Wizard) : boolean {
+        switch (this.type) {
+            case InfluenceUnlockType.CraftingMentor:
+                return wizard.hasUnlockAvailable(UnlockType.CraftingMentor);
+            case InfluenceUnlockType.AlchemistStore:
+                return wizard.location.find(x => x.type == LocationType.AlchemistStore) !== undefined;
         }
     }
 }
