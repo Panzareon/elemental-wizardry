@@ -45,6 +45,31 @@ class GardenPlot implements IActive
         return this._remainingHarvestTime;
     }
 
+    public get activeName(): string {
+        switch (this.state) {
+            case GrowState.Planting:
+                return "Planting " + this.plantName;
+            case GrowState.Harvesting:
+                return "Harvest " + this.plantName;
+            default:
+                return this.plantName;
+        }    
+    }
+    public get activeProgress(): number {
+        if (this.plantType == GardenPlotPlant.Empty) {
+          return 0;
+        }
+        switch (this.state) {
+          case GrowState.Nothing:
+            return 0;
+          case GrowState.Planting:
+            return 1 - (this.remainingPlantTime / this.plantTime);
+          case GrowState.Growing:
+            return 1 - (this.remainingGrowTime / this.growTime);
+          case GrowState.Harvesting:
+            return 1 - (this.remainingHarvestTime / this.harvestTime);
+        }
+    }
     public get plantTime(): number {
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:

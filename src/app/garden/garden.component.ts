@@ -48,18 +48,6 @@ export class GardenComponent {
     }
   }
   public getProgress(plot: GardenPlot) : number {
-    if (plot.plantType == GardenPlotPlant.Empty) {
-      return 0;
-    }
-    switch (plot.state) {
-      case GrowState.Nothing:
-        return 0;
-      case GrowState.Planting:
-        return 1 - (plot.remainingPlantTime / plot.plantTime);
-      case GrowState.Growing:
-        return 1 - (plot.remainingGrowTime / plot.growTime);
-      case GrowState.Harvesting:
-        return 1 - (plot.remainingHarvestTime / plot.harvestTime);
-    }
+    return plot.activeProgress;
   }
 }

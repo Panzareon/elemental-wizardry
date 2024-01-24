@@ -58,6 +58,14 @@ class Skill implements IActive {
         return SkillType[this.type];
     }
     
+    public get activeName() : string {
+        return SkillType[this.type];
+    }
+    
+    public get activeProgress(): number {
+        return this.durationTimeSpent/this.duration;
+    }
+
     public get durationTimeSpent() : number {
         return this._durationTimeSpent;
     }

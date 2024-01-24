@@ -46,6 +46,7 @@ import { EquipmentComponent } from './equipment/equipment.component';
 import { ItemComponent } from './item/item.component';
 import { InfluenceTooltipComponent } from './tooltip/influence-tooltip/influence-tooltip.component';
 import { InfluenceTooltipDirective } from './tooltip/influence-tooltip/influence-tooltip.directive';
+import { ActiveActionsComponent } from './active-actions/active-actions.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { InfluenceTooltipDirective } from './tooltip/influence-tooltip/influence
     EquipmentComponent,
     ItemComponent,
     InfluenceTooltipComponent,
-    InfluenceTooltipDirective
+    InfluenceTooltipDirective,
+    ActiveActionsComponent
   ],
   imports: [
     BrowserModule,

@@ -68,7 +68,7 @@ class Knowledge {
     }
 
     get levelUpProgress() : number {
-        return this._exp / this.nextLevelExp * 100;
+        return this._exp / this.nextLevelExp;
     }
     load(level: number, exp: number) {
         this._level = level;
@@ -125,6 +125,12 @@ class KnowledgeStudy implements IKnowledgeAction {
     public get knowledge(): Knowledge {
         return this._knowledge;
     }
+    get activeName(): string {
+        return "Study " + this._knowledge.name;
+    }
+    get activeProgress(): number {
+        return this._knowledge.levelUpProgress;
+    }
     activate(wizard: Wizard, deltaTime: number): boolean {
         this.knowledge.gainExp(deltaTime, wizard);
         return true;
@@ -135,6 +141,12 @@ class KnowledgeTraining implements IKnowledgeAction {
     }
     public get knowledge(): Knowledge {
         return this._knowledge;
+    }
+    get activeName(): string {
+        return "Train " + this._knowledge.name;
+    }
+    get activeProgress(): number {
+        return this._knowledge.levelUpProgress;
     }
     activate(wizard: Wizard, deltaTime: number): boolean {
         var resource = this.requiredResource;

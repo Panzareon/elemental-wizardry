@@ -210,6 +210,12 @@ class ExploreLocation implements IActive {
     public get rewards() : ExploreResult[] {
         return this._rewards;
     }
+    public get activeName(): string {
+        return "Explore " + this.location.name;
+    }
+    public get activeProgress(): number {
+        return 0;
+    }
     
     public activate(wizard: Wizard, deltaTime: number): boolean {
         for (const reward of this._rewards) {

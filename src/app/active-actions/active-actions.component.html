@@ -1,0 +1,6 @@
+<mat-card *ngFor="let action of activeActions" class="progress-card">
+    <div class="progress" [style.width.%]="action.activeProgress*100"></div>
+    <mat-card-header>
+        {{action.activeName}}
+    </mat-card-header>
+</mat-card>

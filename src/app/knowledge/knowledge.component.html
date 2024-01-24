@@ -1,7 +1,7 @@
 
 <div class="knowledges">
     <mat-card *ngFor="let knowledge of getKnowledge()" class="knowledge progress-card stackable-card" >
-        <div class="progress" style="width:{{knowledge.levelUpProgress}}%"></div>
+        <div class="progress" [style.width.%]="knowledge.levelUpProgress*100"></div>
         <mat-card-header>
             {{knowledge.name}} lvl{{knowledge.level}}
         </mat-card-header>
