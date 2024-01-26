@@ -1,8 +1,8 @@
-import { Subject } from "rxjs";
+import { Subject, endWith } from "rxjs";
 import { IActive } from "./active";
 import { ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
-import { Wizard } from "./wizard";
+import { EventInfo, Wizard } from "./wizard";
 
 export { Skill, SkillType, SkillActionType }
 
@@ -10,6 +10,7 @@ enum SkillType {
     Meditate = 0,
     MagicShow = 1,
     ChopWood = 2,
+    Mining = 3,
 }
 enum SkillActionType {
     Ongoing = 0,
@@ -75,6 +76,8 @@ class Skill implements IActive {
             case SkillType.MagicShow:
                 return 10;
             case SkillType.ChopWood:
+                return 20;
+            case SkillType.Mining:
                 return 20;
         }
 
@@ -172,11 +175,49 @@ class Skill implements IActive {
     }
     private getDurationReward(wizard: Wizard) {
         switch (this.type) {
-            case SkillType.MagicShow:
-                wizard.addResource(ResourceType.Gold, 20 + Math.round(this._durationIncreasedOutput * 10));
+            case SkillType.MagicShow: {
+                let amount = 20 + Math.round(this._durationIncreasedOutput * 10);
+                let resource = wizard.addResource(ResourceType.Gold, amount);
+                wizard.notifyEvent(EventInfo.gainResource(resource, "Earned " + amount + " gold"));
                 break;
-            case SkillType.ChopWood:
-                wizard.addResource(ResourceType.Wood, 1 + Math.round(this._durationIncreasedOutput));
+            }
+            case SkillType.ChopWood: {
+                let amount = 1 + Math.round(this._durationIncreasedOutput);
+                let resource = wizard.addResource(ResourceType.Wood, amount);
+                wizard.notifyEvent(EventInfo.gainResource(resource, "Chopped " + amount + " wood"));
+                break;
+            }
+            case SkillType.Mining:
+                let weights = [
+                    50, // Nothing
+                    50, // Stone
+                    5 + this.durationIncreasedOutput, // Gold
+                    1 + this.durationIncreasedOutput, // Gemstone
+                ]
+                let weightSum = weights.reduce((partial, a) => partial + a, 0);
+                let result = Math.random() * weightSum;
+                result -= weights[0];
+                if (result <= 0) {
+                    wizard.notifyEvent(EventInfo.gainResource(undefined, "Found nothing useful while mining"));
+                    break;
+                }
+                result -= weights[1];
+                if (result <= 0) {
+                    let amount = 1 + Math.round(this._durationIncreasedOutput);
+                    let resource = wizard.addResource(ResourceType.Stone, amount);
+                    wizard.notifyEvent(EventInfo.gainResource(resource, "Mined " + amount + " stones in the mine"));
+                    break;
+                }
+                result -= weights[2];
+                if (result <= 0) {
+                    let amount = 40 + Math.round(this._durationIncreasedOutput * 10);
+                    let resource = wizard.addResource(ResourceType.Gold, amount);
+                    wizard.notifyEvent(EventInfo.gainResource(resource, "Mined " + amount + " gold in the mine"));
+                    break;
+                }
+                let amount = 1 + Math.round(this._durationIncreasedOutput / 2);
+                let resource = wizard.addResource(ResourceType.Gemstone, amount);
+                wizard.notifyEvent(EventInfo.gainResource(resource, "Mined " + amount + " gemstones in the mine"));
                 break;
         }
     }
@@ -187,6 +228,7 @@ class Skill implements IActive {
                 return SkillActionType.Ongoing;
             case SkillType.MagicShow:
             case SkillType.ChopWood:
+            case SkillType.Mining:
                 return SkillActionType.Duration;
         }
     }
@@ -196,6 +238,8 @@ class Skill implements IActive {
             case SkillType.MagicShow:
                 return [SpellType.MagicBolt];
             case SkillType.ChopWood:
+                return [SpellType.MagicBolt];
+            case SkillType.Mining:
                 return [SpellType.MagicBolt];
             default:
                 return [];

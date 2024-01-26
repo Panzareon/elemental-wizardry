@@ -436,7 +436,7 @@ class EventInfo {
     return new EventInfo(text, EventInfoType.Unlock);
   }
 
-  public static gainResource(resource: Resource, text: string, positionX?: number, positionY?: number) : EventInfo {
+  public static gainResource(resource: Resource | undefined, text: string, positionX?: number, positionY?: number) : EventInfo {
     let eventInfo = new EventInfo(text, EventInfoType.GainResource);
     eventInfo._positionX = positionX;
     eventInfo._positionY = positionY;

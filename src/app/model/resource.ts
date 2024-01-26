@@ -11,6 +11,7 @@ enum ResourceType {
     Chrono = 6,
     Wood = 7,
     MandrakeRoot = 8,
+    Stone = 9,
 }
 enum ResourceKind {
     Mana = 1,

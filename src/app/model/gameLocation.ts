@@ -13,6 +13,7 @@ enum LocationType {
     Village = 1,
     Forest = 2,
     AlchemistStore = 3,
+    Mountain = 4,
 }
 
 class Offer {
@@ -39,6 +40,8 @@ enum ExploreResultType {
     Forest = 3,
     ArtisanGuild = 4,
     AlchemistGuild = 5,
+    Mountain = 6,
+    Mine = 7,
 }
 
 class ExploreResult {
@@ -137,6 +140,10 @@ class ExploreResult {
                 return 15;
             case ExploreResultType.AlchemistGuild:
                 return 15;
+            case ExploreResultType.Mountain:
+                return 15;
+            case ExploreResultType.Mine:
+                return 10;
         }
     }
 
@@ -154,14 +161,21 @@ class ExploreResult {
             case ExploreResultType.Random:
                 if (Math.random() < 0.1) {
                     switch (this._locationType) {
-                        case LocationType.Village:
+                        case LocationType.Village: {
                             let resource = wizard.addResource(ResourceType.Gold, 5);
                             wizard.notifyEvent(EventInfo.gainResource(resource, "Found 5 gold on the ground"));
                             break;
-                        case LocationType.Forest:
-                            resource = wizard.addResource(ResourceType.Wood, 1);
+                        }
+                        case LocationType.Forest: {
+                            let resource = wizard.addResource(ResourceType.Wood, 1);
                             wizard.notifyEvent(EventInfo.gainResource(resource, "Found some firewood on the ground"));
                             break;
+                        }
+                        case LocationType.Mountain: {
+                            let resource = wizard.addResource(ResourceType.Stone, 1);
+                            wizard.notifyEvent(EventInfo.gainResource(resource, "Found a stone on the ground"));
+                            break;
+                        }
                     }
                 }
                 break;
@@ -180,6 +194,12 @@ class ExploreResult {
                 break;
             case ExploreResultType.AlchemistGuild:
                 wizard.addInfluence(InfluenceType.AlchemistGuild);
+                break;
+            case ExploreResultType.Mountain:
+                wizard.findLocation(LocationType.Mountain);
+                break;
+            case ExploreResultType.Mine:
+                wizard.learnSkill(SkillType.Mining);
                 break;
         }
     }
@@ -247,7 +267,11 @@ class ExploreLocation implements IActive {
                 break;
             case LocationType.Forest:
                 result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.Mountain, this.location.type));
                 break;
+            case LocationType.Mountain:
+                result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.Mine, this.location.type));
         }
         return result;
     }
@@ -286,6 +310,7 @@ class GameLocation {
         switch (this.type) {
             case LocationType.Village:
             case LocationType.Forest:
+            case LocationType.Mountain:
                 return true;
             default:
                 return false;
@@ -304,6 +329,7 @@ class GameLocation {
                 return [new Offer(ResourceType.Gold, 10, ResourceType.MandrakeRoot)];
             case LocationType.Forest:
             case LocationType.Village:
+            case LocationType.Mountain:
                 return [];
         }
     }
