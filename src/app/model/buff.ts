@@ -1,7 +1,8 @@
 import { Resource, ResourceKind, ResourceType } from "./resource";
+import { Skill, SkillType } from "./skill";
 import { SpellSource } from "./spell";
 
-export { Buff, ResourceProductionBuff, SpellPowerBuff }
+export { Buff, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff }
 
 abstract class Buff {
     public abstract get description(): string;
@@ -10,6 +11,9 @@ abstract class Buff {
     }
     public adjustSpellPower(spellPower: number, spellSource: SpellSource): number {
         return spellPower;
+    }
+    public adjustSkillDuration(skill: Skill, durationDelta : number) : number {
+        return durationDelta;
     }
 }
 
@@ -62,5 +66,23 @@ class SpellPowerBuff extends Buff {
         }
 
         return spellPower;
+    }
+}
+class SkillDurationBuff extends Buff {
+    public constructor(private _power : number, private _skill : SkillType) {
+        super();
+    }
+
+    public override get description() : string {
+        let skill = new Skill(this._skill).name;
+        return "Speeds up " + skill + " by " + (this._power * 100 - 100) + "%";
+    }
+
+    public override adjustSkillDuration(skill: Skill, durationDelta: number): number {
+        if (this._skill === skill.type) {
+            return durationDelta *= this._power;
+        }
+
+        return durationDelta;
     }
 }

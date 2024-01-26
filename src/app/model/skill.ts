@@ -144,7 +144,11 @@ class Skill implements IActive {
         this.earnExp(wizard, deltaTime);
         if (this.actionType == SkillActionType.Duration) {
             let lastDurationSpellCheck = Math.floor(this._durationTimeSpent);
-            this._durationTimeSpent += deltaTime;
+            let durationDelta = deltaTime;
+            for (let buff of wizard.buffs) {
+                durationDelta = buff.adjustSkillDuration(this, durationDelta);
+            }
+            this._durationTimeSpent += durationDelta;
             while (lastDurationSpellCheck + 1 < this._durationTimeSpent) {
                 lastDurationSpellCheck++
                 this.triggerDurationSpell(wizard);

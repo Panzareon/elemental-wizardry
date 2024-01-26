@@ -1,4 +1,5 @@
 import { IActive } from "./active";
+import { RecipeType } from "./recipe";
 import { ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { SpellType } from "./spell";
@@ -105,6 +106,16 @@ class Knowledge {
             case KnowledgeType.CraftingKnowledge:
                 if (this.level >= 2) {
                     wizard.addAvailableUnlock(UnlockType.SimpleWorkshop);
+                }
+                if (this.level >= 3) {
+                    wizard.addRecipe(RecipeType.StoneAxe);
+                }
+                if (this.level >= 4) {
+                    wizard.addRecipe(RecipeType.Iron);
+                    wizard.addRecipe(RecipeType.IronAxe);
+                }
+                if (this.level >= 5) {
+                    wizard.addRecipe(RecipeType.IronPickaxe);
                 }
                 break;
         }

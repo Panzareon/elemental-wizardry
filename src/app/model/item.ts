@@ -1,4 +1,5 @@
-import { Buff, SpellPowerBuff } from "./buff";
+import { Buff, SkillDurationBuff, SpellPowerBuff } from "./buff";
+import { SkillType } from "./skill";
 import { SpellSource } from "./spell";
 
 export { Item, ItemType }
@@ -6,6 +7,9 @@ export { Item, ItemType }
 enum ItemType
 {
     WoodenWand = 0,
+    StoneAxe = 1,
+    IronAxe = 2,
+    IronPickaxe = 3,
 }
 
 class Item
@@ -32,6 +36,12 @@ class Item
         switch (this._type) {
             case ItemType.WoodenWand:
                 return "Wooden Wand";
+            case ItemType.StoneAxe:
+                return "Stone Axe";
+            case ItemType.IronAxe:
+                return "Iron Axe";
+            case ItemType.IronPickaxe:
+                return "Iron Pickaxe";
         }
     }
     public get buffs(): Buff[] {
@@ -41,13 +51,12 @@ class Item
         switch (this.type) {
             case ItemType.WoodenWand:
                 return [new SpellPowerBuff(1.5 + (this._level - 1) * 0.05)];
-        }
-    }
-
-    private itemPower() {
-        switch (this.type) {
-            case ItemType.WoodenWand:
-                return ;
+            case ItemType.StoneAxe:
+                return [new SkillDurationBuff(1.2 + (this._level - 1) * 0.05, SkillType.ChopWood)];
+            case ItemType.IronAxe:
+                return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.ChopWood)];
+            case ItemType.IronPickaxe:
+                return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.Mining)];
         }
     }
 

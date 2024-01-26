@@ -8,6 +8,10 @@ export { Recipe, RecipeType, RecipeSource }
 enum RecipeType
 {
     WoodenWand = 0,
+    StoneAxe = 1,
+    Iron = 2,
+    IronAxe = 3,
+    IronPickaxe = 4,
 }
 enum RecipeSource
 {
@@ -27,6 +31,14 @@ class Recipe
         switch (this._type) {
             case RecipeType.WoodenWand:
                 return "Wooden Wand";
+            case RecipeType.StoneAxe:
+                return "Stone Axe";
+            case RecipeType.IronAxe:
+                return "Iron Axe";
+            case RecipeType.IronPickaxe:
+                return "Iron Pickaxe";
+            default:
+                return RecipeType[this._type];
         }
     }
     public get type() : RecipeType {
@@ -53,12 +65,28 @@ class Recipe
             case RecipeType.WoodenWand:
                 wizard.addItem(new Item(ItemType.WoodenWand, 1 + Math.floor(Math.random() * 3)));
                 break;
+            case RecipeType.StoneAxe:
+                wizard.addItem(new Item(ItemType.StoneAxe, 1 + Math.floor(Math.random() * 3)));
+                break;
+            case RecipeType.Iron:
+                wizard.addResource(ResourceType.Iron, 1 + Math.floor(Math.random() * 3));
+                break;
+            case RecipeType.IronAxe:
+                wizard.addItem(new Item(ItemType.IronAxe, 1 + Math.floor(Math.random() * 3)));
+                break;
+            case RecipeType.IronPickaxe:
+                wizard.addItem(new Item(ItemType.IronPickaxe, 1 + Math.floor(Math.random() * 3)));
+                break;
         }
     }
 
     private getSource(): RecipeSource {
         switch (this._type) {
             case RecipeType.WoodenWand:
+            case RecipeType.StoneAxe:
+            case RecipeType.Iron:
+            case RecipeType.IronAxe:
+            case RecipeType.IronPickaxe:
                 return RecipeSource.SimpleWorkshop;
         }
     }
@@ -66,6 +94,14 @@ class Recipe
         switch (this._type) {
             case RecipeType.WoodenWand:
                 return Costs.fromResources([new ResourceAmount(ResourceType.Mana, 20), new ResourceAmount(ResourceType.ManaGem, 1), new ResourceAmount(ResourceType.Wood, 5)]);
+            case RecipeType.StoneAxe:
+                return Costs.fromResources([new ResourceAmount(ResourceType.Wood, 1), new ResourceAmount(ResourceType.Stone, 2)]);
+            case RecipeType.Iron:
+                return Costs.fromResources([new ResourceAmount(ResourceType.Wood, 2), new ResourceAmount(ResourceType.Ore, 2)]);
+            case RecipeType.IronAxe:
+                return Costs.fromResources([new ResourceAmount(ResourceType.Wood, 1), new ResourceAmount(ResourceType.Iron, 2)]);
+            case RecipeType.IronPickaxe:
+                return Costs.fromResources([new ResourceAmount(ResourceType.Wood, 1), new ResourceAmount(ResourceType.Iron, 2)]);
         }
     }
 

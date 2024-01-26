@@ -13,6 +13,7 @@ enum ResourceType {
     MandrakeRoot = 8,
     Stone = 9,
     Ore = 10,
+    Iron = 11,
 }
 enum ResourceKind {
     Mana = 1,
