@@ -191,6 +191,7 @@ class Skill implements IActive {
                 let weights = [
                     50, // Nothing
                     50, // Stone
+                    10 + this.durationIncreasedOutput, // Ore
                     5 + this.durationIncreasedOutput, // Gold
                     1 + this.durationIncreasedOutput, // Gemstone
                 ]
@@ -209,6 +210,13 @@ class Skill implements IActive {
                     break;
                 }
                 result -= weights[2];
+                if (result <= 0) {
+                    let amount = 1 + Math.round(this._durationIncreasedOutput / 2);
+                    let resource = wizard.addResource(ResourceType.Ore, amount);
+                    wizard.notifyEvent(EventInfo.gainResource(resource, "Mined " + amount + " ore in the mine"));
+                    break;
+                }
+                result -= weights[3];
                 if (result <= 0) {
                     let amount = 40 + Math.round(this._durationIncreasedOutput * 10);
                     let resource = wizard.addResource(ResourceType.Gold, amount);
