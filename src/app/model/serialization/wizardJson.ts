@@ -1,3 +1,4 @@
+import { CompanionType } from "../companion";
 import { ExploreResultType, LocationType } from "../gameLocation";
 import { GardenPlotPlant, GrowState } from "../garden-plot";
 import { InfluenceType } from "../influence";
@@ -9,7 +10,7 @@ import { SkillType } from "../skill";
 import { SpellType } from "../spell";
 import { UnlockType } from "../unlocks";
 
-export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson, GardenPlotJson, RecipeJson, ItemJson }
+export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson, GardenPlotJson, RecipeJson, ItemJson, CompanionJson }
 
 interface WizardJson {
     resources: ResourceJson[];
@@ -24,6 +25,7 @@ interface WizardJson {
     gardenPlots: GardenPlotJson[];
     recipe: RecipeJson[];
     items: ItemJson[];
+    companions: CompanionJson[];
 }
 interface ResourceJson {
     type: ResourceType;
@@ -81,4 +83,7 @@ interface ItemJson {
     type: ItemType;
     level: number;
     isAttuned: boolean;
+}
+interface CompanionJson {
+    type: CompanionType;
 }

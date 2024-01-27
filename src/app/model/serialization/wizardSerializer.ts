@@ -10,7 +10,8 @@ import { Skill, SkillActionType } from "../skill";
 import { Spell } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { Companion } from "../companion";
 
 export { WizardSerializer }
 
@@ -31,7 +32,8 @@ class WizardSerializer {
             influence: this.wizard.influence.map(x => this.serializeInfluence(x)),
             gardenPlots: this.wizard.gardenPlots.map(x => this.serializeGardenPlot(x)),
             recipe: this.wizard.recipe.map(x => this.serializeRecipe(x)),
-            items: this.wizard.items.map(x => this.serializeItem(x, this.wizard))
+            items: this.wizard.items.map(x => this.serializeItem(x, this.wizard)),
+            companions: this.wizard.companions.map(x => this.serializeCompanion(x)),
         }
     }
     serializeResource(x: Resource): ResourceJson {
@@ -112,6 +114,11 @@ class WizardSerializer {
             type: x.type,
             level: x.level,
             isAttuned: wizard.attunedItems.includes(x),
+        }
+    }
+    serializeCompanion(x: Companion): CompanionJson {
+        return {
+            type: x.type,
         }
     }
 }

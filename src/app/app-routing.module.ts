@@ -12,6 +12,7 @@ import { InfluenceComponent } from './influence/influence.component';
 import { GardenComponent } from './garden/garden.component';
 import { CraftingComponent } from './crafting/crafting.component';
 import { EquipmentComponent } from './equipment/equipment.component';
+import { CompanionsComponent } from './companions/companions.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/actions", pathMatch: "full" },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: "garden", component: GardenComponent },
   { path: "crafting", component: CraftingComponent },
   { path: "equipment", component: EquipmentComponent },
+  { path: "companions", component: CompanionsComponent },
 ];
 
 @NgModule({

@@ -10,7 +10,8 @@ import { Skill } from "../skill";
 import { Spell, SpellType } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { Companion } from "../companion";
 
 export { WizardDeserializer }
 
@@ -34,6 +35,7 @@ class WizardDeserializer {
             this.json.gardenPlots?.map(x => this.deserializeGardenPlot(x)) ?? [],
             this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [],
             items.map(x => x[0]),
+            this.json.companions?.map(x => this.deserializeCompanion(x)) ??[],
         );
         items.filter(x => x[1]).forEach(x => wizard.attuneItem(x[0]));
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
@@ -98,5 +100,8 @@ class WizardDeserializer {
     }
     deserializeItems(x: ItemJson): [Item,boolean] {
         return [new Item(x.type, x.level), x.isAttuned];
+    }
+    deserializeCompanion(x: CompanionJson): Companion {
+        return new Companion(x.type);
     }
 }

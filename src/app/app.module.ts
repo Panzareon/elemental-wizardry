@@ -47,6 +47,7 @@ import { ItemComponent } from './item/item.component';
 import { InfluenceTooltipComponent } from './tooltip/influence-tooltip/influence-tooltip.component';
 import { InfluenceTooltipDirective } from './tooltip/influence-tooltip/influence-tooltip.directive';
 import { ActiveActionsComponent } from './active-actions/active-actions.component';
+import { CompanionsComponent } from './companions/companions.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { ActiveActionsComponent } from './active-actions/active-actions.componen
     ItemComponent,
     InfluenceTooltipComponent,
     InfluenceTooltipDirective,
-    ActiveActionsComponent
+    ActiveActionsComponent,
+    CompanionsComponent
   ],
   imports: [
     BrowserModule,

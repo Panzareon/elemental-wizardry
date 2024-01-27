@@ -12,6 +12,7 @@ import { GardenPlot } from "./garden-plot";
 import { Recipe, RecipeType } from "./recipe";
 import { Item } from "./item";
 import { Buff } from "./buff";
+import { Companion } from "./companion";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -29,6 +30,7 @@ class Wizard {
   private _recipe: Recipe[];
   private _influence: Influence[];
   private _items: Item[];
+  private _companions: Companion[];
   private _attunedItems: Item[] = [];
 
   public constructor(resources: Resource[],
@@ -43,7 +45,8 @@ class Wizard {
     influence: Influence[],
     gardenPlots: GardenPlot[],
     recipe: Recipe[],
-    items: Item[]) {
+    items: Item[],
+    companions: Companion[]) {
       this._resources = resources;
       this._skills = skills;
       this._knowldege = knowledge;
@@ -57,6 +60,7 @@ class Wizard {
       this._gardenPlots = gardenPlots;
       this._recipe = recipe;
       this._items = items;
+      this._companions = companions;
       this._unlocks.forEach(x => this.getUnlockReward(x, true));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
@@ -72,6 +76,7 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
+      [],
       [],
       [],
       [],
@@ -103,6 +108,9 @@ class Wizard {
 
   public get unlocks(): Unlocks[] {
     return this._unlocks;
+  }
+  public get companions(): Companion[] {
+    return this._companions;
   }
 
   public get spellBuffs(): SpellBuff[] {

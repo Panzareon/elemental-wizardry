@@ -20,6 +20,7 @@ export class AppComponent {
         ["knowledge", "Knowledge", true],
         ["spellbook", "Spellbook", false],
         ["equipment", "Equipment", false],
+        ["companions", "Companions", false],
         ["unlocks", "Unlocks", false],
       ]],
       ["Home", [
@@ -43,7 +44,8 @@ export class AppComponent {
   public get tabs() : [string,[string, string, boolean][]][] {
     this._tabs[0][1][2][2] ||= this.hasSpell;
     this._tabs[0][1][3][2] ||= this.hasItems;
-    this._tabs[0][1][4][2] ||= this.hasUnlocks;
+    this._tabs[0][1][4][2] ||= this.hasCompanions;
+    this._tabs[0][1][5][2] ||= this.hasUnlocks;
     this._tabs[1][1][0][2] ||= this.hasGardenPlots;
     this._tabs[1][1][1][2] ||= this.hasRecipe;
     this._tabs[2][1][0][2] ||= this.hasUnlockedShop;
@@ -70,6 +72,9 @@ export class AppComponent {
   }
   public get hasUnlocks() {
     return this.data.wizard.unlocks.length > 0 || this.data.wizard.availableUnlocks.length > 0;
+  }
+  public get hasCompanions() {
+    return this.data.wizard.companions.length > 0;
   }
   public get hasRecipe() {
     return this.data.wizard.recipe.length > 0;
