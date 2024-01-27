@@ -2,7 +2,7 @@ import { SpellBuff } from "./spell-buff";
 import { IKnowledgeAction } from "./knowledge";
 import { ResourceAmount, ResourceType } from "./resource";
 import { EventInfo, Wizard } from "./wizard";
-import { CompanionType } from "./companion";
+import { Companion, CompanionType } from "./companion";
 
 export { Spell, SpellType, SpellSource }
 
@@ -152,7 +152,7 @@ class Spell {
             case SpellType.SummonFamiliar:
                 let existingFamiliar = wizard.companions.find(x => x.type == CompanionType.Familiar);
                 if (existingFamiliar === undefined) {
-                    wizard.addCompanion(CompanionType.Familiar);
+                    wizard.addCompanion(new Companion(CompanionType.Familiar, spellPower));
                     this.isCasting = true;
                 }
                 else {

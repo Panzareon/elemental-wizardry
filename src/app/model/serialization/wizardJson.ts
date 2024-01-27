@@ -1,4 +1,4 @@
-import { CompanionType } from "../companion";
+import { CompanionActionType, CompanionType } from "../companion";
 import { ExploreResultType, LocationType } from "../gameLocation";
 import { GardenPlotPlant, GrowState } from "../garden-plot";
 import { InfluenceType } from "../influence";
@@ -86,4 +86,6 @@ interface ItemJson {
 }
 interface CompanionJson {
     type: CompanionType;
+    level: number;
+    active: CompanionActionType[];
 }

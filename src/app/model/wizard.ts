@@ -350,8 +350,8 @@ class Wizard {
     }
   }
 
-  public addCompanion(companionType: CompanionType) {
-    this._companions.push(new Companion(companionType));
+  public addCompanion(companion: Companion) {
+    this._companions.push(companion);
   }
   public removeCompanion(companion: Companion) {
     let companionIndex = this._companions.indexOf(companion);

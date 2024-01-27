@@ -1,1 +1,10 @@
-<p>companions works!</p>
+<mat-card *ngFor="let companion of companions">
+    <mat-card-header>{{companion.name}} Lvl. {{companion.level | number: '1.0-1'}}</mat-card-header>
+    <mat-card-content>
+        <mat-button-toggle-group multiple="true">
+            <mat-button-toggle *ngFor="let action of companion.actions" [checked]="action.isActive" (change)="toggleAction(action)">
+                {{action.name}}
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-card-content>
+</mat-card>

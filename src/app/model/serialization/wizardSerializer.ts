@@ -119,6 +119,8 @@ class WizardSerializer {
     serializeCompanion(x: Companion): CompanionJson {
         return {
             type: x.type,
+            level: x.level,
+            active: x.actions.filter(a => a.isActive).map(a => a.type)
         }
     }
 }

@@ -103,7 +103,11 @@ class WizardDeserializer {
         return [new Item(x.type, x.level), x.isAttuned];
     }
     deserializeCompanion(x: CompanionJson): Companion {
-        return new Companion(x.type);
+        let companion = new Companion(x.type, x.level ?? 1);
+        if (x.active !== undefined) {
+            companion.actions.filter(a => x.active.includes(a.type)).forEach(a => a.isActive = true);
+        }
+        return companion;
     }
     updateSpellState(x: Spell, wizard: Wizard): void {
         switch (x.type) {
