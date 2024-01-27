@@ -9,17 +9,19 @@
         </div>
         <mat-divider [vertical]="true"></mat-divider>
         <div class="content">
-            <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-                <a mat-tab-link routerLink="actions">Actions</a>
-                <a mat-tab-link routerLink="knowledge">Knowledge</a>
-                <a mat-tab-link routerLink="spellbook" *ngIf="hasSpell">Spellbook</a>
-                <a mat-tab-link routerLink="equipment" *ngIf="hasItems">Equipment</a>
-                <a mat-tab-link routerLink="garden" *ngIf="hasGardenPlots">Garden</a>
-                <a mat-tab-link routerLink="crafting" *ngIf="hasRecipe">Crafting</a>
-                <a mat-tab-link routerLink="store" *ngIf="hasUnlockedShop">Store</a>
-                <a mat-tab-link routerLink="influence" *ngIf="hasInfluence">Influence</a>
-                <a mat-tab-link routerLink="unlocks" *ngIf="hasUnlocks">Unlocks</a>
-            </nav>
+            <mat-tab-group>
+                <ng-container *ngFor="let tabGroup of tabs">
+                    <mat-tab label="{{tabGroup[0]}}" *ngIf="showTabGroup(tabGroup)">
+                        <ng-template matTabContent>
+                            <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+                                <ng-container  *ngFor="let tab of tabGroup[1]">
+                                    <a mat-tab-link routerLink="{{tab[0]}}" *ngIf="tab[2]">{{tab[1]}}</a>
+                                </ng-container>
+                            </nav>
+                        </ng-template>
+                    </mat-tab>
+                </ng-container>
+            </mat-tab-group>
             <mat-tab-nav-panel #tabPanel>
                 <router-outlet></router-outlet>
             </mat-tab-nav-panel>

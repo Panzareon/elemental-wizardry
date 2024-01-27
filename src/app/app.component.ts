@@ -11,8 +11,26 @@ import { EventInfo, EventInfoType } from './model/wizard';
 })
 export class AppComponent {
   @ViewChild("popupContainer", { read: ViewContainerRef }) vcr!: ViewContainerRef;
+  private _tabs : [string,[string, string, boolean][]][];
 
   constructor(private data: DataService){
+    this._tabs = [
+      ["Character", [
+        ["actions", "Actions", true],
+        ["knowledge", "Knowledge", true],
+        ["spellbook", "Spellbook", false],
+        ["equipment", "Equipment", false],
+        ["unlocks", "Unlocks", false],
+      ]],
+      ["Home", [
+        ["garden", "Garden", false],
+        ["crafting", "Crafting", false],
+      ]],
+      ["Town", [
+        ["store", "Store", false],
+        ["influence", "Influence", false],
+      ]],
+    ]
   }
   title = 'elemental-wizardry';
   private eventSubscription: Unsubscribable|undefined;
@@ -21,6 +39,19 @@ export class AppComponent {
   }
   ngOnDestroy() {
     this.eventSubscription?.unsubscribe();
+  }
+  public get tabs() : [string,[string, string, boolean][]][] {
+    this._tabs[0][1][2][2] ||= this.hasSpell;
+    this._tabs[0][1][3][2] ||= this.hasItems;
+    this._tabs[0][1][4][2] ||= this.hasUnlocks;
+    this._tabs[1][1][0][2] ||= this.hasGardenPlots;
+    this._tabs[1][1][1][2] ||= this.hasRecipe;
+    this._tabs[2][1][0][2] ||= this.hasUnlockedShop;
+    this._tabs[2][1][1][2] ||= this.hasInfluence;
+    return this._tabs;
+  }
+  public showTabGroup(tabGroup: [string,[string,string,boolean][]]): boolean {
+    return tabGroup[1].some(x => x[2]);
   }
   public get hasUnlockedShop() {
     return this.data.wizard.location.find(x => x.offers.length > 0) !== undefined;
