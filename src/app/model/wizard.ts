@@ -12,7 +12,7 @@ import { GardenPlot } from "./garden-plot";
 import { Recipe, RecipeType } from "./recipe";
 import { Item } from "./item";
 import { Buff } from "./buff";
-import { Companion } from "./companion";
+import { Companion, CompanionType } from "./companion";
 export { Wizard, EventInfo, EventInfoType }
 
 class Wizard {
@@ -350,6 +350,15 @@ class Wizard {
     }
   }
 
+  public addCompanion(companionType: CompanionType) {
+    this._companions.push(new Companion(companionType));
+  }
+  public removeCompanion(companion: Companion) {
+    let companionIndex = this._companions.indexOf(companion);
+    if (companionIndex >= 0) {
+      this._companions.splice(companionIndex, 1);
+    }
+  }
   private getUnlockReward(unlock: Unlocks, onLoad: boolean) {
     switch (unlock.type) {
       case UnlockType.ChronomancyMentor:

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Spell } from '../model/spell';
 
 @Component({
@@ -9,10 +9,13 @@ import { Spell } from '../model/spell';
 export class SpellIconComponent {
   @Input() spell!: Spell;
   public isAnimating = false;
+  public get isCasting() {
+    return this.spell.isCasting;
+  }
   public animationEnded() {
     this.isAnimating = false;
   }
-  animate() {
+  public animate() {
     this.isAnimating = true;
   }
 }

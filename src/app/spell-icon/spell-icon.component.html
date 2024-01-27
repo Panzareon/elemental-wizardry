@@ -2,5 +2,5 @@
     <span class="spell-background-container">
         <img class="spell-background" src="assets/icons/frame.png" />
     </span>
-    <img class="spell-icon" src="assets/icons/{{spell.icon}}" [ngClass]="isAnimating?'isAnimating':''" (animationend)="animationEnded()"/>
+    <img class="spell-icon" src="assets/icons/{{spell.icon}}" [ngClass]="{'isAnimating':isAnimating, 'is-casting':isCasting}" (animationend)="animationEnded()"/>
 </div>

@@ -11,7 +11,7 @@ import { Spell, SpellType } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
 import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
-import { Companion } from "../companion";
+import { Companion, CompanionType } from "../companion";
 
 export { WizardDeserializer }
 
@@ -37,6 +37,7 @@ class WizardDeserializer {
             items.map(x => x[0]),
             this.json.companions?.map(x => this.deserializeCompanion(x)) ??[],
         );
+        wizard.spells.forEach(x => this.updateSpellState(x, wizard));
         items.filter(x => x[1]).forEach(x => wizard.attuneItem(x[0]));
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
@@ -103,5 +104,12 @@ class WizardDeserializer {
     }
     deserializeCompanion(x: CompanionJson): Companion {
         return new Companion(x.type);
+    }
+    updateSpellState(x: Spell, wizard: Wizard): void {
+        switch (x.type) {
+            case SpellType.SummonFamiliar:
+                x.isCasting = wizard.companions.some(x => x.type === CompanionType.Familiar);
+                break;
+        }
     }
 }

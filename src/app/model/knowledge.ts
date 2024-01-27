@@ -88,6 +88,9 @@ class Knowledge {
                 if (this.level >= 4) {
                     wizard.addAvailableUnlock(UnlockType.ManaProduction);
                 }
+                if (this.level >= 5) {
+                    wizard.learnSpell(SpellType.SummonFamiliar);
+                }
                 break;
             case KnowledgeType.ChronomancyKnowledge:
                 if (this.level >= 2) {

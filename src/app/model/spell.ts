@@ -2,6 +2,7 @@ import { SpellBuff } from "./spell-buff";
 import { IKnowledgeAction } from "./knowledge";
 import { ResourceAmount, ResourceType } from "./resource";
 import { EventInfo, Wizard } from "./wizard";
+import { CompanionType } from "./companion";
 
 export { Spell, SpellType, SpellSource }
 
@@ -11,6 +12,7 @@ enum SpellType {
     InfuseChronoGem = 2,
     ExpediteGeneration = 3,
     ConverseWithFutureSelf = 4,
+    SummonFamiliar = 5,
 }
 
 enum SpellSource {
@@ -20,10 +22,11 @@ enum SpellSource {
 
 class Spell {
     private _type: SpellType;
-    private _cost: ResourceAmount[]; 
+    private _cost: ResourceAmount[];
     private _source: SpellSource;
     private _level: number;
     private _exp: number;
+    private _isCasting: boolean = false;
     constructor(type: SpellType) {
         this._type = type;
         this._level = 1;
@@ -67,6 +70,9 @@ class Spell {
     }
 
     public get cost() : ResourceAmount[] {
+        if (this.type == SpellType.SummonFamiliar && this.isCasting) {
+            return [];
+        }
         return this._cost;
     }
 
@@ -86,6 +92,14 @@ class Spell {
         return Math.pow(20, this.level);
     }
 
+    public get isCasting() : boolean {
+        return this._isCasting;
+    }
+
+    public set isCasting(value: boolean) {
+        this._isCasting = value;
+    }
+
     public get description() : string {
         switch (this.type) {
             case SpellType.MagicBolt:
@@ -98,6 +112,8 @@ class Spell {
                 return "Compresses the time in your body to increase magic generation";
             case SpellType.ConverseWithFutureSelf:
                 return "Talk with a future version of yourself gaining knowledge that you would have learned in the future";
+            case SpellType.SummonFamiliar:
+                return "Summon a familiar to help you with tasks";
         }
     }
 
@@ -106,7 +122,7 @@ class Spell {
     }
 
     public cast(wizard: Wizard) {
-        if (!wizard.spendResources(this._cost)){
+        if (!wizard.spendResources(this.cost)){
             return;
         }
         let spellPower = this.getSpellPower(wizard);
@@ -133,12 +149,23 @@ class Spell {
                 let amount = knowledge.gainExp(5, wizard);
                 wizard.notifyEvent(EventInfo.gainKnowledge(knowledge, amount));
                 break;
+            case SpellType.SummonFamiliar:
+                let existingFamiliar = wizard.companions.find(x => x.type == CompanionType.Familiar);
+                if (existingFamiliar === undefined) {
+                    wizard.addCompanion(CompanionType.Familiar);
+                    this.isCasting = true;
+                }
+                else {
+                    wizard.removeCompanion(existingFamiliar);
+                    this.isCasting = false;
+                }
+                break;
         }
 
         this.getExp(1);
     }
     public canCast(wizard: Wizard) : boolean {
-        return wizard.hasResources(this._cost);
+        return wizard.hasResources(this.cost);
     }
 
     public getExp(exp: number) {
@@ -161,15 +188,17 @@ class Spell {
         let costMultiplier = this.costMultiplier;
         switch (this.type) {
             case SpellType.InfuseGem:
-                return [new ResourceAmount(ResourceType.Mana, 10), new ResourceAmount(ResourceType.Gemstone, 1)];
+                return [new ResourceAmount(ResourceType.Mana, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)];
             case SpellType.MagicBolt:
                 return [new ResourceAmount(ResourceType.Mana, 2 * costMultiplier)];
             case SpellType.InfuseChronoGem:
-                return [new ResourceAmount(ResourceType.Chrono, 10), new ResourceAmount(ResourceType.Gemstone, 1)];
+                return [new ResourceAmount(ResourceType.Chrono, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)];
             case SpellType.ExpediteGeneration:
                 return [new ResourceAmount(ResourceType.Chrono, 2 * costMultiplier)]
             case SpellType.ConverseWithFutureSelf:
                 return [new ResourceAmount(ResourceType.Chrono, 5 * costMultiplier)]
+            case SpellType.SummonFamiliar:
+                return [new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)]
         }
     }
 
@@ -177,6 +206,7 @@ class Spell {
         switch (this.type) {
             case SpellType.InfuseGem:
             case SpellType.MagicBolt:
+            case SpellType.SummonFamiliar:
                 return SpellSource.Mana;
             case SpellType.InfuseChronoGem:
             case SpellType.ExpediteGeneration:
