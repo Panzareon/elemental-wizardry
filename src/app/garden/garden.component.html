@@ -5,10 +5,10 @@
     </mat-card-header>
     <mat-card-content>
         <ng-container *ngIf="showPlanting(plot)">
-            <mat-button-toggle checked="{{isActive(plot)}}" (change)="plant(plot)">Plant</mat-button-toggle>
+            <mat-button-toggle [checked]="isActive(plot)" (change)="plant(plot)">Plant</mat-button-toggle>
         </ng-container>
         <ng-container *ngIf="showHarvest(plot)">
-            <mat-button-toggle checked="{{isActive(plot)}}" (change)="harvest(plot)">Harvest</mat-button-toggle>
+            <mat-button-toggle [checked]="isActive(plot)" (change)="harvest(plot)">Harvest</mat-button-toggle>
         </ng-container>
     </mat-card-content>
 </mat-card>

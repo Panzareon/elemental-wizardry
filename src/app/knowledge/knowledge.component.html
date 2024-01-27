@@ -6,10 +6,10 @@
             {{knowledge.name}} lvl{{knowledge.level}}
         </mat-card-header>
         <mat-card-content>
-            <mat-button-toggle checked="{{isStudyActive(knowledge)}}" (change)="toggleStudy(knowledge)">
+            <mat-button-toggle [checked]="isStudyActive(knowledge)" (change)="toggleStudy(knowledge)">
             Study
             </mat-button-toggle>
-            <mat-button-toggle checked="{{isTrainingActive(knowledge)}}" (change)="toggleTraining(knowledge)">
+            <mat-button-toggle [checked]="isTrainingActive(knowledge)" (change)="toggleTraining(knowledge)">
             Training
             </mat-button-toggle>
         </mat-card-content>

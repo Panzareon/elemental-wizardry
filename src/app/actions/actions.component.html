@@ -1,6 +1,6 @@
 
 <div class="action-list skills">
-    <mat-button-toggle *ngFor="let skill of getOngoingSkills()" class="action skill" checked="{{isActive(skill)}}" (change)="toggleSkill(skill)">
+    <mat-button-toggle *ngFor="let skill of getOngoingSkills()" class="action skill" [checked]="isActive(skill)" (change)="toggleSkill(skill)">
         {{skill.name}}
     </mat-button-toggle>
 </div>
@@ -12,7 +12,7 @@
 <h4>Explore Locations</h4>
 <div class="action-list locations">
     <div class="button-wrapper" *ngFor="let location of getExplorableLocations()" appExplorationTooltip [location]="location">
-        <mat-button-toggle class="action location" checked="{{isExploreActive(location)}}" (change)="toggleExplore(location)">
+        <mat-button-toggle class="action location" [checked]="isExploreActive(location)" (change)="toggleExplore(location)">
             {{location.name}}
         </mat-button-toggle>
     </div>
