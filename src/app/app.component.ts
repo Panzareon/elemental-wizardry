@@ -1,8 +1,9 @@
-import { Component, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, HostListener, ViewChild, ViewContainerRef } from '@angular/core';
 import { DataService } from './data.service';
 import { PopupInfoComponent } from './popup-info/popup-info.component';
 import { Unsubscribable } from 'rxjs';
 import { EventInfo, EventInfoType } from './model/wizard';
+import { SaveService } from './save.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ export class AppComponent {
   @ViewChild("popupContainer", { read: ViewContainerRef }) vcr!: ViewContainerRef;
   private _tabs : [string,[string, string, boolean][]][];
 
-  constructor(private data: DataService){
+  constructor(private data: DataService, private _saveService : SaveService){
     this._tabs = [
       ["Character", [
         ["actions", "Actions", true],
@@ -40,6 +41,10 @@ export class AppComponent {
   }
   ngOnDestroy() {
     this.eventSubscription?.unsubscribe();
+  }
+  @HostListener('window:beforeunload')
+  async OnDestroy() {
+    this._saveService.save();
   }
   public get tabs() : [string,[string, string, boolean][]][] {
     this._tabs[0][1][2][2] ||= this.hasSpell;
