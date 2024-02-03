@@ -14,6 +14,8 @@ enum ResourceType {
     Stone = 9,
     Ore = 10,
     Iron = 11,
+    Nature = 12,
+    NatureGem = 13,
 }
 enum ResourceKind {
     Mana = 1,
@@ -52,6 +54,8 @@ class Resource {
                 return "Mana Gem";
             case ResourceType.MandrakeRoot:
                 return "Mandrake Root";
+            case ResourceType.NatureGem:
+                return "Nature Gem";
             default:
                 return ResourceType[this.type];
         }
@@ -106,6 +110,7 @@ class Resource {
         switch (this.type) {
             case ResourceType.Mana:
             case ResourceType.Chrono:
+            case ResourceType.Nature:
                 return ResourceKind.Mana;
             default:
                 return ResourceKind.Item;
@@ -146,6 +151,11 @@ class Resource {
                 break;
             case ResourceType.Chrono:
                 if (x.type == ResourceType.ChronoGem) {
+                    return [new AdjustMaxAmount(x, 10)];
+                }
+                break;
+            case ResourceType.Nature:
+                if (x.type == ResourceType.NatureGem) {
                     return [new AdjustMaxAmount(x, 10)];
                 }
                 break;

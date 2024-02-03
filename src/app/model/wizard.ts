@@ -371,6 +371,7 @@ class Wizard {
         this.addResourceType(ResourceType.Chrono);
         break;
       case UnlockType.GardenPlot:
+        this.addKnowledge(KnowledgeType.Herbalism);
         if (!onLoad) {
           this._gardenPlots.push(new GardenPlot());
         }
@@ -380,6 +381,12 @@ class Wizard {
         break;
       case UnlockType.SimpleWorkshop:
         this.addRecipe(RecipeType.WoodenWand);
+        break;
+      case UnlockType.NatureMagic:
+        this.addKnowledge(KnowledgeType.NatureMagic);
+        break;
+      case UnlockType.NatureProduction:
+        this.addResourceType(ResourceType.Nature);
         break;
     }
   }

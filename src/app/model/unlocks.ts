@@ -16,6 +16,8 @@ enum UnlockType {
     CraftingMentor = 6,
     GardenPlot = 7,
     SimpleWorkshop = 8,
+    NatureMagic = 9,
+    NatureProduction = 10,
 }
 
 class Unlocks {
@@ -50,6 +52,10 @@ class Unlocks {
                 return "Wood Storage";
             case UnlockType.SimpleWorkshop:
                 return "Simple Workshop";
+            case UnlockType.NatureMagic:
+                return "Nature Magic";
+            case UnlockType.NatureProduction:
+                return "Nature Production";
         }
         return UnlockType[this.type];
     }
@@ -63,6 +69,7 @@ class Unlocks {
             case UnlockType.Purse:
             case UnlockType.ChronomancyProduction:
             case UnlockType.GardenPlot:
+            case UnlockType.NatureProduction:
                 return 5;
             default:
                 return 1;
@@ -91,11 +98,16 @@ class Unlocks {
                 return "Build a plot for gardening";
             case UnlockType.SimpleWorkshop:
                 return "Allows crafting of simple items";
+            case UnlockType.NatureMagic:
+                return "Unlocks nature magic as a new field to study";
+            case UnlockType.NatureProduction:
+                return "Converts 0.1 Mana generation into 0.1 Nature generation per second";
         }
     }
     public canUnlock(wizard: Wizard) : boolean {
         switch (this.type) {
             case UnlockType.ChronomancyProduction:
+            case UnlockType.NatureProduction:
                 return (wizard.getResource(ResourceType.Mana)?.baseGenerationPerSecond ?? 0) > Resource.BaseManaGeneration * 1.5;
         }
 
@@ -128,6 +140,14 @@ class Unlocks {
                     return -this.numberRepeated * Resource.BaseManaGeneration;
                 }
                 if (type == ResourceType.Chrono) {
+                    return this.numberRepeated * Resource.BaseManaGeneration;
+                }
+                break;
+            case UnlockType.NatureProduction:
+                if (type == ResourceType.Mana) {
+                    return -this.numberRepeated * Resource.BaseManaGeneration;
+                }
+                if (type == ResourceType.Nature) {
                     return this.numberRepeated * Resource.BaseManaGeneration;
                 }
                 break;
@@ -183,7 +203,7 @@ class Unlocks {
                 if (targetUnlockNumber == 1) {
                     return [Costs.fromResource(ResourceType.Mana, 40)];
                 }
-                return [Costs.fromResource(ResourceType.Chrono, targetUnlockNumber * 10)];
+                return [Costs.fromResources([new ResourceAmount(ResourceType.ChronoGem, targetUnlockNumber), new ResourceAmount(ResourceType.Chrono, targetUnlockNumber * 10)])];
             case UnlockType.WoodStorage:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 5), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.2, this.numberRepeated)))]),
                         Costs.fromInfluence(InfluenceType.ArtisanGuild, targetUnlockNumber * 20, targetUnlockNumber * 5)];
@@ -193,6 +213,13 @@ class Unlocks {
                 return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, targetUnlockNumber * 3), new ResourceAmount(ResourceType.Gold, Math.round(50 * Math.pow(1.3, this.numberRepeated)))])];
             case UnlockType.SimpleWorkshop:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.Wood, 50), new ResourceAmount(ResourceType.Gold, 200)])];
+            case UnlockType.NatureMagic:
+                return [Costs.fromResource(ResourceType.MandrakeRoot, 5)];
+            case UnlockType.NatureProduction:
+                if (targetUnlockNumber == 1) {
+                    return [Costs.fromResource(ResourceType.Mana, 40)];
+                }
+                return [Costs.fromResources([new ResourceAmount(ResourceType.NatureGem, targetUnlockNumber), new ResourceAmount(ResourceType.Nature, targetUnlockNumber * 10)])];
         }
     }
 }

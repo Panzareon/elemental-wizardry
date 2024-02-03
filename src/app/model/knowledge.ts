@@ -12,6 +12,8 @@ enum KnowledgeType {
     MagicKnowledge = 0,
     ChronomancyKnowledge = 1,
     CraftingKnowledge = 2,
+    Herbalism = 3,
+    NatureMagic = 4,
 }
 
 class Knowledge {
@@ -121,6 +123,19 @@ class Knowledge {
                     wizard.addRecipe(RecipeType.IronPickaxe);
                 }
                 break;
+            case KnowledgeType.Herbalism:
+                if (this.level >= 2) {
+                    wizard.addAvailableUnlock(UnlockType.NatureMagic);
+                }
+                break;
+            case KnowledgeType.NatureMagic:
+                if (this.level >= 2) {
+                    wizard.addAvailableUnlock(UnlockType.NatureProduction);
+                }
+                if (this.level >= 3) {
+                    wizard.learnSpell(SpellType.InfuseNatureGem);
+                }
+                break;
         }
     }
     public calculate(wizard: Wizard) {
@@ -180,6 +195,9 @@ class KnowledgeTraining implements IKnowledgeAction {
                 return ResourceType.Chrono;
             case KnowledgeType.CraftingKnowledge:
                 return ResourceType.Mana;
+            case KnowledgeType.NatureMagic:
+            case KnowledgeType.Herbalism:
+                return ResourceType.Nature;
         }
     }
 }

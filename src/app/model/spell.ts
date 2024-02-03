@@ -13,11 +13,13 @@ enum SpellType {
     ExpediteGeneration = 3,
     ConverseWithFutureSelf = 4,
     SummonFamiliar = 5,
+    InfuseNatureGem = 6,
 }
 
 enum SpellSource {
     Mana = 0,
     Chronomancy = 1,
+    Nature = 2,
 }
 
 class Spell {
@@ -114,6 +116,8 @@ class Spell {
                 return "Talk with a future version of yourself gaining knowledge that you would have learned in the future";
             case SpellType.SummonFamiliar:
                 return "Summon a familiar to help you with tasks";
+            case SpellType.InfuseNatureGem:
+                return "Infuses a gemstone with nature to create a Nature Gem";
         }
     }
 
@@ -160,6 +164,9 @@ class Spell {
                     this.isCasting = false;
                 }
                 break;
+            case SpellType.InfuseNatureGem:
+                wizard.addResource(ResourceType.NatureGem, (1 + (spellPower - 1)/ 2));
+                break;
         }
 
         this.getExp(1);
@@ -199,6 +206,8 @@ class Spell {
                 return [new ResourceAmount(ResourceType.Chrono, 5 * costMultiplier)]
             case SpellType.SummonFamiliar:
                 return [new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)]
+            case SpellType.InfuseNatureGem:
+                return [new ResourceAmount(ResourceType.Nature, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)];
         }
     }
 
@@ -212,6 +221,8 @@ class Spell {
             case SpellType.ExpediteGeneration:
             case SpellType.ConverseWithFutureSelf:
                 return SpellSource.Chronomancy;
+            case SpellType.InfuseNatureGem:
+                return SpellSource.Nature;
         }
     }
 

@@ -14,7 +14,7 @@ export class ResourceCostComponent {
   constructor(private data: DataService) {
   }
   ngOnInit(): void {
-    this._resource = this.data.wizard.getResource(this.cost.resourceType);
+    this._resource = new Resource(this.cost.resourceType);
   }
 
   @Input() cost!: ResourceAmount;
