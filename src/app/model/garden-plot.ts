@@ -1,4 +1,4 @@
-import { IActive } from "./active";
+import { ActiveActivateResult, IActive } from "./active";
 import { ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
@@ -111,25 +111,25 @@ class GardenPlot implements IActive
         this._state = GrowState.Planting;
     }
 
-    public activate(wizard: Wizard, deltaTime: number): boolean {
+    public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         switch (this._state) {
             case GrowState.Planting:
                 this._remainingPlantTime -= deltaTime;
                 if (this._remainingPlantTime <= 0) {
                     this._remainingGrowTime = this.growTime;
                     this._state = GrowState.Growing;
-                    return false;
+                    return ActiveActivateResult.Done;
                 }
-                return true;
+                return ActiveActivateResult.Ok;
             case GrowState.Harvesting:
                 this._remainingHarvestTime -= deltaTime;
                 if (this._remainingHarvestTime <= 0) {
                     this.harvest(wizard);
-                    return false;
+                    return ActiveActivateResult.Done;
                 }
-                return true;
+                return ActiveActivateResult.Ok;
             default:
-                return false;
+                return ActiveActivateResult.CannotContinue;
         }
     }
 

@@ -1,6 +1,6 @@
-import { IActive } from "./active";
+import { ActiveActivateResult, IActive } from "./active";
 import { RecipeType } from "./recipe";
-import { ResourceType } from "./resource";
+import { Resource, ResourceKind, ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { SpellType } from "./spell";
 import { UnlockType } from "./unlocks";
@@ -160,9 +160,9 @@ class KnowledgeStudy implements IKnowledgeAction {
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
     }
-    activate(wizard: Wizard, deltaTime: number): boolean {
+    activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         this.knowledge.gainExp(deltaTime, wizard);
-        return true;
+        return ActiveActivateResult.Ok;
     }
 }
 class KnowledgeTraining implements IKnowledgeAction {
@@ -177,14 +177,19 @@ class KnowledgeTraining implements IKnowledgeAction {
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
     }
-    activate(wizard: Wizard, deltaTime: number): boolean {
+    activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         var resource = this.requiredResource;
         if (wizard.spendResource(resource, deltaTime)) {
             this.knowledge.gainExp(deltaTime * 5, wizard);
-            return true;
+            return ActiveActivateResult.Ok;
         }
         else {
-            return false;
+            if (new Resource(resource).kind == ResourceKind.Mana)
+            {
+                return ActiveActivateResult.OutOfMana;
+            }
+
+            return ActiveActivateResult.CannotContinue;
         }
     }
     get requiredResource() : ResourceType {

@@ -1,5 +1,5 @@
 import { Subject, endWith } from "rxjs";
-import { IActive } from "./active";
+import { ActiveActivateResult, IActive } from "./active";
 import { ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
 import { EventInfo, Wizard } from "./wizard";
@@ -124,7 +124,7 @@ class Skill implements IActive {
         this._durationIncreasedOutput = increasedOutput;
         this._activeDurationSpells = activeSpells;
     }
-    activate(wizard: Wizard, deltaTime: number): boolean {
+    activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         switch (this.type) {
             case SkillType.Meditate:
                 let manaGeneration = (1 + this.level * 0.1) * deltaTime;
@@ -136,7 +136,7 @@ class Skill implements IActive {
                 break;
             case SkillType.MagicShow:
                 if (!wizard.spendResource(ResourceType.Mana, deltaTime)) {
-                    return false;
+                    return ActiveActivateResult.OutOfMana;
                 }
                 break;
         }
@@ -158,12 +158,12 @@ class Skill implements IActive {
                 this._durationTimeSpent -= this.duration;
                 this._durationIncreasedOutput = 0;
                 if (!this.repeat) {
-                    return false;
+                    return ActiveActivateResult.Done;
                 }
             }
         }
 
-        return true;
+        return ActiveActivateResult.Ok;
     }
     enableDurationSpell(spell: Spell) {
         this._activeDurationSpells.push(spell);

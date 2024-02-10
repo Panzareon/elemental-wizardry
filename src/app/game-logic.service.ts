@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { InventoryService } from './inventory.service';
 import { DataService } from './data.service';
 import { SaveService } from './save.service';
+import { ActiveActivateResult } from './model/active';
+import { SkillActionType, SkillType } from './model/skill';
 
 @Injectable({
   providedIn: 'root'
@@ -64,9 +66,13 @@ export class GameLogicService {
     for (let i = 0; i < this.data.wizard.active.length; i++)
     {
       var active = this.data.wizard.active[i];
-      if (!active.activate(this.data.wizard, deltaTime)) {
+      var activationResult = active.activate(this.data.wizard, deltaTime);
+      if (activationResult !== ActiveActivateResult.Ok) {
         this.data.wizard.active.splice(i, 1);
         i--;
+        if (activationResult == ActiveActivateResult.OutOfMana) {
+          this.fallbackToMeditate();
+        }
       }
     }
     for (let i = 0; i < this.data.wizard.spellBuffs.length; i++)
@@ -89,5 +95,12 @@ export class GameLogicService {
     }
 
     this.saveService.tick(deltaTime);
+  }
+
+  private fallbackToMeditate() {
+    let meditate = this.data.wizard.skills.find(x => x.type == SkillType.Meditate);
+    if (meditate !== undefined && !this.data.wizard.active.includes(meditate)) {
+      this.data.wizard.setActive(meditate);
+    }
   }
 }

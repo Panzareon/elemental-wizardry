@@ -1,4 +1,4 @@
-import { IActive } from "./active";
+import { ActiveActivateResult, IActive } from "./active";
 import { InfluenceType } from "./influence";
 import { KnowledgeType } from "./knowledge";
 import { ResourceType } from "./resource";
@@ -237,11 +237,11 @@ class ExploreLocation implements IActive {
         return 0;
     }
     
-    public activate(wizard: Wizard, deltaTime: number): boolean {
+    public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         for (const reward of this._rewards) {
             reward.activate(wizard, deltaTime);
         }
-        return true;
+        return ActiveActivateResult.Ok;
     }
     
     public load(exploreProgress: [ExploreResultType, number, boolean, boolean][]) {
