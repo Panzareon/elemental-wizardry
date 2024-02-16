@@ -107,6 +107,9 @@ class Knowledge {
                 if (this.level >= 5) {
                     wizard.learnSpell(SpellType.ConverseWithFutureSelf);
                 }
+                if (this.level >= 6) {
+                    wizard.learnSpell(SpellType.SkipTime);
+                }
                 break;
             case KnowledgeType.CraftingKnowledge:
                 if (this.level >= 2) {

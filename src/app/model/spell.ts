@@ -3,6 +3,7 @@ import { IKnowledgeAction } from "./knowledge";
 import { ResourceAmount, ResourceType } from "./resource";
 import { EventInfo, Wizard } from "./wizard";
 import { Companion, CompanionType } from "./companion";
+import { GameLogicService } from "../game-logic.service";
 
 export { Spell, SpellType, SpellSource }
 
@@ -14,6 +15,7 @@ enum SpellType {
     ConverseWithFutureSelf = 4,
     SummonFamiliar = 5,
     InfuseNatureGem = 6,
+    SkipTime = 7,
 }
 
 enum SpellSource {
@@ -49,6 +51,8 @@ class Spell {
                 return "Expedite Generation";
             case SpellType.ConverseWithFutureSelf:
                 return "Converse With Future Self";
+            case SpellType.SkipTime:
+                return "Skip Time";
             default:
                 return SpellType[this.type];
         }
@@ -118,6 +122,8 @@ class Spell {
                 return "Summon a familiar to help you with tasks";
             case SpellType.InfuseNatureGem:
                 return "Infuses a gemstone with nature to create a Nature Gem";
+            case SpellType.SkipTime:
+                return "Skip forward in time to skip waiting on some external event"
         }
     }
 
@@ -167,6 +173,9 @@ class Spell {
             case SpellType.InfuseNatureGem:
                 wizard.addResource(ResourceType.NatureGem, (1 + (spellPower - 1)/ 2));
                 break;
+            case SpellType.SkipTime:
+                GameLogicService.externalPassiveTick(wizard, 60 * spellPower);
+                break;
         }
 
         this.getExp(1);
@@ -208,6 +217,8 @@ class Spell {
                 return [new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)]
             case SpellType.InfuseNatureGem:
                 return [new ResourceAmount(ResourceType.Nature, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)];
+            case SpellType.SkipTime:
+                return [new ResourceAmount(ResourceType.Chrono, 30 * costMultiplier)]
         }
     }
 
@@ -220,6 +231,7 @@ class Spell {
             case SpellType.InfuseChronoGem:
             case SpellType.ExpediteGeneration:
             case SpellType.ConverseWithFutureSelf:
+            case SpellType.SkipTime:
                 return SpellSource.Chronomancy;
             case SpellType.InfuseNatureGem:
                 return SpellSource.Nature;

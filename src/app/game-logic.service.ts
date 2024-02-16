@@ -4,6 +4,7 @@ import { DataService } from './data.service';
 import { SaveService } from './save.service';
 import { ActiveActivateResult } from './model/active';
 import { SkillActionType, SkillType } from './model/skill';
+import { Wizard } from './model/wizard';
 
 @Injectable({
   providedIn: 'root'
@@ -83,18 +84,20 @@ export class GameLogicService {
         i--;
       }
     }
-    for (let i = 0; i < this.data.wizard.gardenPlots.length; i++)
-    {
-      var plot = this.data.wizard.gardenPlots[i];
-      plot.update(this.data.wizard, deltaTime);
-    }
-    for (let i = 0; i < this.data.wizard.companions.length; i++)
-    {
-      var companion = this.data.wizard.companions[i];
-      companion.activate(this.data.wizard, deltaTime);
-    }
+    GameLogicService.externalPassiveTick(this.data.wizard, deltaTime);
 
     this.saveService.tick(deltaTime);
+  }
+
+  public static externalPassiveTick(wizard: Wizard, deltaTime: number) {
+    for (let i = 0; i < wizard.gardenPlots.length; i++) {
+      var plot = wizard.gardenPlots[i];
+      plot.update(wizard, deltaTime);
+    }
+    for (let i = 0; i < wizard.companions.length; i++) {
+      var companion = wizard.companions[i];
+      companion.activate(wizard, deltaTime);
+    }
   }
 
   private fallbackToMeditate() {
