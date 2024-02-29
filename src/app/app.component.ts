@@ -27,6 +27,7 @@ export class AppComponent {
       ["Home", [
         ["garden", "Garden", false],
         ["crafting", "Crafting", false],
+        ["ritual", "Ritual", false],
       ]],
       ["Town", [
         ["store", "Store", false],

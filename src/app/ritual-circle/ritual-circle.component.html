@@ -1,0 +1,82 @@
+<svg
+   viewBox="0 0 100 100"
+   xmlns="http://www.w3.org/2000/svg">
+    <g id="outer-circle">
+		<defs>
+			<path id="textcircle"
+              d="M9 50
+                 a 41,41 0 0,1 82,0 a 41,41 0 0,1 -82,0 z"/>
+		</defs>
+		<circle
+		   style="fill-opacity:0;stroke:#000000;stroke-width:1;stroke-opacity:1"
+		   id="oc-outer"
+		   cx="50"
+		   cy="50"
+		   r="45" />
+		<circle
+		   style="fill-opacity:0;stroke:#000000;stroke-width:1;stroke-opacity:1"
+		   id="oc-inner"
+		   cx="50"
+		   cy="50"
+		   r="40" />
+		<text style="fill:#16007b" font-size="5">
+			<textPath href="#textcircle" textLength="239" startOffset="9">☾☆☿☆♀☆︎☉☆♂︎☆♃☆♄☆</textPath>
+		</text>
+		<animateTransform
+		  id="oc-animation"
+		  attributeName="transform"
+		  begin="undefined"
+		  dur="70s"
+		  type="rotate"
+		  from="360 50 50"
+		  to="0 50 50"
+		  repeatCount="indefinite" />
+	</g>
+	<g id="outer-square">
+		<path
+		   id="os-inner-square"
+		   style="fill:#716ce5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-opacity:1"
+		   d="M 50 9 L 9 50 L 50 91 L 91 50 L 50 9 z M 50 17 L 83 50 L 50 83 L 17 50 L 50 17 z "
+		   transform="rotate(45, 50, 50)"/>
+		<path
+		   id="os-square"
+		   style="fill:#716ce5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-opacity:1"
+		   d="M 50 3 L 3 50 L 50 97 L 97 50 L 50 3 z M 50 10 L 90 50 L 50 90 L 10 50 L 50 10 z "/>
+		<text style="fill:#16007b" font-size="4.5" dy="-1">
+			<textPath href="#os-square" textLength="254" startOffset="9">♈︎○♉︎○♊︎○♋︎○♌︎○♍︎○♎︎○♏︎○♐︎○♑︎○♒︎○♓︎○</textPath>
+		</text>
+		<animateTransform
+		  id="os-animation"
+		  attributeName="transform"
+		  begin="undefined"
+		  dur="50s"
+		  type="rotate"
+		  from="0 50 50"
+		  to="360 50 50"
+		  repeatCount="indefinite" />
+	</g>
+	<g id="inner-circle">
+		<circle
+		   style="fill-opacity:0;stroke:#000000;stroke-width:1;stroke-opacity:1"
+		   id="ic-circle"
+		   cx="50"
+		   cy="50"
+		   r="10" />
+		<polygon
+		   style="fill-opacity:0;stroke:#000000;stroke-width:1;stroke-opacity:1"
+		   points="32, 50 44.4377, 32.881 64.5623, 39.4199 64.5623, 60.5801 44.4377, 67.119 "/>
+		<path
+		   id="ic-star"
+		   style="fill-opacity:0;stroke:#000000;stroke-width:1;stroke-opacity:1"
+		   d="M 35 50 L 50 50 M 45.3647, 35.7342 L 50 50 M 62.1353, 41.1832 L 50 50 M 62.1353, 58.8168 L 50 50 M 45.3647, 64.2658 L 50 50" />
+		<animateTransform
+		  id="ic-animation"
+		  attributeName="transform"
+		  begin="undefined"
+		  dur="20s"
+		  type="rotate"
+		  from="360 50 50"
+		  to="0 50 50"
+		  repeatCount="indefinite" />
+	</g>
+</svg>

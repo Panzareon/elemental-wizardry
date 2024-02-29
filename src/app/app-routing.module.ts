@@ -13,6 +13,7 @@ import { GardenComponent } from './garden/garden.component';
 import { CraftingComponent } from './crafting/crafting.component';
 import { EquipmentComponent } from './equipment/equipment.component';
 import { CompanionsComponent } from './companions/companions.component';
+import { RitualComponent } from './ritual/ritual.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/actions", pathMatch: "full" },
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: "crafting", component: CraftingComponent },
   { path: "equipment", component: EquipmentComponent },
   { path: "companions", component: CompanionsComponent },
+  { path: "ritual", component: RitualComponent },
 ];
 
 @NgModule({

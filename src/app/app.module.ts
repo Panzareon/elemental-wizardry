@@ -48,6 +48,8 @@ import { InfluenceTooltipComponent } from './tooltip/influence-tooltip/influence
 import { InfluenceTooltipDirective } from './tooltip/influence-tooltip/influence-tooltip.directive';
 import { ActiveActionsComponent } from './active-actions/active-actions.component';
 import { CompanionsComponent } from './companions/companions.component';
+import { RitualCircleComponent } from './ritual-circle/ritual-circle.component';
+import { RitualComponent } from './ritual/ritual.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +86,9 @@ import { CompanionsComponent } from './companions/companions.component';
     InfluenceTooltipComponent,
     InfluenceTooltipDirective,
     ActiveActionsComponent,
-    CompanionsComponent
+    CompanionsComponent,
+    RitualCircleComponent,
+    RitualComponent
   ],
   imports: [
     BrowserModule,
