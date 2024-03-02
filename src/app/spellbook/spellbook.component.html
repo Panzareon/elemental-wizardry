@@ -8,7 +8,7 @@
                     {{spell.name}}
                 </div>
                 <div class="cost">
-                    <app-resource-cost *ngFor="let cost of spell.cost" [cost]="cost"></app-resource-cost>
+                    <app-resource-cost *ngFor="let cost of spell.cast.baseCost" [cost]="cost"></app-resource-cost>
                 </div>
             </div>
         </span>

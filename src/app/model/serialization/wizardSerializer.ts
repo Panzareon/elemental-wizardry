@@ -34,6 +34,7 @@ class WizardSerializer {
             recipe: this.wizard.recipe.map(x => this.serializeRecipe(x)),
             items: this.wizard.items.map(x => this.serializeItem(x, this.wizard)),
             companions: this.wizard.companions.map(x => this.serializeCompanion(x)),
+            actives: this.wizard.active.map(x => x.serialize),
         }
     }
     serializeResource(x: Resource): ResourceJson {
@@ -62,6 +63,12 @@ class WizardSerializer {
             type: x.type,
             level: x.level,
             exp: x.exp,
+            ritual: x.cast.ritualCast !== undefined ? {
+                isPrepared: x.cast.ritualCast.isPrepared,
+                numberCasts: x.cast.ritualCast.numberCasts,
+                isChanneling: x.cast.ritualCast.isChanneling,
+                channelProgress: x.cast.ritualCast.channelProgress,
+            } : undefined,
         }
     }
     serializeKnowledge(x: Knowledge): KnowledgeJson {

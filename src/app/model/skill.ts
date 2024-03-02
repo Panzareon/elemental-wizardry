@@ -1,5 +1,5 @@
 import { Subject, endWith } from "rxjs";
-import { ActiveActivateResult, IActive } from "./active";
+import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
 import { EventInfo, Wizard } from "./wizard";
@@ -69,6 +69,10 @@ class Skill implements IActive {
 
     public get durationTimeSpent() : number {
         return this._durationTimeSpent;
+    }
+
+    public get serialize(): [ActiveType, any] {
+        return [ActiveType.Skill, this.type];
     }
 
     public get duration() : number {
@@ -164,6 +168,8 @@ class Skill implements IActive {
         }
 
         return ActiveActivateResult.Ok;
+    }
+    deactivate(wizard: Wizard): void {
     }
     enableDurationSpell(spell: Spell) {
         this._activeDurationSpells.push(spell);
@@ -263,7 +269,7 @@ class Skill implements IActive {
             let chance = this.durationSpellChance(spell);
             let previousPower = spell.getSpellPower(wizard);
             if (Math.random() < chance && spell.canCast(wizard)) {
-                spell.cast(wizard);
+                spell.castSpell(wizard);
                 this.getDurationBenefit(spell, previousPower);
                 this.durationSpellCast.next([this, spell]);
             }

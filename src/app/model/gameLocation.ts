@@ -1,4 +1,4 @@
-import { ActiveActivateResult, IActive } from "./active";
+import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { InfluenceType } from "./influence";
 import { KnowledgeType } from "./knowledge";
 import { ResourceType } from "./resource";
@@ -237,11 +237,16 @@ class ExploreLocation implements IActive {
         return 0;
     }
     
+    public get serialize(): [ActiveType, any] {
+        return [ActiveType.ExploreLocation, this.location.type];
+    }
     public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         for (const reward of this._rewards) {
             reward.activate(wizard, deltaTime);
         }
         return ActiveActivateResult.Ok;
+    }
+    deactivate(wizard: Wizard): void {
     }
     
     public load(exploreProgress: [ExploreResultType, number, boolean, boolean][]) {

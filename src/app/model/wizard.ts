@@ -170,7 +170,8 @@ class Wizard {
 
   public setActive(active: IActive) {
     if (this._active.length > 0) {
-      this._active.pop();
+      let oldAction = this._active.pop();
+      oldAction?.deactivate(this);
     }
 
     this._active.push(active);
@@ -180,6 +181,7 @@ class Wizard {
     var index = this._active.indexOf(active);
     if (index >= 0) {
       this._active.splice(index, 1);
+      active.deactivate(this);
     }
   }
   public spendResource(resourceType: ResourceType, amount: number): boolean {
@@ -373,7 +375,7 @@ class Wizard {
       case UnlockType.GardenPlot:
         this.addKnowledge(KnowledgeType.Herbalism);
         if (!onLoad) {
-          this._gardenPlots.push(new GardenPlot());
+          this.addGardenPlot();
         }
         break;
       case UnlockType.CraftingMentor:
@@ -427,6 +429,10 @@ class Wizard {
   private recalculateStats() {
     this.resources.forEach(x => x.calculate(this));
     this.knowledge.forEach(x => x.calculate(this));
+  }
+  
+  private addGardenPlot() {
+    this._gardenPlots.push(new GardenPlot(this._gardenPlots.length));
   }
 }
 enum EventInfoType {

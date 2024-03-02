@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '../data.service';
-import { Spell } from '../model/spell';
+import { Spell, SpellCastingType } from '../model/spell';
 import { SpellIconComponent } from '../spell-icon/spell-icon.component';
 
 @Component({
@@ -17,10 +17,10 @@ export class SpellbookComponent {
   }
 
   public canCast(spell: Spell) : boolean {
-    return spell.canCast(this.data.wizard);
+    return spell.cast.type === SpellCastingType.Simple && spell.canCast(this.data.wizard);
   }
   public cast(spell: Spell, spellIcon: SpellIconComponent) {
-    spell.cast(this.data.wizard);
+    spell.castSpell(this.data.wizard);
     spellIcon.animate();
   }
 }

@@ -4,8 +4,9 @@ import { ResourceAmount, ResourceType } from "./resource";
 import { EventInfo, Wizard } from "./wizard";
 import { Companion, CompanionType } from "./companion";
 import { GameLogicService } from "../game-logic.service";
+import { ActiveActivateResult, ActiveType, IActive } from "./active";
 
-export { Spell, SpellType, SpellSource }
+export { Spell, SpellType, SpellSource, SpellCastingType }
 
 enum SpellType {
     InfuseGem = 0,
@@ -18,6 +19,11 @@ enum SpellType {
     SkipTime = 7,
 }
 
+enum SpellCastingType {
+    Simple = 0,
+    Ritual = 1,
+}
+
 enum SpellSource {
     Mana = 0,
     Chronomancy = 1,
@@ -26,7 +32,7 @@ enum SpellSource {
 
 class Spell {
     private _type: SpellType;
-    private _cost: ResourceAmount[];
+    private _cast: SpellCast;
     private _source: SpellSource;
     private _level: number;
     private _exp: number;
@@ -35,7 +41,7 @@ class Spell {
         this._type = type;
         this._level = 1;
         this._exp = 0;
-        this._cost = this.getCost();
+        this._cast = this.getCastDefinition();
         this._source = this.getSource();
     }
 
@@ -75,11 +81,8 @@ class Spell {
         return name + ".png";
     }
 
-    public get cost() : ResourceAmount[] {
-        if (this.type == SpellType.SummonFamiliar && this.isCasting) {
-            return [];
-        }
-        return this._cost;
+    public get cast() : SpellCast {
+        return this._cast;
     }
 
     public get costMultiplier() {
@@ -96,14 +99,6 @@ class Spell {
 
     public get levelUpExp() {
         return Math.pow(20, this.level);
-    }
-
-    public get isCasting() : boolean {
-        return this._isCasting;
-    }
-
-    public set isCasting(value: boolean) {
-        this._isCasting = value;
     }
 
     public get description() : string {
@@ -131,17 +126,46 @@ class Spell {
         return Math.pow(1.3, this._level - 1) * wizard.getSpellPower(this._source);
     }
 
-    public cast(wizard: Wizard) {
-        if (!wizard.spendResources(this.cost)){
+    public castSpell(wizard: Wizard) {
+        if (this.cast.type !== SpellCastingType.Simple) {
             return;
         }
+        if (!wizard.spendResources(this.cast.baseCost)){
+            return;
+        }
+        this.getSpellEffect(wizard);
+    }
+
+    public prepareRitual(wizard: Wizard) {
+        if (this.cast.type !== SpellCastingType.Ritual
+            || this.cast.ritualCast === undefined
+            || !this.cast.ritualCast.canPrepare(wizard)) {
+            return;
+        }
+
+        if (!wizard.spendResources(this.cast.baseCost)) {
+            return;
+        }
+
+        this.cast.ritualCast.prepare(wizard)
+    }
+
+    public channelRitual(wizard: Wizard) {
+        if (this._cast.ritualCast === undefined) {
+            return;
+        }
+
+        wizard.setActive(this._cast.ritualCast);
+    }
+
+    public getSpellEffect(wizard: Wizard) {
         let spellPower = this.getSpellPower(wizard);
         switch (this.type) {
             case SpellType.InfuseGem:
-                wizard.addResource(ResourceType.ManaGem, (1 + (spellPower - 1)/ 2));
+                wizard.addResource(ResourceType.ManaGem, (1 + (spellPower - 1) / 2));
                 break;
             case SpellType.InfuseChronoGem:
-                wizard.addResource(ResourceType.ChronoGem, (1 + (spellPower - 1)/ 2));
+                wizard.addResource(ResourceType.ChronoGem, (1 + (spellPower - 1) / 2));
                 break;
             case SpellType.ExpediteGeneration:
                 wizard.addBuff(new SpellBuff(this, 30, spellPower, this.costMultiplier));
@@ -160,18 +184,10 @@ class Spell {
                 wizard.notifyEvent(EventInfo.gainKnowledge(knowledge, amount));
                 break;
             case SpellType.SummonFamiliar:
-                let existingFamiliar = wizard.companions.find(x => x.type == CompanionType.Familiar);
-                if (existingFamiliar === undefined) {
-                    wizard.addCompanion(new Companion(CompanionType.Familiar, spellPower));
-                    this.isCasting = true;
-                }
-                else {
-                    wizard.removeCompanion(existingFamiliar);
-                    this.isCasting = false;
-                }
+                wizard.addCompanion(new Companion(CompanionType.Familiar, spellPower));
                 break;
             case SpellType.InfuseNatureGem:
-                wizard.addResource(ResourceType.NatureGem, (1 + (spellPower - 1)/ 2));
+                wizard.addResource(ResourceType.NatureGem, (1 + (spellPower - 1) / 2));
                 break;
             case SpellType.SkipTime:
                 GameLogicService.externalPassiveTick(wizard, 60 * spellPower);
@@ -180,8 +196,10 @@ class Spell {
 
         this.getExp(1);
     }
+
     public canCast(wizard: Wizard) : boolean {
-        return wizard.hasResources(this.cost);
+        return this.cast.type === SpellCastingType.Simple
+                && wizard.hasResources(this.cast.baseCost);
     }
 
     public getExp(exp: number) {
@@ -190,35 +208,37 @@ class Spell {
         if (this._exp >= lvlUpExp) {
             this._exp -= lvlUpExp;
             this._level++;
-            this._cost = this.getCost();
+            this._cast = this.getCastDefinition();
         }
     }
 
     public load(level: number, exp: number) {
         this._level = level;
         this._exp = exp;
-        this._cost = this.getCost();
+        this._cast = this.getCastDefinition();
     }
 
-    private getCost(): ResourceAmount[] {
+    private getCastDefinition(): SpellCast {
         let costMultiplier = this.costMultiplier;
         switch (this.type) {
             case SpellType.InfuseGem:
-                return [new ResourceAmount(ResourceType.Mana, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)];
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Mana, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)]);
             case SpellType.MagicBolt:
-                return [new ResourceAmount(ResourceType.Mana, 2 * costMultiplier)];
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Mana, 2 * costMultiplier)]);
             case SpellType.InfuseChronoGem:
-                return [new ResourceAmount(ResourceType.Chrono, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)];
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Chrono, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)]);
             case SpellType.ExpediteGeneration:
-                return [new ResourceAmount(ResourceType.Chrono, 2 * costMultiplier)]
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Chrono, 2 * costMultiplier)]);
             case SpellType.ConverseWithFutureSelf:
-                return [new ResourceAmount(ResourceType.Chrono, 5 * costMultiplier)]
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Chrono, 5 * costMultiplier)]);
             case SpellType.SummonFamiliar:
-                return [new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)]
+                return SpellCast.CreateRitualSpell(
+                    [new ResourceAmount(ResourceType.ManaGem, 1 * costMultiplier)],
+                    new RitualCast(this, [new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)], 30));
             case SpellType.InfuseNatureGem:
-                return [new ResourceAmount(ResourceType.Nature, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)];
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Nature, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)]);
             case SpellType.SkipTime:
-                return [new ResourceAmount(ResourceType.Chrono, 30 * costMultiplier)]
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Chrono, 30 * costMultiplier)]);
         }
     }
 
@@ -237,5 +257,126 @@ class Spell {
                 return SpellSource.Nature;
         }
     }
+}
+class SpellCast {
+    private constructor(private _type: SpellCastingType, private _baseCost: ResourceAmount[], private _ritualCast : RitualCast | undefined = undefined) {
+    }
 
+    public get type() : SpellCastingType {
+        return this._type;
+    }
+
+    public get baseCost() : ResourceAmount[] {
+        return this._baseCost;
+    }
+
+    public get ritualCast() : RitualCast | undefined {
+        return this._ritualCast;
+    }
+
+    public static CreateSimpleSpell(resources: ResourceAmount[]) {
+        return new SpellCast(SpellCastingType.Simple, resources);
+    }
+
+    public static CreateRitualSpell(preparationResources: ResourceAmount[], ritual: RitualCast) {
+        return new SpellCast(SpellCastingType.Ritual, preparationResources, ritual);
+    }
+}
+class RitualCast implements IActive {
+    private _channelProgress : number = 0;
+
+    private _isChanneling : boolean = false;
+
+    private _numberCasts : number = 0;
+
+    private _isPrepared: boolean = false;
+
+    public constructor(private _spell: Spell, private _channelCost : ResourceAmount[], private _duration : number) {
+    }
+    public get serialize(): [ActiveType, any] {
+        return [ActiveType.Ritual, this._spell.type];
+    }
+    public get activeName(): string {
+        return this._spell.name;
+    }
+    public get activeProgress(): number {
+        return this._channelProgress / this._duration;
+    }
+    public get isPrepared(): boolean {
+        return this._isPrepared;
+    }
+    public get numberCasts(): number {
+        return this._numberCasts;
+    }
+    public get channelProgress(): number {
+        return this._channelProgress;
+    }
+    public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
+        if (!this._isPrepared) {
+            return ActiveActivateResult.CannotContinue;
+        }
+        if (!this._isChanneling) {
+            this._isChanneling = true;
+        }
+        if (deltaTime >= this._duration - this._channelProgress) {
+            if (!this.channel(wizard, this._duration - this._channelProgress)) {
+                return ActiveActivateResult.OutOfMana;
+            }
+
+            this._spell.getSpellEffect(wizard);
+            return ActiveActivateResult.Done;
+        }
+        else
+        {
+            if (!this.channel(wizard, deltaTime)) {
+                return ActiveActivateResult.OutOfMana;
+            }
+
+            return ActiveActivateResult.Ok;
+        }
+    }
+    public deactivate(wizard: Wizard): void {
+        throw new Error("Method not implemented.");
+    }
+
+    public get isChanneling() : boolean {
+        return this._isChanneling;
+    }
+
+    public canPrepare(wizard: Wizard) : boolean {
+        if (this._isPrepared || this._isChanneling) {
+            return false;
+        }
+        switch (this._spell.type) {
+            case SpellType.SummonFamiliar:
+                return this._numberCasts == 0;
+            default:
+                return false;
+        }
+    }
+    public prepare(wizard: Wizard) {
+        this._isPrepared = true;
+    }
+    public channel(wizard: Wizard, deltaTime: number) : boolean {
+        if (deltaTime === 0) {
+            return true;
+        }
+
+        var multiplier = deltaTime / this._duration;
+        var cost = this._channelCost.map(x => new ResourceAmount(x.resourceType, x.amount * multiplier))
+        if (!wizard.spendResources(cost)) {
+            this._isChanneling = false;
+            this._channelProgress = 0;
+            return false;
+        }
+
+        this._channelProgress += deltaTime;
+        return true;
+    }
+    public load(channelProgress : number, isChanneling : boolean, numberCasts : number, isPrepared : boolean) {
+        this._channelProgress = channelProgress;
+        this._isChanneling = isChanneling;
+        this._numberCasts = numberCasts;
+        this._isPrepared = isPrepared;
+    }
 }

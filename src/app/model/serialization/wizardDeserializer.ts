@@ -12,6 +12,7 @@ import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
 import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 import { Companion, CompanionType } from "../companion";
+import { ActiveType, IActive } from "../active";
 
 export { WizardDeserializer }
 
@@ -32,20 +33,47 @@ class WizardDeserializer {
             this.json.buffs.map(x => this.deserializeBuffs(x, spells)),
             this.json.availableUnlocks,
             this.json.influence?.map(x => this.deserializeInfluence(x)) ?? [],
-            this.json.gardenPlots?.map(x => this.deserializeGardenPlot(x)) ?? [],
+            this.json.gardenPlots?.map((x, index) => this.deserializeGardenPlot(x, index)) ?? [],
             this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [],
             items.map(x => x[0]),
             this.json.companions?.map(x => this.deserializeCompanion(x)) ??[],
         );
-        wizard.spells.forEach(x => this.updateSpellState(x, wizard));
         items.filter(x => x[1]).forEach(x => wizard.attuneItem(x[0]));
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
+
+        if (this.json.actives !== undefined) {
+            for (const serializedActive of this.json.actives) {
+                const active = this.findActive(wizard, serializedActive);
+                if (active !== null) {
+                    wizard.setActive(active);
+                }
+            }
+        }
         return wizard;
+    }
+    findActive(wizard: Wizard, serializedActive: [ActiveType, any]) : IActive | null {
+        switch (serializedActive[0]) {
+            case ActiveType.ExploreLocation:
+                return wizard.location.find(x => x.type === serializedActive[1])?.exploreActive ?? null;
+            case ActiveType.Ritual:
+                return wizard.spells.find(x => x.type === serializedActive[1])?.cast.ritualCast ?? null;
+            case ActiveType.Skill:
+                return wizard.skills.find(x => x.type === serializedActive[1]) ?? null;
+            case ActiveType.KnowledgeTraining:
+                return wizard.knowledge.find(x => x.type === serializedActive[1])?.trainingActive ?? null;
+            case ActiveType.KnowledgeStudy:
+                return wizard.knowledge.find(x => x.type === serializedActive[1])?.studyActive ?? null;
+            case ActiveType.GardenPlot:
+                return wizard.gardenPlots.length > serializedActive[1] ? wizard.gardenPlots[serializedActive[1]] : null;
+        }
     }
     deserializeSpell(x: SpellJson): Spell {
         let spell = new Spell(x.type);
         spell.load(x.level, x.exp);
+        if (x.ritual !== undefined && spell.cast.ritualCast !== undefined) {
+            spell.cast.ritualCast.load(x.ritual.channelProgress, x.ritual.isChanneling, x.ritual.numberCasts, x.ritual.isPrepared)
+        }
         return spell;
     }
     deserializeSkills(x: SkillJson, spells: Spell[]): Skill {
@@ -88,8 +116,8 @@ class WizardDeserializer {
         influence.load(x.amount);
         return influence;
     }
-    deserializeGardenPlot(x: GardenPlotJson): GardenPlot {
-        let gardenPlot = new GardenPlot();
+    deserializeGardenPlot(x: GardenPlotJson, index: number): GardenPlot {
+        let gardenPlot = new GardenPlot(index);
         if (x.type !== GardenPlotPlant.Empty) {
             gardenPlot.plant(x.type);
         }
@@ -108,12 +136,5 @@ class WizardDeserializer {
             companion.actions.filter(a => x.active.includes(a.type)).forEach(a => a.isActive = true);
         }
         return companion;
-    }
-    updateSpellState(x: Spell, wizard: Wizard): void {
-        switch (x.type) {
-            case SpellType.SummonFamiliar:
-                x.isCasting = wizard.companions.some(x => x.type === CompanionType.Familiar);
-                break;
-        }
     }
 }

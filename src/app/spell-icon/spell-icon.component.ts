@@ -10,7 +10,7 @@ export class SpellIconComponent {
   @Input() spell!: Spell;
   public isAnimating = false;
   public get isCasting() {
-    return this.spell.isCasting;
+    return this.spell.cast.ritualCast?.isChanneling;
   }
   public animationEnded() {
     this.isAnimating = false;

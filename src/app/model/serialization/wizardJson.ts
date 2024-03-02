@@ -1,3 +1,4 @@
+import { ActiveType } from "../active";
 import { CompanionActionType, CompanionType } from "../companion";
 import { ExploreResultType, LocationType } from "../gameLocation";
 import { GardenPlotPlant, GrowState } from "../garden-plot";
@@ -26,6 +27,7 @@ interface WizardJson {
     recipe: RecipeJson[];
     items: ItemJson[];
     companions: CompanionJson[];
+    actives: [ActiveType, any][];
 }
 interface ResourceJson {
     type: ResourceType;
@@ -35,6 +37,13 @@ interface SpellJson {
     type: SpellType;
     level: number;
     exp: number;
+    ritual?: SpellRitualInfo;
+}
+interface SpellRitualInfo {
+    isPrepared: boolean;
+    numberCasts: number;
+    isChanneling: boolean;
+    channelProgress: number;
 }
 interface KnowledgeJson {
     type: KnowledgeType;

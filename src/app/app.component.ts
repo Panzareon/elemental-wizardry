@@ -4,6 +4,7 @@ import { PopupInfoComponent } from './popup-info/popup-info.component';
 import { Unsubscribable } from 'rxjs';
 import { EventInfo, EventInfoType } from './model/wizard';
 import { SaveService } from './save.service';
+import { SpellCastingType } from './model/spell';
 
 @Component({
   selector: 'app-root',
@@ -54,6 +55,7 @@ export class AppComponent {
     this._tabs[0][1][5][2] ||= this.hasUnlocks;
     this._tabs[1][1][0][2] ||= this.hasGardenPlots;
     this._tabs[1][1][1][2] ||= this.hasRecipe;
+    this._tabs[1][1][2][2] ||= this.hasRitualSpell;
     this._tabs[2][1][0][2] ||= this.hasUnlockedShop;
     this._tabs[2][1][1][2] ||= this.hasInfluence;
     return this._tabs;
@@ -84,6 +86,9 @@ export class AppComponent {
   }
   public get hasRecipe() {
     return this.data.wizard.recipe.length > 0;
+  }
+  public get hasRitualSpell() {
+    return this.data.wizard.spells.some(x => x.cast.type === SpellCastingType.Ritual);
   }
 
   private showPopupInfo(info: EventInfo) {

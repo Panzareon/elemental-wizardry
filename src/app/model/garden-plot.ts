@@ -1,4 +1,4 @@
-import { ActiveActivateResult, IActive } from "./active";
+import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
@@ -24,7 +24,7 @@ class GardenPlot implements IActive
     private _remainingPlantTime : number = 0;
     private _remainingHarvestTime : number = 0;
     private _state : GrowState = GrowState.Nothing;
-    constructor() {
+    constructor(private _index : number) {
     }
     public get plantType() : GardenPlotPlant {
         return this._plant;
@@ -69,6 +69,9 @@ class GardenPlot implements IActive
           case GrowState.Harvesting:
             return 1 - (this.remainingHarvestTime / this.harvestTime);
         }
+    }
+    public get serialize(): [ActiveType, any] {
+        return [ActiveType.GardenPlot, this._index];
     }
     public get plantTime(): number {
         switch (this._plant) {
@@ -131,6 +134,9 @@ class GardenPlot implements IActive
             default:
                 return ActiveActivateResult.CannotContinue;
         }
+    }
+
+    deactivate(wizard: Wizard): void {
     }
 
     public update(wizard: Wizard, deltaTime: number) {

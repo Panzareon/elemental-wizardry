@@ -1,4 +1,4 @@
-import { ActiveActivateResult, IActive } from "./active";
+import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { RecipeType } from "./recipe";
 import { Resource, ResourceKind, ResourceType } from "./resource";
 import { SkillType } from "./skill";
@@ -163,9 +163,14 @@ class KnowledgeStudy implements IKnowledgeAction {
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
     }
+    public get serialize(): [ActiveType, any] {
+        return [ActiveType.KnowledgeStudy, this._knowledge.type];
+    }
     activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         this.knowledge.gainExp(deltaTime, wizard);
         return ActiveActivateResult.Ok;
+    }
+    deactivate(wizard: Wizard): void {
     }
 }
 class KnowledgeTraining implements IKnowledgeAction {
@@ -179,6 +184,9 @@ class KnowledgeTraining implements IKnowledgeAction {
     }
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
+    }
+    public get serialize(): [ActiveType, any] {
+        return [ActiveType.KnowledgeTraining, this._knowledge.type];
     }
     activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         var resource = this.requiredResource;
@@ -194,6 +202,8 @@ class KnowledgeTraining implements IKnowledgeAction {
 
             return ActiveActivateResult.CannotContinue;
         }
+    }
+    deactivate(wizard: Wizard): void {
     }
     get requiredResource() : ResourceType {
         switch (this.knowledge.type) {
