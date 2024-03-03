@@ -70,6 +70,7 @@ export class GameLogicService {
       var activationResult = active.activate(this.data.wizard, deltaTime);
       if (activationResult !== ActiveActivateResult.Ok) {
         this.data.wizard.active.splice(i, 1);
+        active.deactivate(this.data.wizard);
         i--;
         if (activationResult == ActiveActivateResult.OutOfMana) {
           this.fallbackToMeditate();

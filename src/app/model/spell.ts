@@ -136,28 +136,6 @@ class Spell {
         this.getSpellEffect(wizard);
     }
 
-    public prepareRitual(wizard: Wizard) {
-        if (this.cast.type !== SpellCastingType.Ritual
-            || this.cast.ritualCast === undefined
-            || !this.cast.ritualCast.canPrepare(wizard)) {
-            return;
-        }
-
-        if (!wizard.spendResources(this.cast.baseCost)) {
-            return;
-        }
-
-        this.cast.ritualCast.prepare(wizard)
-    }
-
-    public channelRitual(wizard: Wizard) {
-        if (this._cast.ritualCast === undefined) {
-            return;
-        }
-
-        wizard.setActive(this._cast.ritualCast);
-    }
-
     public getSpellEffect(wizard: Wizard) {
         let spellPower = this.getSpellPower(wizard);
         switch (this.type) {
@@ -234,7 +212,7 @@ class Spell {
             case SpellType.SummonFamiliar:
                 return SpellCast.CreateRitualSpell(
                     [new ResourceAmount(ResourceType.ManaGem, 1 * costMultiplier)],
-                    new RitualCast(this, [new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)], 30));
+                    new RitualCast(this, [new ResourceAmount(ResourceType.Mana, 100  * costMultiplier)], 30));
             case SpellType.InfuseNatureGem:
                 return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Nature, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)]);
             case SpellType.SkipTime:
@@ -311,12 +289,15 @@ class RitualCast implements IActive {
     public get channelProgress(): number {
         return this._channelProgress;
     }
+    public get channelCost() : ResourceAmount[] {
+        return this._channelCost;
+    }
+    public get channelDuration() : number {
+        return this._duration;
+    }
     public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         if (!this._isPrepared) {
             return ActiveActivateResult.CannotContinue;
-        }
-        if (!this._isChanneling) {
-            this._isChanneling = true;
         }
         if (deltaTime >= this._duration - this._channelProgress) {
             if (!this.channel(wizard, this._duration - this._channelProgress)) {
@@ -324,6 +305,9 @@ class RitualCast implements IActive {
             }
 
             this._spell.getSpellEffect(wizard);
+            this._isPrepared = false;
+            this._numberCasts++;
+            this.deactivate(wizard);
             return ActiveActivateResult.Done;
         }
         else
@@ -336,7 +320,8 @@ class RitualCast implements IActive {
         }
     }
     public deactivate(wizard: Wizard): void {
-        throw new Error("Method not implemented.");
+        this._isChanneling = false;
+        this._channelProgress = 0;
     }
 
     public get isChanneling() : boolean {
@@ -355,8 +340,22 @@ class RitualCast implements IActive {
         }
     }
     public prepare(wizard: Wizard) {
+        if (!this.canPrepare(wizard)) {
+            return;
+        }
+
+        if (!wizard.spendResources(this._spell.cast.baseCost)) {
+            return;
+        }
+
         this._isPrepared = true;
     }
+
+    public startChanneling(wizard: Wizard) {
+        wizard.setActive(this);
+        this._isChanneling = true;
+    }
+
     public channel(wizard: Wizard, deltaTime: number) : boolean {
         if (deltaTime === 0) {
             return true;
