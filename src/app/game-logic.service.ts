@@ -77,11 +77,11 @@ export class GameLogicService {
         }
       }
     }
-    for (let i = 0; i < this.data.wizard.spellBuffs.length; i++)
+    for (let i = 0; i < this.data.wizard.timedBuffs.length; i++)
     {
-      var buff = this.data.wizard.spellBuffs[i];
+      var buff = this.data.wizard.timedBuffs[i];
       if (!buff.activate(this.data.wizard, deltaTime)) {
-        this.data.wizard.spellBuffs.splice(i, 1);
+        this.data.wizard.timedBuffs.splice(i, 1);
         i--;
       }
     }

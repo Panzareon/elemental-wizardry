@@ -22,7 +22,7 @@ export class StoreComponent {
 
   public buy(offer: Offer){
     if (this.data.wizard.spendResource(offer.fromResource, offer.resourceCost)) {
-      this.data.wizard.addResource(offer.toResource, 1);
+      offer.result.add(this.data.wizard);
     }
   }
 

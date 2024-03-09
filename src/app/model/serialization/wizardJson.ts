@@ -9,6 +9,7 @@ import { RecipeType } from "../recipe";
 import { ResourceType } from "../resource";
 import { SkillType } from "../skill";
 import { SpellType } from "../spell";
+import { TimedBuffSourceType } from "../timed-buff";
 import { UnlockType } from "../unlocks";
 
 export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson, GardenPlotJson, RecipeJson, ItemJson, CompanionJson }
@@ -51,10 +52,14 @@ interface KnowledgeJson {
     exp: number;
 }
 interface BuffJson {
-    type: SpellType;
+    source: BuffSourceJson;
     duration: number;
     power: number;
     costMultiplier: number;
+}
+interface BuffSourceJson {
+    type: TimedBuffSourceType;
+    data: any;
 }
 interface UnlocksJson {
     type: UnlockType;

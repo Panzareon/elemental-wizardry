@@ -1,8 +1,10 @@
-import { Buff, SkillDurationBuff, SpellPowerBuff } from "./buff";
+import { Buff, ResourceProductionBuff, SkillDurationBuff, SpellPowerBuff } from "./buff";
+import { ResourceKind } from "./resource";
 import { SkillType } from "./skill";
-import { SpellSource } from "./spell";
+import { ITimedBuffSource, TimedBuff, TimedBuffSourceType } from "./timed-buff";
+import { Wizard } from "./wizard";
 
-export { Item, ItemType }
+export { Item, ItemType, ItemTimedBuffSource, ItemUsageType }
 
 enum ItemType
 {
@@ -10,6 +12,11 @@ enum ItemType
     StoneAxe = 1,
     IronAxe = 2,
     IronPickaxe = 3,
+    ManaPotion = 4,
+}
+enum ItemUsageType {
+    Equip = 0,
+    Usable = 1,
 }
 
 class Item
@@ -28,6 +35,18 @@ class Item
         return this._type;
     }
 
+    public get usageType() : ItemUsageType {
+        switch (this._type) {
+            case ItemType.IronAxe:
+            case ItemType.IronPickaxe:
+            case ItemType.StoneAxe:
+            case ItemType.WoodenWand:
+                return ItemUsageType.Equip;
+            case ItemType.ManaPotion:
+                return ItemUsageType.Usable;
+        }
+    }
+
     public get level() : number {
         return this._level;
     }
@@ -42,10 +61,22 @@ class Item
                 return "Iron Axe";
             case ItemType.IronPickaxe:
                 return "Iron Pickaxe";
+            case ItemType.ManaPotion:
+                return "Mana Potion";
         }
     }
     public get buffs(): Buff[] {
       return this._buffs;
+    }
+
+    public use(wizard: Wizard) : boolean {
+        switch (this._type) {
+            case ItemType.ManaPotion:
+                wizard.addBuff(new TimedBuff(new ItemTimedBuffSource(this._type), 30, 5 + (this._level - 1) * 1))
+                return true;
+            default:
+                return false;
+        }
     }
     private getBuffs(): Buff[] {
         switch (this.type) {
@@ -57,6 +88,8 @@ class Item
                 return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.ChopWood)];
             case ItemType.IronPickaxe:
                 return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.Mining)];
+            case ItemType.ManaPotion:
+                return [];
         }
     }
 
@@ -71,4 +104,26 @@ class Item
 
         return result;
     }
+}
+
+class ItemTimedBuffSource implements ITimedBuffSource {
+    public constructor(private _type: ItemType) {}
+    get buffSource(): TimedBuffSourceType {
+        return TimedBuffSourceType.Item;
+    }
+    serializeTimedBuff() {
+        return this._type;
+    }
+    getBuffs(timedBuff: TimedBuff): Buff[] {
+        switch (this._type) {
+            case ItemType.ManaPotion:
+                return [new ResourceProductionBuff(false, (1 * timedBuff.power), undefined, ResourceKind.Mana)];
+            default:
+                return [];
+        }
+    }
+    activateTimedBuff(timedBuff: TimedBuff, wizard: Wizard, deltaTime: number): boolean {
+        return true;
+    }
+
 }

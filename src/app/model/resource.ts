@@ -1,3 +1,4 @@
+import { AdjustValue } from "./buff";
 import { UnlockType, Unlocks } from "./unlocks";
 import { Wizard } from "./wizard";
 
@@ -64,12 +65,12 @@ class Resource {
         return this._maxAmount + this._adjustMaxAmount.reduce((partial, x) => partial + x.resource.amount * x.maxAmountMultiplier, 0);
     }
     public getGenerationPerSecond(wizard: Wizard): number {
-        let generation = this.baseGenerationPerSecond;
+        let generation = new AdjustValue(this.baseGenerationPerSecond);
         for (let buff of wizard.buffs) {
-            generation = buff.adjustResourceProduction(this, generation);
+            buff.adjustResourceProduction(this, generation);
         }
 
-        return generation;
+        return generation.value;
     }
     public get baseGenerationPerSecond(): number {
         return this._generationPerSecond;

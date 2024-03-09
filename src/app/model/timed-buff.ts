@@ -3,23 +3,23 @@ import { Resource, ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
 import { Wizard } from "./wizard";
 
-export { SpellBuff }
+export { TimedBuff, ITimedBuffSource, TimedBuffSourceType }
 
-class SpellBuff {
+enum TimedBuffSourceType {
+    Spell = 0,
+    Item = 1,
+}
+
+class TimedBuff {
     private _buffs: Buff[];
-    constructor(private _spell: Spell, private _duration: number, private _power: number, private _costMultiplier: number) {
+    constructor(private _source: ITimedBuffSource, private _duration: number, private _power: number, private _costMultiplier: number  = 1) {
         this._buffs = this.getBuffs();
     }
     getBuffs(): Buff[] {
-        switch (this._spell.type) {
-            case SpellType.ExpediteGeneration:
-                return [new ResourceProductionBuff((1 + 0.5 * this.power), undefined, ResourceKind.Mana, ResourceType.Chrono)];
-            default:
-                return [];
-        }
+        return this._source.getBuffs(this);
     }
-    public get spell() : Spell {
-        return this._spell;
+    public get source() : ITimedBuffSource {
+        return this._source;
     }
 
     public get duration() : number {
@@ -48,12 +48,19 @@ class SpellBuff {
         }
 
         this._duration -= deltaTime
-        switch (this._spell.type) {
-            case SpellType.ExpediteGeneration:
-                if (!wizard.spendResource(ResourceType.Chrono, deltaTime * 0.2 * this.costMultiplier)) {
-                    return false;
-                }
+        if (!this._source.activateTimedBuff(this, wizard, deltaTime)) {
+            return false;
         }
         return this._duration > 0;
     }
+}
+interface ITimedBuffSource
+{
+    get buffSource() : TimedBuffSourceType;
+
+    getBuffs(timedBuff: TimedBuff): Buff[];
+
+    activateTimedBuff(timedBuff: TimedBuff, wizard: Wizard, deltaTime: number): boolean;
+    
+    serializeTimedBuff(): any;
 }

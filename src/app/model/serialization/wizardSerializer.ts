@@ -1,4 +1,4 @@
-import { SpellBuff } from "../spell-buff";
+import { TimedBuff } from "../timed-buff";
 import { GameLocation } from "../gameLocation";
 import { GardenPlot } from "../garden-plot";
 import { Influence } from "../influence";
@@ -27,7 +27,7 @@ class WizardSerializer {
             knowledge: this.wizard.knowledge.map(x => this.serializeKnowledge(x)),
             locations: this.wizard.location.map(x => this.serializeLocation(x)),
             unlocks: this.wizard.unlocks.map(x => this.serializeUnlocks(x)),
-            buffs: this.wizard.spellBuffs.map(x => this.serializeBuff(x)),
+            buffs: this.wizard.timedBuffs.map(x => this.serializeBuff(x)),
             availableUnlocks: this.wizard.availableUnlocks,
             influence: this.wizard.influence.map(x => this.serializeInfluence(x)),
             gardenPlots: this.wizard.gardenPlots.map(x => this.serializeGardenPlot(x)),
@@ -90,9 +90,12 @@ class WizardSerializer {
             numberRepeated: x.numberRepeated,
         }
     }
-    serializeBuff(x: SpellBuff): BuffJson {
+    serializeBuff(x: TimedBuff): BuffJson {
         return {
-            type: x.spell.type,
+            source: {
+                type: x.source.buffSource,
+                data: x.source.serializeTimedBuff(),
+            },
             duration: x.duration,
             power: x.power,
             costMultiplier: x.costMultiplier,

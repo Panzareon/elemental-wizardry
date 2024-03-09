@@ -1,7 +1,8 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { InfluenceType } from "./influence";
+import { Item, ItemType } from "./item";
 import { KnowledgeType } from "./knowledge";
-import { ResourceType } from "./resource";
+import { Resource, ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { UnlockType } from "./unlocks";
 import { EventInfo, EventInfoType, Wizard } from "./wizard";
@@ -17,7 +18,7 @@ enum LocationType {
 }
 
 class Offer {
-    constructor(private _fromResource: ResourceType, private _resourceCost: number, private _toResource: ResourceType) {
+    constructor(private _fromResource: ResourceType, private _resourceCost: number, private _result: IOfferResult) {
     }
 
     public get fromResource() {
@@ -28,8 +29,40 @@ class Offer {
         return this._resourceCost;
     }
 
-    public get toResource() {
-        return this._toResource;
+    public get result() : IOfferResult {
+        return this._result;
+    }
+}
+interface IOfferResult {
+    get name(): string;
+    add(wizard: Wizard) : void;
+}
+class OfferResourceResult implements IOfferResult {
+    private _name: string;
+    constructor (private _toResource: ResourceType) {
+        this._name = new Resource(this._toResource).name;
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public add(wizard: Wizard): void {
+        wizard.addResource(this._toResource, 1);
+    }
+}
+class OfferItemResult implements IOfferResult {
+    private _name: string;
+    constructor (private _itemType: ItemType, private _level: number) {
+        this._name = new Item(this._itemType, this._level).name;
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public add(wizard: Wizard): void {
+        wizard.addItem(new Item(this._itemType, this._level));
     }
 }
 
@@ -329,9 +362,12 @@ class GameLocation {
     generateOffers(): Offer[] {
         switch (this.type) {
             case LocationType.Store:
-                return [new Offer(ResourceType.Gold, 50, ResourceType.Gemstone)];
+                return [new Offer(ResourceType.Gold, 50, new OfferResourceResult(ResourceType.Gemstone))];
             case LocationType.AlchemistStore:
-                return [new Offer(ResourceType.Gold, 10, ResourceType.MandrakeRoot)];
+                return [
+                    new Offer(ResourceType.Gold, 10, new OfferResourceResult(ResourceType.MandrakeRoot)),
+                    new Offer(ResourceType.Gold, 100, new OfferItemResult(ItemType.ManaPotion, 1)),
+                ];
             case LocationType.Forest:
             case LocationType.Village:
             case LocationType.Mountain:

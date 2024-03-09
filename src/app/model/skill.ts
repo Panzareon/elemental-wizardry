@@ -3,6 +3,7 @@ import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
 import { EventInfo, Wizard } from "./wizard";
+import { AdjustValue } from "./buff";
 
 export { Skill, SkillType, SkillActionType }
 
@@ -148,11 +149,11 @@ class Skill implements IActive {
         this.earnExp(wizard, deltaTime);
         if (this.actionType == SkillActionType.Duration) {
             let lastDurationSpellCheck = Math.floor(this._durationTimeSpent);
-            let durationDelta = deltaTime;
+            let durationDelta = new AdjustValue(deltaTime);
             for (let buff of wizard.buffs) {
-                durationDelta = buff.adjustSkillDuration(this, durationDelta);
+                buff.adjustSkillDuration(this, durationDelta);
             }
-            this._durationTimeSpent += durationDelta;
+            this._durationTimeSpent += durationDelta.value;
             while (lastDurationSpellCheck + 1 < this._durationTimeSpent) {
                 lastDurationSpellCheck++
                 this.triggerDurationSpell(wizard);

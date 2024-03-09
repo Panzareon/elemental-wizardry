@@ -1,8 +1,8 @@
-import { SpellBuff } from "../spell-buff";
+import { TimedBuff, TimedBuffSourceType } from "../timed-buff";
 import { GameLocation } from "../gameLocation";
 import { GardenPlot, GardenPlotPlant } from "../garden-plot";
 import { Influence } from "../influence";
-import { Item } from "../item";
+import { Item, ItemTimedBuffSource } from "../item";
 import { Knowledge } from "../knowledge";
 import { Recipe } from "../recipe";
 import { Resource } from "../resource";
@@ -95,9 +95,14 @@ class WizardDeserializer {
         knowledge.load(x.level, x.exp);
         return knowledge;
     }
-    deserializeBuffs(buff: BuffJson, spells: Spell[]) {
-        let spell = spells.find(x => x.type == buff.type);
-        return new SpellBuff(spell!, buff.duration, buff.power, buff.costMultiplier);
+    deserializeBuffs(buff: BuffJson, spells: Spell[]) : TimedBuff {
+        switch (buff.source.type) {
+            case TimedBuffSourceType.Spell:
+                let spell = spells.find(x => x.type == buff.source.data);
+                return new TimedBuff(spell!, buff.duration, buff.power, buff.costMultiplier);
+            case TimedBuffSourceType.Item:
+                return new TimedBuff(new ItemTimedBuffSource(buff.source.data), buff.duration, buff.power, buff.costMultiplier);
+        }
     }
     deserializeLocation(x: LocationJson): GameLocation {
         let location = new GameLocation(x.type);

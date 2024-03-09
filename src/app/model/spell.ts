@@ -1,10 +1,11 @@
-import { SpellBuff } from "./spell-buff";
+import { ITimedBuffSource, TimedBuff, TimedBuffSourceType } from "./timed-buff";
 import { IKnowledgeAction } from "./knowledge";
-import { ResourceAmount, ResourceType } from "./resource";
+import { ResourceAmount, ResourceKind, ResourceType } from "./resource";
 import { EventInfo, Wizard } from "./wizard";
 import { Companion, CompanionType } from "./companion";
 import { GameLogicService } from "../game-logic.service";
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
+import { Buff, ResourceProductionBuff } from "./buff";
 
 export { Spell, SpellType, SpellSource, SpellCastingType }
 
@@ -30,13 +31,12 @@ enum SpellSource {
     Nature = 2,
 }
 
-class Spell {
+class Spell implements ITimedBuffSource {
     private _type: SpellType;
     private _cast: SpellCast;
     private _source: SpellSource;
     private _level: number;
     private _exp: number;
-    private _isCasting: boolean = false;
     constructor(type: SpellType) {
         this._type = type;
         this._level = 1;
@@ -146,7 +146,7 @@ class Spell {
                 wizard.addResource(ResourceType.ChronoGem, (1 + (spellPower - 1) / 2));
                 break;
             case SpellType.ExpediteGeneration:
-                wizard.addBuff(new SpellBuff(this, 30, spellPower, this.costMultiplier));
+                wizard.addBuff(new TimedBuff(this, 30, spellPower, this.costMultiplier));
                 break;
             case SpellType.ConverseWithFutureSelf:
                 let knowledgeActions = wizard.active.map(x => (<IKnowledgeAction>x).knowledge).filter(x => x !== undefined);
@@ -173,6 +173,34 @@ class Spell {
         }
 
         this.getExp(1);
+    }
+
+    get buffSource(): TimedBuffSourceType {
+        return TimedBuffSourceType.Spell;
+    }
+
+    public getBuffs(timedBuff: TimedBuff): Buff[] {
+        switch (this.type) {
+            case SpellType.ExpediteGeneration:
+                return [new ResourceProductionBuff(true, (1 + 0.5 * timedBuff.power), undefined, ResourceKind.Mana, ResourceType.Chrono)];
+            default:
+                return [];
+        }
+    }
+
+    public activateTimedBuff(timedBuff: TimedBuff, wizard: Wizard, deltaTime: number): boolean {
+        switch (this.type) {
+            case SpellType.ExpediteGeneration:
+                if (!wizard.spendResource(ResourceType.Chrono, deltaTime * 0.2 * timedBuff.costMultiplier)) {
+                    return false;
+                }
+        }
+
+        return true;
+    }
+
+    public serializeTimedBuff() {
+        return this._type;
     }
 
     public canCast(wizard: Wizard) : boolean {

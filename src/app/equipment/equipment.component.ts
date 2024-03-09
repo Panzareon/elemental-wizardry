@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DataService } from '../data.service';
-import { Item } from '../model/item';
+import { Item, ItemUsageType } from '../model/item';
 import { ResourceAmount } from '../model/resource';
 
 @Component({
@@ -15,7 +15,10 @@ export class EquipmentComponent {
     return this._data.wizard.attunedItems;
   }
   public get notAttunedItems() : Item[] {
-    return this._data.wizard.items.filter(x => !this.attunedItems.includes(x));
+    return this._data.wizard.items.filter(x => !this.attunedItems.includes(x) && x.usageType == ItemUsageType.Equip);
+  }
+  public get usables() : Item[] {
+    return this._data.wizard.items.filter(x => x.usageType == ItemUsageType.Usable);
   }
   public get attunementSlots() : number {
     return this._data.wizard.attunementSlots;
