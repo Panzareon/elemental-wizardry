@@ -126,4 +126,15 @@ class ItemTimedBuffSource implements ITimedBuffSource {
         return true;
     }
 
+    get icon(): string {
+        switch (this._type) {
+            case ItemType.ManaPotion:
+                return "mana-potion.svg";
+            case ItemType.WoodenWand:
+            case ItemType.StoneAxe:
+            case ItemType.IronAxe:
+            case ItemType.IronPickaxe:
+                throw new Error("Item shouldn't have timed buff.");
+        }
+    }
 }

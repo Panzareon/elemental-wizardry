@@ -1,0 +1,4 @@
+<div class="timed-buff" *ngFor="let buff of activeBuffs">
+    <img src="assets/icons/{{buff.source.icon}}"/>
+    <div class="cooldown" [style.--time-left.%]="(1-buff.durationPercent)*100"></div>
+</div>

@@ -50,6 +50,7 @@ import { ActiveActionsComponent } from './active-actions/active-actions.componen
 import { CompanionsComponent } from './companions/companions.component';
 import { RitualCircleComponent } from './ritual-circle/ritual-circle.component';
 import { RitualComponent } from './ritual/ritual.component';
+import { ActiveBuffsComponent } from './active-buffs/active-buffs.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { RitualComponent } from './ritual/ritual.component';
     ActiveActionsComponent,
     CompanionsComponent,
     RitualCircleComponent,
-    RitualComponent
+    RitualComponent,
+    ActiveBuffsComponent
   ],
   imports: [
     BrowserModule,

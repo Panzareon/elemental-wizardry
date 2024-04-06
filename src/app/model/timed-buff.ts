@@ -1,6 +1,4 @@
 import { Buff, ResourceProductionBuff } from "./buff";
-import { Resource, ResourceKind, ResourceType } from "./resource";
-import { Spell, SpellType } from "./spell";
 import { Wizard } from "./wizard";
 
 export { TimedBuff, ITimedBuffSource, TimedBuffSourceType }
@@ -12,8 +10,10 @@ enum TimedBuffSourceType {
 
 class TimedBuff {
     private _buffs: Buff[];
+    private _maxDuration: number;
     constructor(private _source: ITimedBuffSource, private _duration: number, private _power: number, private _costMultiplier: number  = 1) {
         this._buffs = this.getBuffs();
+        this._maxDuration = this._duration;
     }
     getBuffs(): Buff[] {
         return this._source.getBuffs(this);
@@ -24,6 +24,10 @@ class TimedBuff {
 
     public get duration() : number {
         return this._duration;
+    }
+
+    public get durationPercent() : number {
+        return this._duration/this._maxDuration;
     }
 
     public get power() : number {
@@ -57,6 +61,8 @@ class TimedBuff {
 interface ITimedBuffSource
 {
     get buffSource() : TimedBuffSourceType;
+
+    get icon(): string;
 
     getBuffs(timedBuff: TimedBuff): Buff[];
 
