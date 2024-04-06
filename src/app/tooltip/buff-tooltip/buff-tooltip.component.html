@@ -1,0 +1,10 @@
+<mat-card class="tooltip" [style.left]="left + 'px'" [style.top]="top + 'px'" [class.visible]="visible" [class.moved-position]="movedPosition">
+    <mat-card-header>
+        <h2>{{buff.source.name}}</h2>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngFor="let individualBuff of buff.buffs">
+            {{individualBuff.description}}
+        </div>
+    </mat-card-content>
+</mat-card>

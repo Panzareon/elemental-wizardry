@@ -57,7 +57,7 @@ class ResourceProductionBuff extends Buff {
         if (this._excludeResource !== undefined) {
             productionSource += " except " + new Resource(this._excludeResource).name;
         }
-        return "Increases " + productionSource + " production by " + (this._power * 100 - 100) + "%";
+        return "Increases " + productionSource + " production by " + (this._power * 100 - 100).toFixed(2) + "%";
     }
 
     public override adjustResourceProduction(resource: Resource, production : AdjustValue) : void {

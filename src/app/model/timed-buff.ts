@@ -42,10 +42,6 @@ class TimedBuff {
         return this._buffs;
     }
 
-    get buffDescription(): string {
-        throw new Error("Method not implemented.");
-    }
-
     public activate(wizard: Wizard, deltaTime: number): boolean {
         if (deltaTime > this._duration) {
             deltaTime = this._duration;
@@ -63,6 +59,8 @@ interface ITimedBuffSource
     get buffSource() : TimedBuffSourceType;
 
     get icon(): string;
+
+    get name(): string;
 
     getBuffs(timedBuff: TimedBuff): Buff[];
 

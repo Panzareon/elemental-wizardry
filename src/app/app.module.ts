@@ -51,6 +51,8 @@ import { CompanionsComponent } from './companions/companions.component';
 import { RitualCircleComponent } from './ritual-circle/ritual-circle.component';
 import { RitualComponent } from './ritual/ritual.component';
 import { ActiveBuffsComponent } from './active-buffs/active-buffs.component';
+import { BuffTooltipDirective } from './tooltip/buff-tooltip/buff-tooltip.directive';
+import { BuffTooltipComponent } from './tooltip/buff-tooltip/buff-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,9 @@ import { ActiveBuffsComponent } from './active-buffs/active-buffs.component';
     CompanionsComponent,
     RitualCircleComponent,
     RitualComponent,
-    ActiveBuffsComponent
+    ActiveBuffsComponent,
+    BuffTooltipDirective,
+    BuffTooltipComponent
   ],
   imports: [
     BrowserModule,

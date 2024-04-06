@@ -137,4 +137,7 @@ class ItemTimedBuffSource implements ITimedBuffSource {
                 throw new Error("Item shouldn't have timed buff.");
         }
     }
+    get name(): string {
+        return new Item(this._type, 0).baseName;
+    }
 }
