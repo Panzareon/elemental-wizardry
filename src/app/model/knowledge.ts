@@ -89,6 +89,7 @@ class Knowledge {
                 }
                 if (this.level >= 4) {
                     wizard.addAvailableUnlock(UnlockType.ManaProduction);
+                    wizard.learnSkill(SkillType.MeditateOnMana);
                 }
                 if (this.level >= 5) {
                     wizard.learnSpell(SpellType.SummonFamiliar);
@@ -103,6 +104,7 @@ class Knowledge {
                 }
                 if (this.level >= 4) {
                     wizard.learnSpell(SpellType.ExpediteGeneration);
+                    wizard.learnSkill(SkillType.MeditateOnChrono);
                 }
                 if (this.level >= 5) {
                     wizard.learnSpell(SpellType.ConverseWithFutureSelf);
@@ -137,6 +139,9 @@ class Knowledge {
                 }
                 if (this.level >= 3) {
                     wizard.learnSpell(SpellType.InfuseNatureGem);
+                }
+                if (this.level >= 4) {
+                    wizard.learnSkill(SkillType.MeditateOnNature);
                 }
                 break;
         }

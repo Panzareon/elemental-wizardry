@@ -12,6 +12,9 @@ enum SkillType {
     MagicShow = 1,
     ChopWood = 2,
     Mining = 3,
+    MeditateOnMana = 4,
+    MeditateOnChrono = 5,
+    MeditateOnNature = 6,
 }
 enum SkillActionType {
     Ongoing = 0,
@@ -57,7 +60,16 @@ class Skill implements IActive {
     }
 
     public get name() : string {
-        return SkillType[this.type];
+        switch (this.type) {
+            case SkillType.MeditateOnMana:
+                return "Meditate on Mana";
+            case SkillType.MeditateOnChrono:
+                return "Meditate on Chrono";
+            case SkillType.MeditateOnNature:
+                return "Meditate on Nature";
+            default:
+                return SkillType[this.type];
+        }
     }
     
     public get activeName() : string {
@@ -132,6 +144,7 @@ class Skill implements IActive {
     activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         switch (this.type) {
             case SkillType.Meditate:
+            {
                 let manaGeneration = (1 + this.level * 0.1) * deltaTime;
                 let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
                 let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard)).reduce((x, y) => x + y, 0);
@@ -139,6 +152,25 @@ class Skill implements IActive {
                     wizard.addResource(resource.type, manaGeneration * resource.getGenerationPerSecond(wizard) / baseGenerationSum)
                 }
                 break;
+            }
+            case SkillType.MeditateOnMana:
+            {
+                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                wizard.addResource(ResourceType.Mana, manaGeneration);
+                break;
+            }
+            case SkillType.MeditateOnChrono:
+            {
+                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                wizard.addResource(ResourceType.Chrono, manaGeneration);
+                break;
+            }
+            case SkillType.MeditateOnNature:
+            {
+                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                wizard.addResource(ResourceType.Nature, manaGeneration);
+                break;
+            }
             case SkillType.MagicShow:
                 if (!wizard.spendResource(ResourceType.Mana, deltaTime)) {
                     return ActiveActivateResult.OutOfMana;
@@ -244,6 +276,9 @@ class Skill implements IActive {
     private toActiontype(type: SkillType): SkillActionType {
         switch (type) {
             case SkillType.Meditate:
+            case SkillType.MeditateOnMana:
+            case SkillType.MeditateOnChrono:
+            case SkillType.MeditateOnNature:
                 return SkillActionType.Ongoing;
             case SkillType.MagicShow:
             case SkillType.ChopWood:
