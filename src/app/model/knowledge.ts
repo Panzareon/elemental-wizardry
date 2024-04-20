@@ -112,6 +112,9 @@ class Knowledge {
                 if (this.level >= 6) {
                     wizard.learnSpell(SpellType.SkipTime);
                 }
+                if (this.level >= 7) {
+                    wizard.learnSpell(SpellType.AttuneChronomancy);
+                }
                 break;
             case KnowledgeType.CraftingKnowledge:
                 if (this.level >= 2) {

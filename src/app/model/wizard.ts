@@ -13,7 +13,7 @@ import { Recipe, RecipeType } from "./recipe";
 import { Item } from "./item";
 import { AdjustValue, Buff } from "./buff";
 import { Companion, CompanionType } from "./companion";
-export { Wizard, EventInfo, EventInfoType }
+export { Wizard, EventInfo, EventInfoType, WizardDataType }
 
 class Wizard {
   private _resources: Resource[];
@@ -32,6 +32,7 @@ class Wizard {
   private _items: Item[];
   private _companions: Companion[];
   private _attunedItems: Item[] = [];
+  private _data: {[id in WizardDataType]? : number};
 
   public constructor(resources: Resource[],
     skills: Skill[],
@@ -46,7 +47,8 @@ class Wizard {
     gardenPlots: GardenPlot[],
     recipe: Recipe[],
     items: Item[],
-    companions: Companion[]) {
+    companions: Companion[],
+    data: {[id in WizardDataType]? : number}) {
       this._resources = resources;
       this._skills = skills;
       this._knowldege = knowledge;
@@ -61,6 +63,7 @@ class Wizard {
       this._recipe = recipe;
       this._items = items;
       this._companions = companions;
+      this._data = data;
       this._unlocks.forEach(x => this.getUnlockReward(x, true));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
@@ -83,7 +86,8 @@ class Wizard {
       [],
       [],
       [],
-      [])
+      [],
+      {})
   }
 
   public get resources(): Resource[] {
@@ -150,6 +154,11 @@ class Wizard {
 
   public get event() : Subscribable<EventInfo> {
     return this._event;
+  }
+
+  public get data(): {[id in WizardDataType]? : number}
+  {
+    return this._data;
   }
 
   public get attunementSlots() : number {
@@ -437,6 +446,18 @@ class Wizard {
     this.resources.forEach(x => x.calculate(this));
     this.knowledge.forEach(x => x.calculate(this));
   }
+  addToData(dataType: WizardDataType, amount: number) {
+    let currentValue = this._data[dataType];
+    if (currentValue === undefined) {
+      currentValue = amount;
+    }
+    else
+    {
+      currentValue += amount;
+    }
+
+    this._data[dataType] = currentValue;
+  }
   
   private addGardenPlot() {
     this._gardenPlots.push(new GardenPlot(this._gardenPlots.length));
@@ -487,4 +508,9 @@ class EventInfo {
     eventInfo._positionY = positionY;
     return eventInfo;
   }
+}
+enum WizardDataType {
+  ManaAttunement = 0,
+  ChronomancyAttunement = 1,
+  NatureAttunement = 2,
 }

@@ -37,6 +37,7 @@ class WizardDeserializer {
             this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [],
             items.map(x => x[0]),
             this.json.companions?.map(x => this.deserializeCompanion(x)) ??[],
+            this.json.data ?? {},
         );
         wizard.unlocks.forEach(x => x.afterLoad(wizard));
         wizard.recalculateStats();

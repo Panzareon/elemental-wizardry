@@ -35,6 +35,7 @@ class WizardSerializer {
             items: this.wizard.items.map(x => this.serializeItem(x, this.wizard)),
             companions: this.wizard.companions.map(x => this.serializeCompanion(x)),
             actives: this.wizard.active.map(x => x.serialize),
+            data: this.wizard.data,
         }
     }
     serializeResource(x: Resource): ResourceJson {

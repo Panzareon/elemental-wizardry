@@ -11,6 +11,7 @@ import { SkillType } from "../skill";
 import { SpellType } from "../spell";
 import { TimedBuffSourceType } from "../timed-buff";
 import { UnlockType } from "../unlocks";
+import { WizardDataType } from "../wizard";
 
 export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson, GardenPlotJson, RecipeJson, ItemJson, CompanionJson }
 
@@ -29,6 +30,7 @@ interface WizardJson {
     items: ItemJson[];
     companions: CompanionJson[];
     actives: [ActiveType, any][];
+    data: {[id in WizardDataType]? : number};
 }
 interface ResourceJson {
     type: ResourceType;

@@ -18,6 +18,7 @@ enum SpellType {
     SummonFamiliar = 5,
     InfuseNatureGem = 6,
     SkipTime = 7,
+    AttuneChronomancy = 8,
 }
 
 enum SpellCastingType {
@@ -119,6 +120,8 @@ class Spell implements ITimedBuffSource {
                 return "Infuses a gemstone with nature to create a Nature Gem";
             case SpellType.SkipTime:
                 return "Skip forward in time to skip waiting on some external event"
+            case SpellType.AttuneChronomancy:
+                return "Attune to Chronomancy to be able to handle more complex Chronomancy spells";
         }
     }
 
@@ -245,6 +248,10 @@ class Spell implements ITimedBuffSource {
                 return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Nature, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)]);
             case SpellType.SkipTime:
                 return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Chrono, 30 * costMultiplier)]);
+            case SpellType.AttuneChronomancy:
+                return SpellCast.CreateRitualSpell(
+                    [new ResourceAmount(ResourceType.ChronoGem, 5 * costMultiplier)],
+                    new RitualCast(this, [new ResourceAmount(ResourceType.Chrono, 100  * costMultiplier), new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)], 30));
         }
     }
 
@@ -258,6 +265,7 @@ class Spell implements ITimedBuffSource {
             case SpellType.ExpediteGeneration:
             case SpellType.ConverseWithFutureSelf:
             case SpellType.SkipTime:
+            case SpellType.AttuneChronomancy:
                 return SpellSource.Chronomancy;
             case SpellType.InfuseNatureGem:
                 return SpellSource.Nature;
@@ -362,6 +370,7 @@ class RitualCast implements IActive {
         }
         switch (this._spell.type) {
             case SpellType.SummonFamiliar:
+            case SpellType.AttuneChronomancy:
                 return this._numberCasts == 0;
             default:
                 return false;
