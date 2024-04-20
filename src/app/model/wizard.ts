@@ -350,6 +350,7 @@ class Wizard {
   }
   public attuneItem(item: Item) {
     this._attunedItems.push(item);
+    this.recalculateStats();
   }
   public removeAttunedItem(item: Item) {
     let itemIndex = this._attunedItems.indexOf(item);
@@ -432,7 +433,7 @@ class Wizard {
 
     return recipe;
   }
-  private recalculateStats() {
+  public recalculateStats() {
     this.resources.forEach(x => x.calculate(this));
     this.knowledge.forEach(x => x.calculate(this));
   }

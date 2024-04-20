@@ -24,9 +24,11 @@ class Unlocks {
     private _type: UnlockType;
     private _numberRepeated: number;
     private _cost: Costs[]; 
+    private _numberTransformed: number;
     public constructor(type: UnlockType) {
         this._type = type;
         this._numberRepeated = 0;
+        this._numberTransformed = 0;
         this._cost = this.getCost();
     }
 
@@ -35,6 +37,9 @@ class Unlocks {
     }
     public get numberRepeated(): number {
         return this._numberRepeated;
+    }
+    public get numberActive(): number {
+        return this._numberRepeated - this._numberTransformed;
     }
     public get name(): string {
         switch (this.type) {
@@ -89,7 +94,7 @@ class Unlocks {
             case UnlockType.ChronomancyMentor:
                 return "Get a Mentor to help study Chronomancy and other magic";
             case UnlockType.ChronomancyProduction:
-                return "Converts 0.1 Mana generation into 0.1 Chrono generation per second";
+                return "Converts a Mana Production upgrade into 0.1 Chrono generation per second";
             case UnlockType.WoodStorage:
                 return "Increase wood storage by 10";
             case UnlockType.CraftingMentor:
@@ -101,28 +106,31 @@ class Unlocks {
             case UnlockType.NatureMagic:
                 return "Unlocks nature magic as a new field to study";
             case UnlockType.NatureProduction:
-                return "Converts 0.1 Mana generation into 0.1 Nature generation per second";
+                return "Converts a Mana Production upgrade into 0.1 Nature generation per second";
         }
     }
+    public transform(amount: number) {
+        this._numberTransformed += amount;
+    }
     public canUnlock(wizard: Wizard) : boolean {
-        switch (this.type) {
-            case UnlockType.ChronomancyProduction:
-            case UnlockType.NatureProduction:
-                return (wizard.getResource(ResourceType.Mana)?.baseGenerationPerSecond ?? 0) > Resource.BaseManaGeneration * 1.5;
+        let baseUnlock = this.tryGetBaseUnlock(wizard);
+        if (baseUnlock[1] === true) {
+            if (baseUnlock[0] === undefined || baseUnlock[0].numberActive <= 0) {
+                return false;
+            }
         }
-
         return true;
     }
     increaseMaxResourceAmount(type: ResourceType) : number {
         switch (this.type) {
             case UnlockType.Purse:
                 if (type == ResourceType.Gold) {
-                    return this.numberRepeated * 100;
+                    return this.numberActive * 100;
                 }
                 break;
             case UnlockType.WoodStorage:
                 if (type == ResourceType.Wood) {
-                    return this.numberRepeated * 10;
+                    return this.numberActive * 10;
                 }
                 break;
         }
@@ -132,23 +140,17 @@ class Unlocks {
         switch (this.type) {
             case UnlockType.ManaProduction:
                 if (type == ResourceType.Mana) {
-                    return this.numberRepeated * Resource.BaseManaGeneration;
+                    return this.numberActive * Resource.BaseManaGeneration;
                 }
                 break;
             case UnlockType.ChronomancyProduction:
-                if (type == ResourceType.Mana) {
-                    return -this.numberRepeated * Resource.BaseManaGeneration;
-                }
                 if (type == ResourceType.Chrono) {
-                    return this.numberRepeated * Resource.BaseManaGeneration;
+                    return this.numberActive * Resource.BaseManaGeneration;
                 }
                 break;
             case UnlockType.NatureProduction:
-                if (type == ResourceType.Mana) {
-                    return -this.numberRepeated * Resource.BaseManaGeneration;
-                }
                 if (type == ResourceType.Nature) {
-                    return this.numberRepeated * Resource.BaseManaGeneration;
+                    return this.numberActive * Resource.BaseManaGeneration;
                 }
                 break;
         }
@@ -175,8 +177,9 @@ class Unlocks {
         if (!this._cost.includes(costs)) {
             throw new Error("Not matching costs given");
         }
-        if (costs.spend(wizard)) {
+        if (this.canUnlock(wizard) && costs.spend(wizard)) {
             this._numberRepeated++;
+            this.transformBaseUnlock(wizard);
             this._cost = this.getCost();
             wizard.unlocked(this);
             return true;
@@ -187,6 +190,29 @@ class Unlocks {
     load(numberRepeated: number) {
         this._numberRepeated = numberRepeated;
         this._cost = this.getCost();
+    }
+    afterLoad(wizard: Wizard) {
+        this.transformBaseUnlock(wizard, this._numberRepeated);
+    }
+    private tryGetBaseUnlock(wizard: Wizard) : [Unlocks|undefined, boolean] {
+        switch (this._type) {
+            case UnlockType.ChronomancyProduction:
+            case UnlockType.NatureProduction:
+            {
+                let baseUnlock = wizard.unlocks.find(x => x.type == UnlockType.ManaProduction);
+                return [baseUnlock, true];
+            }
+            default:
+                return [undefined, false];
+        }
+    }
+    private transformBaseUnlock(wizard: Wizard, amount: number = 1){
+        let baseUnlock = this.tryGetBaseUnlock(wizard);
+        if (baseUnlock[1] === false || baseUnlock[0] === undefined) {
+            return;
+        }
+
+        baseUnlock[0].transform(amount);
     }
     private getCost(): Costs[] {
         const targetUnlockNumber = this.numberRepeated + 1;

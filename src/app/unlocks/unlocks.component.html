@@ -10,5 +10,6 @@
     Unlocked:
     <div *ngFor="let unlock of completedUnlocks">
         {{unlock.name}} {{unlock.numberRepeated}}/{{unlock.maxRepeats}}
+        <ng-container *ngIf="unlock.numberActive !== unlock.numberRepeated"> | {{unlock.numberActive}} currently active</ng-container>
     </div>
 </ng-container>

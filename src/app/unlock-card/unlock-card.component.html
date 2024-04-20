@@ -1,6 +1,7 @@
 <mat-card>
     <mat-card-header>
         {{unlock.name}} {{unlock.numberRepeated}}/{{unlock.maxRepeats}}
+        <ng-container *ngIf="unlock.numberActive !== unlock.numberRepeated"> | {{unlock.numberActive}} currently active</ng-container>
     </mat-card-header>
     <mat-card-content>
         <button mat-raised-button (click)="buyUnlock(unlock, cost)" [disabled]="!canUnlock(unlock, cost)" class="unlock" *ngFor="let cost of unlock.cost">

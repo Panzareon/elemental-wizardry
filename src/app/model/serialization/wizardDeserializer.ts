@@ -38,6 +38,8 @@ class WizardDeserializer {
             items.map(x => x[0]),
             this.json.companions?.map(x => this.deserializeCompanion(x)) ??[],
         );
+        wizard.unlocks.forEach(x => x.afterLoad(wizard));
+        wizard.recalculateStats();
         items.filter(x => x[1]).forEach(x => wizard.attuneItem(x[0]));
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
