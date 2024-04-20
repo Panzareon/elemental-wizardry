@@ -1,7 +1,7 @@
 import { ITimedBuffSource, TimedBuff, TimedBuffSourceType } from "./timed-buff";
 import { IKnowledgeAction } from "./knowledge";
 import { ResourceAmount, ResourceKind, ResourceType } from "./resource";
-import { EventInfo, Wizard } from "./wizard";
+import { EventInfo, Wizard, WizardDataType } from "./wizard";
 import { Companion, CompanionType } from "./companion";
 import { GameLogicService } from "../game-logic.service";
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
@@ -172,6 +172,9 @@ class Spell implements ITimedBuffSource {
                 break;
             case SpellType.SkipTime:
                 GameLogicService.externalPassiveTick(wizard, 60 * spellPower);
+                break;
+            case SpellType.AttuneChronomancy:
+                wizard.addToData(WizardDataType.ChronomancyAttunement, 1);
                 break;
         }
 

@@ -1,4 +1,5 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
+import { InfluenceType } from "./influence";
 import { RecipeType } from "./recipe";
 import { Resource, ResourceKind, ResourceType } from "./resource";
 import { SkillType } from "./skill";
@@ -93,6 +94,7 @@ class Knowledge {
                 }
                 if (this.level >= 5) {
                     wizard.learnSpell(SpellType.SummonFamiliar);
+                    wizard.addInfluence(InfluenceType.WizardCouncil);
                 }
                 break;
             case KnowledgeType.ChronomancyKnowledge:

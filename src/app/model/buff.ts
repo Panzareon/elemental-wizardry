@@ -1,8 +1,9 @@
 import { Resource, ResourceKind, ResourceType } from "./resource";
 import { Skill, SkillType } from "./skill";
 import { SpellSource } from "./spell";
+import { WizardDataType } from "./wizard";
 
-export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff }
+export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease }
 
 class AdjustValue
 {
@@ -35,6 +36,8 @@ abstract class Buff {
     public adjustSpellPower(spellPower: AdjustValue, spellSource: SpellSource): void {
     }
     public adjustSkillDuration(skill: Skill, durationDelta : AdjustValue) : void {
+    }
+    public adjustWizardData(data: WizardDataType, value : AdjustValue) : void {
     }
 }
 
@@ -104,6 +107,21 @@ class SkillDurationBuff extends Buff {
     public override adjustSkillDuration(skill: Skill, durationDelta: AdjustValue): void {
         if (this._skill === skill.type) {
             durationDelta.multiply(this._power);
+        }
+    }
+}
+class WizardDataIncrease extends Buff {
+    public constructor(private _data : WizardDataType, private _amount : number){
+        super();
+    }
+
+    public override get description(): string {
+        return "Increases " + WizardDataType[this._data] + " by " + this._amount;
+    }
+
+    public override adjustWizardData(data: WizardDataType, value: AdjustValue): void {
+        if (data == this._data) {
+            value.add(this._amount);
         }
     }
 }

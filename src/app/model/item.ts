@@ -1,8 +1,9 @@
-import { Buff, ResourceProductionBuff, SkillDurationBuff, SpellPowerBuff } from "./buff";
+import { Buff, ResourceProductionBuff, SkillDurationBuff, SpellPowerBuff, WizardDataIncrease } from "./buff";
 import { ResourceKind } from "./resource";
 import { SkillType } from "./skill";
+import { SpellSource } from "./spell";
 import { ITimedBuffSource, TimedBuff, TimedBuffSourceType } from "./timed-buff";
-import { Wizard } from "./wizard";
+import { Wizard, WizardDataType } from "./wizard";
 
 export { Item, ItemType, ItemTimedBuffSource, ItemUsageType }
 
@@ -13,6 +14,7 @@ enum ItemType
     IronAxe = 2,
     IronPickaxe = 3,
     ManaPotion = 4,
+    ChronomancyWand = 5,
 }
 enum ItemUsageType {
     Equip = 0,
@@ -41,6 +43,7 @@ class Item
             case ItemType.IronPickaxe:
             case ItemType.StoneAxe:
             case ItemType.WoodenWand:
+            case ItemType.ChronomancyWand:
                 return ItemUsageType.Equip;
             case ItemType.ManaPotion:
                 return ItemUsageType.Usable;
@@ -63,6 +66,8 @@ class Item
                 return "Iron Pickaxe";
             case ItemType.ManaPotion:
                 return "Mana Potion";
+            case ItemType.ChronomancyWand:
+                return "Chronomancy Wand";
         }
     }
     public get buffs(): Buff[] {
@@ -90,6 +95,12 @@ class Item
                 return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.Mining)];
             case ItemType.ManaPotion:
                 return [];
+            case ItemType.ChronomancyWand:
+                return [
+                    new SpellPowerBuff(1.5 + (this._level - 1) * 0.05),
+                    new SpellPowerBuff(1.5 + (this._level - 1) * 0.05, SpellSource.Chronomancy),
+                    new WizardDataIncrease(WizardDataType.ChronomancyAttunement, 1)
+                ];
         }
     }
 
@@ -134,6 +145,7 @@ class ItemTimedBuffSource implements ITimedBuffSource {
             case ItemType.StoneAxe:
             case ItemType.IronAxe:
             case ItemType.IronPickaxe:
+            case ItemType.ChronomancyWand:
                 throw new Error("Item shouldn't have timed buff.");
         }
     }

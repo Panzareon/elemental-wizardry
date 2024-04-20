@@ -8,6 +8,7 @@ export { Influence, InfluenceType, InfluenceDonation, InfluenceAmount, Influence
 enum InfluenceType {
     ArtisanGuild = 0,
     AlchemistGuild = 1,
+    WizardCouncil = 2,
 }
 
 class Influence {
@@ -41,6 +42,8 @@ class Influence {
                 return "Artisan Guild";
             case InfluenceType.AlchemistGuild:
                 return "Alchemist Guild";
+            case InfluenceType.WizardCouncil:
+                return "Wizard Council";
             default:
                 return InfluenceType[this.type];
         }
@@ -73,9 +76,15 @@ class Influence {
     getDonations(): InfluenceDonation[] {
         switch (this._type) {
             case InfluenceType.ArtisanGuild:
-                return [new InfluenceDonation(this, ResourceType.Wood)];
+                return [new InfluenceDonation(this, ResourceType.Wood, 1, 100)];
             case InfluenceType.AlchemistGuild:
-                return [new InfluenceDonation(this, ResourceType.MandrakeRoot)];
+                return [new InfluenceDonation(this, ResourceType.MandrakeRoot, 1, 100)];
+            case InfluenceType.WizardCouncil:
+                return [
+                    new InfluenceDonation(this, ResourceType.ManaGem, 5, 100),
+                    new InfluenceDonation(this, ResourceType.ChronoGem, 10, 200),
+                    new InfluenceDonation(this, ResourceType.NatureGem, 10, 200),
+                ]
         }
     }
     private createUnlocks() : InfluenceUnlock[] {
@@ -84,9 +93,11 @@ class Influence {
                 return [new InfluenceUnlock(50, InfluenceUnlockType.CraftingMentor)];
             case InfluenceType.AlchemistGuild:
                 return [new InfluenceUnlock(10, InfluenceUnlockType.AlchemistStore)];
+            case InfluenceType.WizardCouncil:
+                return [new InfluenceUnlock(100, InfluenceUnlockType.WizardStore)]
         }
     }
-    private checkUnlocks(wizard: Wizard) {
+    public checkUnlocks(wizard: Wizard) {
         for (let i = this._unlocks.length - 1; i >= 0; i--) {
             const element = this._unlocks[i];
             if (element !== undefined && this.amount >= element.amount) {
@@ -97,13 +108,13 @@ class Influence {
     }
 }
 class InfluenceDonation {
-    private _addValue: number;
-    private _softCap: number;
     private _softCapMultiplier: number = 0.5;
 
-    constructor(private _influence : Influence, private _resource : ResourceType) {
-        this._addValue = this.getAddValue();
-        this._softCap = this.getSoftCap();
+    constructor(
+        private _influence : Influence,
+        private _resource : ResourceType,
+        private _addValue: number,
+        private _softCap: number) {
     }
 
     public get resource() : ResourceType {
@@ -111,7 +122,7 @@ class InfluenceDonation {
     }
 
     public get reward() : number {
-        return this.getAddValue();
+        return this._addValue;
     }
 
     public get softCap() : number {
@@ -136,42 +147,6 @@ class InfluenceDonation {
 
         this._influence.addAmount(reward * this._softCapMultiplier, wizard);
     }
-    private getAddValue(): number {
-        switch (this._influence.type) {
-            case InfluenceType.ArtisanGuild:
-                switch (this._resource) {
-                    case ResourceType.Wood:
-                        return 1;
-                    default:
-                        return 0;
-                }
-            case InfluenceType.AlchemistGuild:
-                switch (this._resource) {
-                    case ResourceType.MandrakeRoot:
-                        return 1;
-                    default:
-                        return 0;
-                }
-        }
-    }
-    private getSoftCap(): number {
-        switch (this._influence.type) {
-            case InfluenceType.ArtisanGuild:
-                switch (this._resource) {
-                    case ResourceType.Wood:
-                        return 100;
-                    default:
-                        return 0;
-                }
-            case InfluenceType.AlchemistGuild:
-                switch (this._resource) {
-                    case ResourceType.MandrakeRoot:
-                        return 100;
-                    default:
-                        return 0;
-                }
-        }
-    }
 }
 class InfluenceAmount {
     constructor(public type: InfluenceType, public cost: number, public requiredAmount: number) {}
@@ -179,6 +154,7 @@ class InfluenceAmount {
 enum InfluenceUnlockType {
     CraftingMentor,
     AlchemistStore,
+    WizardStore,
 }
 class InfluenceUnlock {
     constructor(public amount: number, public type: InfluenceUnlockType) {}
@@ -189,6 +165,8 @@ class InfluenceUnlock {
                 return "Crafting Mentor";
             case InfluenceUnlockType.AlchemistStore:
                 return "Alchemist Store";
+            case InfluenceUnlockType.WizardStore:
+                return "Wizard Store";
         }
     }
 
@@ -197,6 +175,7 @@ class InfluenceUnlock {
             case InfluenceUnlockType.CraftingMentor:
                 return "Meet a master artisan you can hire as your mentor.";
             case InfluenceUnlockType.AlchemistStore:
+                case InfluenceUnlockType.WizardStore:
                 return "Get access to the store";
         }
     }
@@ -209,6 +188,9 @@ class InfluenceUnlock {
             case InfluenceUnlockType.AlchemistStore:
                 wizard.findLocation(LocationType.AlchemistStore);
                 break;
+            case InfluenceUnlockType.WizardStore:
+                wizard.findLocation(LocationType.WizardStore);
+                break;
         }
     }
     public hasUnlocked(wizard: Wizard) : boolean {
@@ -217,6 +199,8 @@ class InfluenceUnlock {
                 return wizard.hasUnlockAvailable(UnlockType.CraftingMentor);
             case InfluenceUnlockType.AlchemistStore:
                 return wizard.location.find(x => x.type == LocationType.AlchemistStore) !== undefined;
+            case InfluenceUnlockType.WizardStore:
+                return wizard.location.find(x => x.type == LocationType.WizardStore) !== undefined;
         }
     }
 }

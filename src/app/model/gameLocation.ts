@@ -15,6 +15,7 @@ enum LocationType {
     Forest = 2,
     AlchemistStore = 3,
     Mountain = 4,
+    WizardStore = 5,
 }
 
 class Offer {
@@ -367,6 +368,10 @@ class GameLocation {
                 return [
                     new Offer(ResourceType.Gold, 10, new OfferResourceResult(ResourceType.MandrakeRoot)),
                     new Offer(ResourceType.Gold, 100, new OfferItemResult(ItemType.ManaPotion, 1)),
+                ];
+            case LocationType.WizardStore:
+                return [
+                    new Offer(ResourceType.Gold, 250, new OfferItemResult(ItemType.ChronomancyWand, 1)),
                 ];
             case LocationType.Forest:
             case LocationType.Village:

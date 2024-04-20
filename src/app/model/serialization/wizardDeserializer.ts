@@ -43,6 +43,7 @@ class WizardDeserializer {
         wizard.recalculateStats();
         items.filter(x => x[1]).forEach(x => wizard.attuneItem(x[0]));
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
+        wizard.influence.forEach(x => x.checkUnlocks(wizard));
         wizard.resources.forEach(x => x.amount = x.amount);
 
         if (this.json.actives !== undefined) {
