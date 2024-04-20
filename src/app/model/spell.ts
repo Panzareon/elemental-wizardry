@@ -121,7 +121,7 @@ class Spell implements ITimedBuffSource {
             case SpellType.SkipTime:
                 return "Skip forward in time to skip waiting on some external event"
             case SpellType.AttuneChronomancy:
-                return "Attune to Chronomancy to be able to handle more complex Chronomancy spells";
+                return "Attune to Chronomancy to be able to handle more complex Chronomancy spells. Requires attunement to Chronomancy to perform.";
         }
     }
 
@@ -210,10 +210,19 @@ class Spell implements ITimedBuffSource {
     }
 
     public canCast(wizard: Wizard) : boolean {
-        return this.cast.type === SpellCastingType.Simple
+        return this.hasRequiredAttunement(wizard)
+                && this.cast.type === SpellCastingType.Simple
                 && wizard.hasResources(this.cast.baseCost);
     }
 
+    public hasRequiredAttunement(wizard: Wizard): boolean {
+        switch (this._type) {
+            case SpellType.AttuneChronomancy:
+                return wizard.getData(WizardDataType.ChronomancyAttunement) >= 1
+            default:
+                return true;
+        }
+    }
     public getExp(exp: number) {
         this._exp += exp * this.expGainMultiplier;
         let lvlUpExp = this.levelUpExp;
@@ -369,6 +378,9 @@ class RitualCast implements IActive {
 
     public canPrepare(wizard: Wizard) : boolean {
         if (this._isPrepared || this._isChanneling) {
+            return false;
+        }
+        if (!this._spell.hasRequiredAttunement(wizard)){
             return false;
         }
         switch (this._spell.type) {

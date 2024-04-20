@@ -446,7 +446,7 @@ class Wizard {
     this.resources.forEach(x => x.calculate(this));
     this.knowledge.forEach(x => x.calculate(this));
   }
-  addToData(dataType: WizardDataType, amount: number) {
+  public addToData(dataType: WizardDataType, amount: number) {
     let currentValue = this._data[dataType];
     if (currentValue === undefined) {
       currentValue = amount;
@@ -459,6 +459,15 @@ class Wizard {
     this._data[dataType] = currentValue;
   }
   
+  public getData(dataType: WizardDataType) : number {
+    var baseValue = this._data[dataType];
+    var value = baseValue === undefined ? new AdjustValue(0) : new AdjustValue(baseValue);
+    for (let buff of this.buffs) {
+      buff.adjustWizardData(dataType, value);
+    }
+    return value.value;
+  }
+
   private addGardenPlot() {
     this._gardenPlots.push(new GardenPlot(this._gardenPlots.length));
   }
