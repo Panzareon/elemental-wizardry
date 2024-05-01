@@ -40,11 +40,13 @@ interface SpellJson {
     type: SpellType;
     level: number;
     exp: number;
+    numberCasts: number;
+    available: boolean;
     ritual?: SpellRitualInfo;
 }
 interface SpellRitualInfo {
     isPrepared: boolean;
-    numberCasts: number;
+    numberCasts?: number; // Obsolete, only for restoring old saves
     isChanneling: boolean;
     channelProgress: number;
 }
@@ -52,6 +54,8 @@ interface KnowledgeJson {
     type: KnowledgeType;
     level: number;
     exp: number;
+    previousLevel: number;
+    available: boolean;
 }
 interface BuffJson {
     source: BuffSourceJson;

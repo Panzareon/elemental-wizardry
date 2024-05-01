@@ -18,7 +18,7 @@ export { Wizard, EventInfo, EventInfoType, WizardDataType }
 class Wizard {
   private _resources: Resource[];
   private _skills: Skill[];
-  private _knowldege: Knowledge[];
+  private _knowledge: Knowledge[];
   private _unlocks: Unlocks[];
   private _active: IActive[];
   private _location: GameLocation[];
@@ -51,7 +51,7 @@ class Wizard {
     data: {[id in WizardDataType]? : number}) {
       this._resources = resources;
       this._skills = skills;
-      this._knowldege = knowledge;
+      this._knowledge = knowledge;
       this._active = actives;
       this._unlocks = unlocks;
       this._location = location;
@@ -103,7 +103,7 @@ class Wizard {
   }
 
   public get knowledge(): Knowledge[] {
-    return this._knowldege;
+    return this._knowledge;
   }
 
   public get location(): GameLocation[] {
@@ -306,6 +306,10 @@ class Wizard {
       this.notifyEvent(EventInfo.unlocked("Learned the spell " + spell.name));
       this.spells.push(spell);
     }
+    else if (!spell.available) {
+      spell.makeAvailable();
+      this.notifyEvent(EventInfo.unlocked("Learned the spell " + spell.name));
+    }
   }
   public findLocation(locationType: LocationType) {
     let location = this.location.find(x => x.type == locationType);
@@ -377,6 +381,29 @@ class Wizard {
       this._companions.splice(companionIndex, 1);
     }
   }
+  rewind() {
+    this._resources.length = 0;
+    this.addResourceType(ResourceType.Mana);
+    this._skills.length = 0;
+    this.learnSkill(SkillType.Meditate);
+    this._location.length = 0;
+    this.findLocation(LocationType.Village);
+    this._active.length = 0;
+    this._buffs.length = 0;
+    this._gardenPlots.length = 0;
+    this._recipe.length = 0;
+    this._influence.length = 0;
+    this._items.length = 0;
+    this._companions.length = 0;
+    this._attunedItems.length = 0;
+    this._unlocks.length = 0;
+    this._availableUnlocks.length = 0;
+    this._knowledge.forEach(x => x.rewind());
+    this.addKnowledge(KnowledgeType.MagicKnowledge);
+    this._spells.forEach(x => x.rewind());
+    // this._data doesn't contain anything to rewind (for now)
+    
+  }
   private getUnlockReward(unlock: Unlocks, onLoad: boolean) {
     switch (unlock.type) {
       case UnlockType.ChronomancyMentor:
@@ -415,6 +442,10 @@ class Wizard {
       knowledge = new Knowledge(type);
       this.notifyEvent(EventInfo.unlocked("Learned " + knowledge.name));
       this.knowledge.push(knowledge);
+    }
+    else if (!knowledge.available) {
+      knowledge.makeAvailable();
+      this.notifyEvent(EventInfo.unlocked("Learned " + knowledge.name));
     }
   }
   addInfluence(influenceType: InfluenceType) : Influence {

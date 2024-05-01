@@ -64,9 +64,10 @@ class WizardSerializer {
             type: x.type,
             level: x.level,
             exp: x.exp,
+            numberCasts: x.numberCasts,
+            available: x.available,
             ritual: x.cast.ritualCast !== undefined ? {
                 isPrepared: x.cast.ritualCast.isPrepared,
-                numberCasts: x.cast.ritualCast.numberCasts,
                 isChanneling: x.cast.ritualCast.isChanneling,
                 channelProgress: x.cast.ritualCast.channelProgress,
             } : undefined,
@@ -77,6 +78,8 @@ class WizardSerializer {
             type: x.type,
             level: x.level,
             exp: x.exp,
+            available: x.available,
+            previousLevel: x.previousLevel,
         }
     }
     serializeLocation(x: GameLocation): LocationJson {

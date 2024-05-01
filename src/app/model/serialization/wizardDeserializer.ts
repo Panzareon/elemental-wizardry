@@ -74,9 +74,9 @@ class WizardDeserializer {
     }
     deserializeSpell(x: SpellJson): Spell {
         let spell = new Spell(x.type);
-        spell.load(x.level, x.exp);
+        spell.load(x.level, x.exp, x.numberCasts ?? x.ritual?.numberCasts ?? 0, x.available ?? true);
         if (x.ritual !== undefined && spell.cast.ritualCast !== undefined) {
-            spell.cast.ritualCast.load(x.ritual.channelProgress, x.ritual.isChanneling, x.ritual.numberCasts, x.ritual.isPrepared)
+            spell.cast.ritualCast.load(x.ritual.channelProgress, x.ritual.isChanneling, x.ritual.isPrepared)
         }
         return spell;
     }
@@ -96,7 +96,7 @@ class WizardDeserializer {
     }
     deserializeKnowledge(x: KnowledgeJson): Knowledge {
         let knowledge = new Knowledge(x.type);
-        knowledge.load(x.level, x.exp);
+        knowledge.load(x.level, x.exp, x.previousLevel ?? 0, x.available);
         return knowledge;
     }
     deserializeBuffs(buff: BuffJson, spells: Spell[]) : TimedBuff {

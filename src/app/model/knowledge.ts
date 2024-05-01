@@ -24,6 +24,8 @@ class Knowledge {
     private _studyActive: IActive;
     private _trainingActive: IActive;
     private _expMultiplier: number = 1;
+    private _previousLevel = 0;
+    private _available = true;
     constructor(type: KnowledgeType) {
         this._type = type;
         this._level = 1;
@@ -38,6 +40,12 @@ class Knowledge {
 
     public get level() : number {
         return this._level;
+    }
+    public get previousLevel() : number {
+        return this._previousLevel;
+    }
+    public get available() : boolean {
+        return this._available;
     }
     public get exp() : number {
         return this._exp;
@@ -74,9 +82,11 @@ class Knowledge {
     get levelUpProgress() : number {
         return this._exp / this.nextLevelExp;
     }
-    load(level: number, exp: number) {
+    load(level: number, exp: number, previousLevel : number, available: boolean) {
         this._level = level;
         this._exp = exp;
+        this._previousLevel = previousLevel;
+        this._available = available;
     }
     public getUnlocks(wizard: Wizard) {
         switch (this.type){
@@ -117,6 +127,9 @@ class Knowledge {
                 if (this.level >= 7) {
                     wizard.learnSpell(SpellType.AttuneChronomancy);
                 }
+                if (this.level >= 8) {
+                    wizard.learnSpell(SpellType.Rewind);
+                }
                 break;
             case KnowledgeType.CraftingKnowledge:
                 if (this.level >= 2) {
@@ -156,6 +169,15 @@ class Knowledge {
         for (const unlock of wizard.unlocks) {
             this._expMultiplier *= unlock.knowledgeExpMultiplier(this.type);
         }
+    }
+    public makeAvailable() {
+        this._available = true;
+    }
+    public rewind(): void {
+        this._previousLevel = this.level;
+        this._level = 1;
+        this._exp = 0;
+        this._available = false;
     }
 }
 interface IKnowledgeAction extends IActive {

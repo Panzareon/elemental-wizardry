@@ -19,6 +19,7 @@ enum SpellType {
     InfuseNatureGem = 6,
     SkipTime = 7,
     AttuneChronomancy = 8,
+    Rewind = 9,
 }
 
 enum SpellCastingType {
@@ -38,6 +39,8 @@ class Spell implements ITimedBuffSource {
     private _source: SpellSource;
     private _level: number;
     private _exp: number;
+    private _numberCasts : number = 0;
+    private _available: boolean = true;
     constructor(type: SpellType) {
         this._type = type;
         this._level = 1;
@@ -69,6 +72,10 @@ class Spell implements ITimedBuffSource {
         return this._type;
     }
 
+    public get available() : boolean {
+        return this._available;
+    }
+
     public get level() : number {
         return this._level;
     }
@@ -84,6 +91,10 @@ class Spell implements ITimedBuffSource {
 
     public get cast() : SpellCast {
         return this._cast;
+    }
+
+    public get numberCasts(): number {
+        return this._numberCasts;
     }
 
     public get costMultiplier() {
@@ -122,6 +133,8 @@ class Spell implements ITimedBuffSource {
                 return "Skip forward in time to skip waiting on some external event"
             case SpellType.AttuneChronomancy:
                 return "Attune to Chronomancy to be able to handle more complex Chronomancy spells. Requires attunement to Chronomancy to perform.";
+            case SpellType.Rewind:
+                return "Rewinds time and return into the body of your younger self with your experiences";
         }
     }
 
@@ -140,6 +153,7 @@ class Spell implements ITimedBuffSource {
     }
 
     public getSpellEffect(wizard: Wizard) {
+        this._numberCasts++;
         let spellPower = this.getSpellPower(wizard);
         switch (this.type) {
             case SpellType.InfuseGem:
@@ -175,6 +189,9 @@ class Spell implements ITimedBuffSource {
                 break;
             case SpellType.AttuneChronomancy:
                 wizard.addToData(WizardDataType.ChronomancyAttunement, 1);
+                break;
+            case SpellType.Rewind:
+                wizard.rewind();
                 break;
         }
 
@@ -219,6 +236,8 @@ class Spell implements ITimedBuffSource {
         switch (this._type) {
             case SpellType.AttuneChronomancy:
                 return wizard.getData(WizardDataType.ChronomancyAttunement) >= 1
+            case SpellType.Rewind:
+                return wizard.getData(WizardDataType.ChronomancyAttunement) >= 2
             default:
                 return true;
         }
@@ -229,16 +248,46 @@ class Spell implements ITimedBuffSource {
         if (this._exp >= lvlUpExp) {
             this._exp -= lvlUpExp;
             this._level++;
+            this.refreshCosts();
+        }
+    }
+
+    private refreshCosts() {
+        if (this.cast.ritualCast !== undefined )
+        {
+            let previousData =
+            {
+                isPrepared: this.cast.ritualCast.isPrepared,
+                isChanneling: this.cast.ritualCast.isChanneling,
+                channelProgress: this.cast.ritualCast.channelProgress,
+            };
+            this._cast = this.getCastDefinition();
+            this.cast.ritualCast?.load(previousData.channelProgress, previousData.isChanneling, previousData.isPrepared);
+        }
+        else
+        {
             this._cast = this.getCastDefinition();
         }
     }
 
-    public load(level: number, exp: number) {
+    public load(level: number, exp: number, numberCasts : number, available : boolean) {
         this._level = level;
         this._exp = exp;
+        this._numberCasts = numberCasts;
+        this._available = available;
         this._cast = this.getCastDefinition();
     }
 
+    public makeAvailable() {
+        this._available = true;
+    }
+
+    public rewind(): void {
+        this._level = 1;
+        this._exp = 0;
+        this._cast = this.getCastDefinition();
+        this._available = false;
+    }
     private getCastDefinition(): SpellCast {
         let costMultiplier = this.costMultiplier;
         switch (this.type) {
@@ -264,6 +313,10 @@ class Spell implements ITimedBuffSource {
                 return SpellCast.CreateRitualSpell(
                     [new ResourceAmount(ResourceType.ChronoGem, 5 * costMultiplier)],
                     new RitualCast(this, [new ResourceAmount(ResourceType.Chrono, 100  * costMultiplier), new ResourceAmount(ResourceType.Mana, 50  * costMultiplier)], 30));
+            case SpellType.Rewind:
+                return SpellCast.CreateRitualSpell(
+                    [new ResourceAmount(ResourceType.ChronoGem, 10 * costMultiplier)],
+                    new RitualCast(this, [new ResourceAmount(ResourceType.Chrono, 100 * costMultiplier), new ResourceAmount(ResourceType.Mana, 100 * costMultiplier)], 60));
         }
     }
 
@@ -278,6 +331,7 @@ class Spell implements ITimedBuffSource {
             case SpellType.ConverseWithFutureSelf:
             case SpellType.SkipTime:
             case SpellType.AttuneChronomancy:
+            case SpellType.Rewind:
                 return SpellSource.Chronomancy;
             case SpellType.InfuseNatureGem:
                 return SpellSource.Nature;
@@ -313,8 +367,6 @@ class RitualCast implements IActive {
 
     private _isChanneling : boolean = false;
 
-    private _numberCasts : number = 0;
-
     private _isPrepared: boolean = false;
 
     public constructor(private _spell: Spell, private _channelCost : ResourceAmount[], private _duration : number) {
@@ -330,9 +382,6 @@ class RitualCast implements IActive {
     }
     public get isPrepared(): boolean {
         return this._isPrepared;
-    }
-    public get numberCasts(): number {
-        return this._numberCasts;
     }
     public get channelProgress(): number {
         return this._channelProgress;
@@ -354,7 +403,6 @@ class RitualCast implements IActive {
 
             this._spell.getSpellEffect(wizard);
             this._isPrepared = false;
-            this._numberCasts++;
             this.deactivate(wizard);
             return ActiveActivateResult.Done;
         }
@@ -384,9 +432,12 @@ class RitualCast implements IActive {
             return false;
         }
         switch (this._spell.type) {
-            case SpellType.SummonFamiliar:
             case SpellType.AttuneChronomancy:
-                return this._numberCasts == 0;
+                return this._spell.numberCasts == 0;
+            case SpellType.SummonFamiliar:
+                return !wizard.companions.some(x => x.type === CompanionType.Familiar);
+            case SpellType.Rewind:
+                return true;
             default:
                 return false;
         }
@@ -424,10 +475,9 @@ class RitualCast implements IActive {
         this._channelProgress += deltaTime;
         return true;
     }
-    public load(channelProgress : number, isChanneling : boolean, numberCasts : number, isPrepared : boolean) {
+    public load(channelProgress : number, isChanneling : boolean, isPrepared : boolean) {
         this._channelProgress = channelProgress;
         this._isChanneling = isChanneling;
-        this._numberCasts = numberCasts;
         this._isPrepared = isPrepared;
     }
 }
