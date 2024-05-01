@@ -169,7 +169,7 @@ class Spell implements ITimedBuffSource {
                 let knowledgeActions = wizard.active.map(x => (<IKnowledgeAction>x).knowledge).filter(x => x !== undefined);
                 let knowledge;
                 if (knowledgeActions.length == 0) {
-                    knowledge = wizard.knowledge[Math.random() * wizard.knowledge.length >> 0];
+                    knowledge = wizard.availableKnowledge[Math.random() * wizard.availableKnowledge.length >> 0];
                 }
                 else {
                     knowledge = knowledgeActions[Math.random() * knowledgeActions.length >> 0];

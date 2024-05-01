@@ -20,7 +20,7 @@ export class RitualComponent implements AfterViewInit {
   @ViewChild(RitualCircleComponent) ritualCircle : RitualCircleComponent | undefined;
 
   public get preparedRitual() : Spell | null {
-    var ritual = this._data.wizard.spells.find(x => x.cast.ritualCast?.isPrepared === true) ?? null;
+    var ritual = this._data.wizard.availableSpells.find(x => x.cast.ritualCast?.isPrepared === true) ?? null;
     if (!ritual?.cast.ritualCast?.isChanneling) {
       this.ritualCircle?.stopAnimation();
     }
@@ -28,7 +28,7 @@ export class RitualComponent implements AfterViewInit {
     return ritual;
   }
   public get spells() : Spell[] {
-    return this._data.wizard.spells;
+    return this._data.wizard.availableSpells;
   }
 
   public prepare(spell: Spell) {

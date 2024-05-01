@@ -12,7 +12,7 @@ export class KnowledgeComponent {
   }
 
   getKnowledge(): Knowledge[] {
-    return this.data.wizard.knowledge;
+    return this.data.wizard.availableKnowledge;
   }
 
   toggleStudy(knowledge: Knowledge) {

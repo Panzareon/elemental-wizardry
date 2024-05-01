@@ -102,8 +102,16 @@ class Wizard {
     return this._spells;
   }
 
+  public get availableSpells() : Spell[] {
+    return this._spells.filter(x => x.available);
+  }
+
   public get knowledge(): Knowledge[] {
     return this._knowledge;
+  }
+
+  public get availableKnowledge() : Knowledge[] {
+    return this._knowledge.filter(x => x.available);
   }
 
   public get location(): GameLocation[] {
@@ -320,7 +328,7 @@ class Wizard {
     }
   }
   public getKnowledgeLevel(type: KnowledgeType) : number|null {
-    const knowledge = this.knowledge.find(x => x.type == type);
+    const knowledge = this.availableKnowledge.find(x => x.type == type);
     if (knowledge === undefined){
       return null;
     }
@@ -442,10 +450,12 @@ class Wizard {
       knowledge = new Knowledge(type);
       this.notifyEvent(EventInfo.unlocked("Learned " + knowledge.name));
       this.knowledge.push(knowledge);
+      knowledge.calculate(this);
     }
     else if (!knowledge.available) {
       knowledge.makeAvailable();
       this.notifyEvent(EventInfo.unlocked("Learned " + knowledge.name));
+      knowledge.calculate(this);
     }
   }
   addInfluence(influenceType: InfluenceType) : Influence {
@@ -475,7 +485,7 @@ class Wizard {
   }
   public recalculateStats() {
     this.resources.forEach(x => x.calculate(this));
-    this.knowledge.forEach(x => x.calculate(this));
+    this.availableKnowledge.forEach(x => x.calculate(this));
   }
   public addToData(dataType: WizardDataType, amount: number) {
     let currentValue = this._data[dataType];

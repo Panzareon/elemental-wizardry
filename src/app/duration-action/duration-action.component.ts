@@ -36,7 +36,7 @@ export class DurationActionComponent {
   }
 
   public get availableSpells() : Spell[] {
-    return this.data.wizard.spells.filter(x => this.skill.doesImproveDuration(x));
+    return this.data.wizard.availableSpells.filter(x => this.skill.doesImproveDuration(x));
   }
 
   public get activeSpellsInfo() : string {

@@ -13,7 +13,7 @@ export class SpellbookComponent {
   }
 
   public get spells() : Spell[] {
-    return this.data.wizard.spells;
+    return this.data.wizard.availableSpells;
   }
 
   public canCast(spell: Spell) : boolean {

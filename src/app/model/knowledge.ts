@@ -57,6 +57,9 @@ class Knowledge {
 
     gainExp(exp: number, wizard: Wizard) : number {
         let gainedExp = exp * this._expMultiplier
+        if (this._previousLevel > this.level) {
+            gainedExp *= 2;
+        }
         this._exp += gainedExp;
         var neededExp = this.nextLevelExp;
         if (this._exp >= neededExp) {

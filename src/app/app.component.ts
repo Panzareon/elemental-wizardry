@@ -70,7 +70,7 @@ export class AppComponent {
     return this.data.wizard.gardenPlots.length > 0;
   }
   public get hasSpell() {
-    return this.data.wizard.spells.length > 0;
+    return this.data.wizard.availableSpells.length > 0;
   }
   public get hasItems() {
     return this.data.wizard.items.length > 0;
@@ -88,7 +88,7 @@ export class AppComponent {
     return this.data.wizard.recipe.length > 0;
   }
   public get hasRitualSpell() {
-    return this.data.wizard.spells.some(x => x.cast.type === SpellCastingType.Ritual);
+    return this.data.wizard.availableSpells.some(x => x.cast.type === SpellCastingType.Ritual);
   }
 
   private showPopupInfo(info: EventInfo) {
