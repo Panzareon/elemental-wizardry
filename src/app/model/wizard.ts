@@ -389,7 +389,7 @@ class Wizard {
       this._companions.splice(companionIndex, 1);
     }
   }
-  rewind() {
+  rewind(levelMultiplier: number) {
     this._resources.length = 0;
     this.addResourceType(ResourceType.Mana);
     this._skills.length = 0;
@@ -406,9 +406,9 @@ class Wizard {
     this._attunedItems.length = 0;
     this._unlocks.length = 0;
     this._availableUnlocks.length = 0;
-    this._knowledge.forEach(x => x.rewind());
+    this._knowledge.forEach(x => x.rewind(levelMultiplier));
     this.addKnowledge(KnowledgeType.MagicKnowledge);
-    this._spells.forEach(x => x.rewind());
+    this._spells.forEach(x => x.rewind(levelMultiplier));
     // this._data doesn't contain anything to rewind (for now)
     
   }

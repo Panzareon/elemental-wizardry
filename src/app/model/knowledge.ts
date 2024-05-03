@@ -176,9 +176,9 @@ class Knowledge {
     public makeAvailable() {
         this._available = true;
     }
-    public rewind(): void {
+    public rewind(levelMultiplier: number): void {
         this._previousLevel = this.level;
-        this._level = 1;
+        this._level = 1 + Math.floor((this.level - 1) * levelMultiplier);
         this._exp = 0;
         this._available = false;
     }
