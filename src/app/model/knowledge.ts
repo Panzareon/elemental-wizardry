@@ -235,7 +235,7 @@ class KnowledgeTraining implements IKnowledgeAction {
         return this._knowledge.levelUpProgress;
     }
     get activeBuffs(): Buff[] {
-        return [new ResourceProductionBuff(false, -1, this.requiredResource)];
+        return [new ResourceProductionBuff(false, -1 * this._knowledge.level / 2, this.requiredResource)];
     }
     public get serialize(): [ActiveType, any] {
         return [ActiveType.KnowledgeTraining, this._knowledge.type];
