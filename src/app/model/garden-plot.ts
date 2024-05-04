@@ -1,4 +1,5 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
+import { Buff } from "./buff";
 import { ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
@@ -69,6 +70,9 @@ class GardenPlot implements IActive
           case GrowState.Harvesting:
             return 1 - (this.remainingHarvestTime / this.harvestTime);
         }
+    }
+    public get activeBuffs(): Buff[] {
+        return [];
     }
     public get serialize(): [ActiveType, any] {
         return [ActiveType.GardenPlot, this._index];

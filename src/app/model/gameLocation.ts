@@ -1,4 +1,5 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
+import { Buff } from "./buff";
 import { InfluenceType } from "./influence";
 import { Item, ItemType } from "./item";
 import { KnowledgeType } from "./knowledge";
@@ -271,6 +272,9 @@ class ExploreLocation implements IActive {
         return 0;
     }
     
+    public get activeBuffs(): Buff[] {
+        return [];
+    }
     public get serialize(): [ActiveType, any] {
         return [ActiveType.ExploreLocation, this.location.type];
     }

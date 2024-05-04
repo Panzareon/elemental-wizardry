@@ -3,7 +3,7 @@ import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
 import { EventInfo, Wizard } from "./wizard";
-import { AdjustValue } from "./buff";
+import { AdjustValue, Buff, ResourceProductionBuff } from "./buff";
 
 export { Skill, SkillType, SkillActionType }
 
@@ -31,6 +31,7 @@ class Skill implements IActive {
     private _availableDurationSpells: SpellType[];
     private _activeDurationSpells: Spell[];
     private _repeat: boolean;
+    private _activeBuffs: Buff[] = [];
     constructor(type: SkillType) {
         this._type = type;
         this._actionType = this.toActiontype(type);
@@ -78,6 +79,10 @@ class Skill implements IActive {
     
     public get activeProgress(): number {
         return this.durationTimeSpent/this.duration;
+    }
+
+    get activeBuffs(): Buff[] {
+        return this._activeBuffs;
     }
 
     public get durationTimeSpent() : number {
@@ -142,42 +147,7 @@ class Skill implements IActive {
         this._activeDurationSpells = activeSpells;
     }
     activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
-        switch (this.type) {
-            case SkillType.Meditate:
-            {
-                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.1) * deltaTime;
-                let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
-                let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard)).reduce((x, y) => x + y, 0);
-                for (let resource of manaResources) {
-                    wizard.addResource(resource.type, manaGeneration * resource.getGenerationPerSecond(wizard) / baseGenerationSum)
-                }
-                break;
-            }
-            case SkillType.MeditateOnMana:
-            {
-                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15) * deltaTime;
-                wizard.addResource(ResourceType.Mana, manaGeneration);
-                break;
-            }
-            case SkillType.MeditateOnChrono:
-            {
-                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15) * deltaTime;
-                wizard.addResource(ResourceType.Chrono, manaGeneration);
-                break;
-            }
-            case SkillType.MeditateOnNature:
-            {
-                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15) * deltaTime;
-                wizard.addResource(ResourceType.Nature, manaGeneration);
-                break;
-            }
-            case SkillType.MagicShow:
-                if (!wizard.spendResource(ResourceType.Mana, deltaTime)) {
-                    return ActiveActivateResult.OutOfMana;
-                }
-                break;
-        }
-
+        this._activeBuffs = this.getActiveBuffs(wizard);
         this.earnExp(wizard, deltaTime);
         if (this.actionType == SkillActionType.Duration) {
             let lastDurationSpellCheck = Math.floor(this._durationTimeSpent);
@@ -200,9 +170,48 @@ class Skill implements IActive {
             }
         }
 
+        switch (this.type) {
+            case SkillType.MagicShow:
+                let mana = wizard.getResource(ResourceType.Mana);
+                if (mana === undefined || mana.amount <= 0) {
+                    return ActiveActivateResult.OutOfMana;
+                }
+        }
+
         return ActiveActivateResult.Ok;
     }
+    private getActiveBuffs(wizard: Wizard): Buff[] {
+        switch (this.type) {
+            case SkillType.Meditate:
+            {
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.1);
+                let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
+                let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard)).reduce((x, y) => x + y, 0);
+                return manaResources.map(x => new ResourceProductionBuff(false, manaGeneration * x.getGenerationPerSecond(wizard) / baseGenerationSum, x.type));
+            }
+            case SkillType.MeditateOnMana:
+            {
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15);
+                return [new ResourceProductionBuff(false, manaGeneration, ResourceType.Mana)];
+            }
+            case SkillType.MeditateOnChrono:
+            {
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15);
+                return [new ResourceProductionBuff(false, manaGeneration, ResourceType.Chrono)];
+            }
+            case SkillType.MeditateOnNature:
+            {
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15);
+                return [new ResourceProductionBuff(false, manaGeneration, ResourceType.Nature)];
+            }
+            case SkillType.MagicShow:
+                return [new ResourceProductionBuff(false, -1, ResourceType.Mana)];
+            default:
+                return [];
+        }
+    }
     deactivate(wizard: Wizard): void {
+        this._activeBuffs = [];
     }
     enableDurationSpell(spell: Spell) {
         this._activeDurationSpells.push(spell);

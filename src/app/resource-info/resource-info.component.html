@@ -3,5 +3,5 @@
         {{resource.name}}
     </h2>
     {{resource.amount | number }}/{{maxAmount | number }}<br>
-    +{{generation | number }}/s<br>
+    {{generation > 0 ? '+' : ''}}{{generation | number }}/s<br>
 </div>

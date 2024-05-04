@@ -394,15 +394,14 @@ class RitualCast implements IActive {
     public get channelDuration() : number {
         return this._duration;
     }
+    public get activeBuffs(): Buff[] {
+        return this._channelCost.map(x => new ResourceProductionBuff(false, -x.amount / this._duration, x.resourceType));
+    }
     public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         if (!this._isPrepared) {
             return ActiveActivateResult.CannotContinue;
         }
         if (deltaTime >= this._duration - this._channelProgress) {
-            if (!this.channel(wizard, this._duration - this._channelProgress)) {
-                return ActiveActivateResult.OutOfMana;
-            }
-
             this._spell.getSpellEffect(wizard);
             this._isPrepared = false;
             this.deactivate(wizard);
@@ -466,9 +465,11 @@ class RitualCast implements IActive {
             return true;
         }
 
-        var multiplier = deltaTime / this._duration;
-        var cost = this._channelCost.map(x => new ResourceAmount(x.resourceType, x.amount * multiplier))
-        if (!wizard.spendResources(cost)) {
+        if (this._channelCost.some(x =>
+            { 
+                let resource = wizard.getResource(x.resourceType);
+                return resource === undefined || resource.amount <= 0;
+            })) {
             this._isChanneling = false;
             this._channelProgress = 0;
             return false;

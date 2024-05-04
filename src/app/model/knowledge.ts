@@ -1,4 +1,5 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
+import { Buff, ResourceProductionBuff } from "./buff";
 import { InfluenceType } from "./influence";
 import { RecipeType } from "./recipe";
 import { Resource, ResourceKind, ResourceType } from "./resource";
@@ -208,6 +209,9 @@ class KnowledgeStudy implements IKnowledgeAction {
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
     }
+    public get activeBuffs(): Buff[] {
+        return [];
+    }
     public get serialize(): [ActiveType, any] {
         return [ActiveType.KnowledgeStudy, this._knowledge.type];
     }
@@ -230,17 +234,20 @@ class KnowledgeTraining implements IKnowledgeAction {
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
     }
+    get activeBuffs(): Buff[] {
+        return [new ResourceProductionBuff(false, -1, this.requiredResource)];
+    }
     public get serialize(): [ActiveType, any] {
         return [ActiveType.KnowledgeTraining, this._knowledge.type];
     }
     activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
-        var resource = this.requiredResource;
-        if (wizard.spendResource(resource, deltaTime)) {
+        var resource = wizard.getResource(this.requiredResource);
+        if (resource !== undefined && resource.amount > 0) {
             this.knowledge.gainExp(deltaTime * 5, wizard);
             return ActiveActivateResult.Ok;
         }
         else {
-            if (new Resource(resource).kind == ResourceKind.Mana)
+            if (resource?.kind === ResourceKind.Mana)
             {
                 return ActiveActivateResult.OutOfMana;
             }

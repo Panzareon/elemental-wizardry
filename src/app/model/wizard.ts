@@ -132,7 +132,8 @@ class Wizard {
   public get buffs(): Buff[] {
     return this._buffs.flatMap(x => x.buffs)
       .concat(this._attunedItems.flatMap(x => x.buffs))
-      .concat(this._unlocks.flatMap(x => x.buffs));
+      .concat(this._unlocks.flatMap(x => x.buffs))
+      .concat(this._active.flatMap(x => x.activeBuffs));
   }
 
   public get influence(): Influence[] {
