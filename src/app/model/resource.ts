@@ -61,8 +61,11 @@ class Resource {
                 return ResourceType[this.type];
         }
     }
-    public get maxAmount(): number {
-        return this._maxAmount + this._adjustMaxAmount.reduce((partial, x) => partial + x.resource.amount * x.maxAmountMultiplier, 0);
+    public getMaxAmount(wizard: Wizard): number {
+        var baseValue = new AdjustValue(this._maxAmount);
+        baseValue.add(this._adjustMaxAmount.reduce((partial, x) => partial + x.resource.amount * x.maxAmountMultiplier, 0));
+        wizard.buffs.forEach(x => x.adjustResourceCapacity(this, baseValue));
+        return baseValue.value;
     }
     public getGenerationPerSecond(wizard: Wizard): number {
         let generation = new AdjustValue(this.baseGenerationPerSecond);
@@ -81,19 +84,21 @@ class Resource {
     public get amount(): number {
         return this._amount;
     }
-    public set amount(value: number) {
+    public addAmount(value: number, wizard: Wizard) {
+        value = this.amount + value;
         if (value < 0) {
             value = 0;
         }
 
-        if (value > this.maxAmount) {
-            value = this.maxAmount;
+        var maxAmount = this.getMaxAmount(wizard);
+        if (value > maxAmount) {
+            value = maxAmount;
         }
 
         this._amount = value;
     }
     public produce(deltaTime: number, wizard: Wizard) {
-        this.amount += this.getGenerationPerSecond(wizard)*deltaTime;
+        this.addAmount(this.getGenerationPerSecond(wizard)*deltaTime, wizard);
     }
     public calculate(wizard: Wizard) {
         this._maxAmount = this.baseMaxAmount;

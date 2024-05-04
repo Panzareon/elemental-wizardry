@@ -1,7 +1,7 @@
 <div *ngFor="let resource of getManaResources()" class="resource" (click)="clickResource(resource)">
     <img src="assets/icons/{{resourceType(resource).toLowerCase()}}.svg" class="mana-icon"/>
     <mat-card class="resource-{{resourceType(resource).toLowerCase()}}">
-        <div class="resource-amount" [style.width.%]="resource.amount/resource.maxAmount*100"></div>
+        <div class="resource-amount" [style.width.%]="amountPercent(resource)"></div>
         <span>{{amountDisplay(resource)}}</span>
     </mat-card>
 </div>

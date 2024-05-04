@@ -3,7 +3,7 @@ import { Skill, SkillType } from "./skill";
 import { SpellSource } from "./spell";
 import { WizardDataType } from "./wizard";
 
-export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease }
+export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease, ResourceCapacityBuff }
 
 class AdjustValue
 {
@@ -18,7 +18,7 @@ class AdjustValue
     public addValue : number = 0;
 
     public get value(): number {
-        return this._baseValue * this.multiplier + this.addValue;
+        return (this._baseValue + this.addValue) * this.multiplier;
     }
     public multiply(factor: number) {
         this.multiplier *= factor;
@@ -38,6 +38,8 @@ abstract class Buff {
     public adjustSkillDuration(skill: Skill, durationDelta : AdjustValue) : void {
     }
     public adjustWizardData(data: WizardDataType, value : AdjustValue) : void {
+    }
+    public adjustResourceCapacity(resource: Resource, capacity: AdjustValue) : void {
     }
 }
 
@@ -60,7 +62,7 @@ class ResourceProductionBuff extends Buff {
         if (this._excludeResource !== undefined) {
             productionSource += " except " + new Resource(this._excludeResource).name;
         }
-        return "Increases " + productionSource + " production by " + (this._power * 100 - 100).toFixed(2) + "%";
+        return "Increases " + productionSource + " production by " + (this._multiply ? (this._power * 100 - 100).toFixed(2) + "%" : this._power);
     }
 
     public override adjustResourceProduction(resource: Resource, production : AdjustValue) : void {
@@ -122,6 +124,42 @@ class WizardDataIncrease extends Buff {
     public override adjustWizardData(data: WizardDataType, value: AdjustValue): void {
         if (data == this._data) {
             value.add(this._amount);
+        }
+    }
+}
+
+class ResourceCapacityBuff extends Buff {
+    public constructor(
+        private _multiply : boolean,
+        private _power : number,
+        private _resource : ResourceType | undefined = undefined,
+        private _resourceKind : ResourceKind | undefined = undefined,
+        private _excludeResource : ResourceType | undefined = undefined) {
+        super();
+    }
+
+    public override get description(): string {
+        let productionSource = this._resource !== undefined
+         ? new Resource(this._resource).name
+         : this._resourceKind === undefined
+           ? "all"
+           : ResourceKind[this._resourceKind];
+        if (this._excludeResource !== undefined) {
+            productionSource += " except " + new Resource(this._excludeResource).name;
+        }
+        return "Increases " + productionSource + " capacity by " + (this._multiply ? (this._power * 100 - 100).toFixed(2) + "%" : this._power);
+    }
+
+    public override adjustResourceCapacity(resource: Resource, production : AdjustValue) : void {
+        if ((this._resource === undefined || this._resource === resource.type)
+             && (this._resourceKind === undefined || this._resourceKind === resource.kind)
+             && (this._excludeResource === undefined || this._excludeResource !== resource.type)) {
+            if (this._multiply) {
+                production.multiply(this._power);
+            }
+            else {
+                production.add(this._power);
+            }
         }
     }
 }

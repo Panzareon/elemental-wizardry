@@ -109,6 +109,9 @@ class Knowledge {
                     wizard.learnSpell(SpellType.SummonFamiliar);
                     wizard.addInfluence(InfluenceType.WizardCouncil);
                 }
+                if (this.level >= 6) {
+                    wizard.addAvailableUnlock(UnlockType.ManaCapacity);
+                }
                 break;
             case KnowledgeType.ChronomancyKnowledge:
                 if (this.level >= 2) {

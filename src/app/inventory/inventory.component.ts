@@ -3,6 +3,7 @@ import { InventoryService } from "../inventory.service";
 import { Resource, ResourceKind, ResourceType } from "../model/resource";
 import { MatDialog } from '@angular/material/dialog';
 import { ResourceInfoComponent } from '../resource-info/resource-info.component';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-inventory',
@@ -10,8 +11,7 @@ import { ResourceInfoComponent } from '../resource-info/resource-info.component'
   styleUrls: ['./inventory.component.less']
 })
 export class InventoryComponent implements OnInit {
-
-  constructor(private inventory: InventoryService, private dialog: MatDialog) { }
+  constructor(private inventory: InventoryService, private dialog: MatDialog, private data: DataService) { }
 
   ngOnInit(): void {
   }
@@ -28,9 +28,13 @@ export class InventoryComponent implements OnInit {
     dialogRef.componentInstance.resource = resource;
   }
   public amountDisplay(resource : Resource) : string {
-    return this.roundResourceAmount(resource.amount) + "/" + this.roundResourceAmount(resource.maxAmount);
+    return this.roundResourceAmount(resource.amount) + "/" + this.roundResourceAmount(resource.getMaxAmount(this.data.wizard));
   }
 
+  public amountPercent(resource: Resource) : number {
+    return resource.amount/resource.getMaxAmount(this.data.wizard)*100;
+  }
+  
   public resourceType(resource : Resource) : string {
     return ResourceType[resource.type];
   }

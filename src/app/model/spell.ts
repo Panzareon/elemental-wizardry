@@ -191,7 +191,8 @@ class Spell implements ITimedBuffSource {
                 wizard.addToData(WizardDataType.ChronomancyAttunement, 1);
                 break;
             case SpellType.Rewind:
-                let newLevelMultiplier = 1/(1 + Math.exp(-spellPower/2 + 2.5));
+                let x = spellPower/20;
+                let newLevelMultiplier = x/(1 + x);
                 wizard.rewind(newLevelMultiplier);
                 break;
         }

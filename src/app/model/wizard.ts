@@ -130,7 +130,9 @@ class Wizard {
   }
 
   public get buffs(): Buff[] {
-    return this._buffs.flatMap(x => x.buffs).concat(this._attunedItems.flatMap(x => x.buffs));
+    return this._buffs.flatMap(x => x.buffs)
+      .concat(this._attunedItems.flatMap(x => x.buffs))
+      .concat(this._unlocks.flatMap(x => x.buffs));
   }
 
   public get influence(): Influence[] {
@@ -204,7 +206,7 @@ class Wizard {
   public spendResource(resourceType: ResourceType, amount: number): boolean {
     const resource = this.resources.find(x => x.type == resourceType);
     if (resource !== undefined && resource.amount >= amount) {
-      resource.amount -= amount;
+      resource.addAmount(-amount, this);
       return true;
     }
 
@@ -234,7 +236,7 @@ class Wizard {
   }
   public addResource(resourceType: ResourceType, amount: number) : Resource {
     let resource = this.addResourceType(resourceType);
-    resource.amount += amount;
+    resource.addAmount(amount, this);
     return resource;
   }
 

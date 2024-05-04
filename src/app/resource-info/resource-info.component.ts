@@ -11,6 +11,10 @@ export class ResourceInfoComponent {
   constructor(private data: DataService) {}
   @Input() resource!: Resource;
 
+  public get maxAmount() : number {
+    return this.resource.getMaxAmount(this.data.wizard);
+  }
+
   public get generation() : number {
     return this.resource.getGenerationPerSecond(this.data.wizard);
   }

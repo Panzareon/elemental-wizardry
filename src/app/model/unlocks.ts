@@ -1,3 +1,4 @@
+import { Buff, ResourceCapacityBuff, ResourceProductionBuff } from "./buff";
 import { Costs } from "./costs";
 import { InfluenceAmount, InfluenceType } from "./influence";
 import { KnowledgeType } from "./knowledge";
@@ -18,6 +19,7 @@ enum UnlockType {
     SimpleWorkshop = 8,
     NatureMagic = 9,
     NatureProduction = 10,
+    ManaCapacity = 11,
 }
 
 class Unlocks {
@@ -25,6 +27,7 @@ class Unlocks {
     private _numberRepeated: number;
     private _cost: Costs[]; 
     private _numberTransformed: number;
+    private _buffs: Buff[] = [];
     public constructor(type: UnlockType) {
         this._type = type;
         this._numberRepeated = 0;
@@ -61,6 +64,8 @@ class Unlocks {
                 return "Nature Magic";
             case UnlockType.NatureProduction:
                 return "Nature Production";
+            case UnlockType.ManaCapacity:
+                return "Mana Capacity";
         }
         return UnlockType[this.type];
     }
@@ -76,6 +81,8 @@ class Unlocks {
             case UnlockType.GardenPlot:
             case UnlockType.NatureProduction:
                 return 5;
+            case UnlockType.ManaCapacity:
+                return 100;
             default:
                 return 1;
         }
@@ -107,7 +114,12 @@ class Unlocks {
                 return "Unlocks nature magic as a new field to study";
             case UnlockType.NatureProduction:
                 return "Converts a Mana Production upgrade into 0.1 Nature generation per second";
+            case UnlockType.ManaCapacity:
+                return "Increases max capacity for mana by 10%";
         }
+    }
+    public get buffs() : Buff[] {
+        return this._buffs;
     }
     public transform(amount: number) {
         this._numberTransformed += amount;
@@ -178,9 +190,8 @@ class Unlocks {
             throw new Error("Not matching costs given");
         }
         if (this.canUnlock(wizard) && costs.spend(wizard)) {
-            this._numberRepeated++;
             this.transformBaseUnlock(wizard);
-            this._cost = this.getCost();
+            this.SetNumberRepeated(this._numberRepeated+1);
             wizard.unlocked(this);
             return true;
         }
@@ -188,11 +199,20 @@ class Unlocks {
         return false;
     }
     load(numberRepeated: number) {
-        this._numberRepeated = numberRepeated;
-        this._cost = this.getCost();
+        this.SetNumberRepeated(numberRepeated);
     }
     afterLoad(wizard: Wizard) {
         this.transformBaseUnlock(wizard, this._numberRepeated);
+    }
+    private SetNumberRepeated(numberRepeated: number) {
+        this._numberRepeated = numberRepeated;
+        this._cost = this.getCost();
+        if (numberRepeated == 0) {
+            this._buffs = [];
+        }
+        else {
+            this._buffs = this.getBuffs();
+        }
     }
     private tryGetBaseUnlock(wizard: Wizard) : [Unlocks|undefined, boolean] {
         switch (this._type) {
@@ -246,6 +266,17 @@ class Unlocks {
                     return [Costs.fromResource(ResourceType.Mana, 40)];
                 }
                 return [Costs.fromResources([new ResourceAmount(ResourceType.NatureGem, targetUnlockNumber), new ResourceAmount(ResourceType.Nature, targetUnlockNumber * 10)])];
+            case UnlockType.ManaCapacity:
+                return [Costs.fromResources([new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, Math.round(20 * Math.pow(1.12, targetUnlockNumber - 1)))])];
+        }
+    }
+    
+    private getBuffs(): Buff[] {
+        switch (this.type) {
+            case UnlockType.ManaCapacity:
+                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Mana)]
+            default:
+                return [];
         }
     }
 }
