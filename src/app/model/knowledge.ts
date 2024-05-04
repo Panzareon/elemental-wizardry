@@ -129,6 +129,7 @@ class Knowledge {
                 }
                 if (this.level >= 6) {
                     wizard.learnSpell(SpellType.SkipTime);
+                    wizard.addAvailableUnlock(UnlockType.ChronoCapacity);
                 }
                 if (this.level >= 7) {
                     wizard.learnSpell(SpellType.AttuneChronomancy);
@@ -166,6 +167,9 @@ class Knowledge {
                 }
                 if (this.level >= 4) {
                     wizard.learnSkill(SkillType.MeditateOnNature);
+                }
+                if (this.level >= 6) {
+                    wizard.addAvailableUnlock(UnlockType.NatureCapacity);
                 }
                 break;
         }

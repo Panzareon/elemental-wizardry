@@ -20,6 +20,8 @@ enum UnlockType {
     NatureMagic = 9,
     NatureProduction = 10,
     ManaCapacity = 11,
+    ChronoCapacity = 12,
+    NatureCapacity = 13,
 }
 
 class Unlocks {
@@ -66,6 +68,10 @@ class Unlocks {
                 return "Nature Production";
             case UnlockType.ManaCapacity:
                 return "Mana Capacity";
+            case UnlockType.ChronoCapacity:
+                return "Chrono Capacity";
+            case UnlockType.NatureCapacity:
+                return "Nature Capacity";
         }
         return UnlockType[this.type];
     }
@@ -82,6 +88,8 @@ class Unlocks {
             case UnlockType.NatureProduction:
                 return 5;
             case UnlockType.ManaCapacity:
+            case UnlockType.ChronoCapacity:
+            case UnlockType.NatureCapacity:
                 return 100;
             default:
                 return 1;
@@ -115,7 +123,11 @@ class Unlocks {
             case UnlockType.NatureProduction:
                 return "Converts a Mana Production upgrade into 0.1 Nature generation per second";
             case UnlockType.ManaCapacity:
-                return "Increases max capacity for mana by 10%";
+                return "Increases max capacity for Mana by 10%";
+            case UnlockType.ChronoCapacity:
+                return "Increases max capacity for Chrono by 10%";
+            case UnlockType.NatureCapacity:
+                return "Increases max capacity for Nature by 10%";
         }
     }
     public get buffs() : Buff[] {
@@ -124,6 +136,8 @@ class Unlocks {
     public get keepOnRewind() : boolean {
         switch (this.type) {
             case UnlockType.ManaCapacity:
+            case UnlockType.ChronoCapacity:
+            case UnlockType.NatureCapacity:
                 return true;
             default:
                 return false;
@@ -276,6 +290,10 @@ class Unlocks {
                 return [Costs.fromResources([new ResourceAmount(ResourceType.NatureGem, targetUnlockNumber), new ResourceAmount(ResourceType.Nature, targetUnlockNumber * 10)])];
             case UnlockType.ManaCapacity:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, Math.round(20 * Math.pow(1.12, targetUnlockNumber - 1)))])];
+            case UnlockType.ChronoCapacity:
+                return [Costs.fromResources([new ResourceAmount(ResourceType.ChronoGem, targetUnlockNumber), new ResourceAmount(ResourceType.Chrono, Math.round(20 * Math.pow(1.12, targetUnlockNumber - 1)))])];
+            case UnlockType.NatureCapacity:
+                return [Costs.fromResources([new ResourceAmount(ResourceType.NatureGem, targetUnlockNumber), new ResourceAmount(ResourceType.Nature, Math.round(20 * Math.pow(1.12, targetUnlockNumber - 1)))])];
         }
     }
     
@@ -283,6 +301,10 @@ class Unlocks {
         switch (this.type) {
             case UnlockType.ManaCapacity:
                 return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Mana)]
+            case UnlockType.ChronoCapacity:
+                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Chrono)]
+            case UnlockType.NatureCapacity:
+                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Nature)]
             default:
                 return [];
         }
