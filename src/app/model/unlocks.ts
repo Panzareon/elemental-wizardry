@@ -121,6 +121,14 @@ class Unlocks {
     public get buffs() : Buff[] {
         return this._buffs;
     }
+    public get keepOnRewind() : boolean {
+        switch (this.type) {
+            case UnlockType.ManaCapacity:
+                return true;
+            default:
+                return false;
+        }
+    }
     public transform(amount: number) {
         this._numberTransformed += amount;
     }

@@ -406,7 +406,7 @@ class Wizard {
     this._items.length = 0;
     this._companions.length = 0;
     this._attunedItems.length = 0;
-    this._unlocks.length = 0;
+    this._unlocks.filter(x => !x.keepOnRewind).forEach(x => this._unlocks.splice(this._unlocks.indexOf(x), 1));
     this._availableUnlocks.length = 0;
     this._knowledge.forEach(x => x.rewind(levelMultiplier));
     this.addKnowledge(KnowledgeType.MagicKnowledge);
