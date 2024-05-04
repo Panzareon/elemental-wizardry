@@ -145,7 +145,7 @@ class Skill implements IActive {
         switch (this.type) {
             case SkillType.Meditate:
             {
-                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.1) * deltaTime;
                 let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
                 let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard)).reduce((x, y) => x + y, 0);
                 for (let resource of manaResources) {
@@ -155,19 +155,19 @@ class Skill implements IActive {
             }
             case SkillType.MeditateOnMana:
             {
-                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15) * deltaTime;
                 wizard.addResource(ResourceType.Mana, manaGeneration);
                 break;
             }
             case SkillType.MeditateOnChrono:
             {
-                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15) * deltaTime;
                 wizard.addResource(ResourceType.Chrono, manaGeneration);
                 break;
             }
             case SkillType.MeditateOnNature:
             {
-                let manaGeneration = (1 + this.level * 0.1) * deltaTime;
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15) * deltaTime;
                 wizard.addResource(ResourceType.Nature, manaGeneration);
                 break;
             }
@@ -215,6 +215,11 @@ class Skill implements IActive {
     }
     doesImproveDuration(spell: Spell): boolean {
         return this._availableDurationSpells.includes(spell.type);
+    }
+    private getSkillStrength(wizard: Wizard, baseValue: number) : number{
+        var value = new AdjustValue(baseValue);
+        wizard.buffs.forEach(x => x.adjustSkillPower(this, value));
+        return value.value;
     }
     private getDurationReward(wizard: Wizard) {
         switch (this.type) {

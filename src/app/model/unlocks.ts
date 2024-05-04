@@ -1,8 +1,9 @@
-import { Buff, ResourceCapacityBuff, ResourceProductionBuff } from "./buff";
+import { Buff, ResourceCapacityBuff, ResourceProductionBuff, SkillStrengthBuff } from "./buff";
 import { Costs } from "./costs";
 import { InfluenceAmount, InfluenceType } from "./influence";
 import { KnowledgeType } from "./knowledge";
 import { Resource, ResourceAmount, ResourceType } from "./resource";
+import { SkillType } from "./skill";
 import { Wizard } from "./wizard";
 
 export { Unlocks, UnlockType }
@@ -22,6 +23,7 @@ enum UnlockType {
     ManaCapacity = 11,
     ChronoCapacity = 12,
     NatureCapacity = 13,
+    ImproveMeditate = 14,
 }
 
 class Unlocks {
@@ -72,6 +74,8 @@ class Unlocks {
                 return "Chrono Capacity";
             case UnlockType.NatureCapacity:
                 return "Nature Capacity";
+            case UnlockType.ImproveMeditate:
+                return "Improve Meditate";
         }
         return UnlockType[this.type];
     }
@@ -90,6 +94,7 @@ class Unlocks {
             case UnlockType.ManaCapacity:
             case UnlockType.ChronoCapacity:
             case UnlockType.NatureCapacity:
+            case UnlockType.ImproveMeditate:
                 return 100;
             default:
                 return 1;
@@ -128,6 +133,8 @@ class Unlocks {
                 return "Increases max capacity for Chrono by 10%";
             case UnlockType.NatureCapacity:
                 return "Increases max capacity for Nature by 10%";
+            case UnlockType.ImproveMeditate:
+                return "Increases mana gains from all meditation skills by 10%";
         }
     }
     public get buffs() : Buff[] {
@@ -294,17 +301,21 @@ class Unlocks {
                 return [Costs.fromResources([new ResourceAmount(ResourceType.ChronoGem, targetUnlockNumber), new ResourceAmount(ResourceType.Chrono, Math.round(20 * Math.pow(1.12, targetUnlockNumber - 1)))])];
             case UnlockType.NatureCapacity:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.NatureGem, targetUnlockNumber), new ResourceAmount(ResourceType.Nature, Math.round(20 * Math.pow(1.12, targetUnlockNumber - 1)))])];
+            case UnlockType.ImproveMeditate:
+                return [Costs.fromResources([new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, Math.round(10 * Math.pow(1.1, targetUnlockNumber - 1))), new ResourceAmount(ResourceType.Chrono, Math.round(20 * Math.pow(1.1, targetUnlockNumber - 1)))])];
         }
     }
     
     private getBuffs(): Buff[] {
         switch (this.type) {
             case UnlockType.ManaCapacity:
-                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Mana)]
+                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Mana)];
             case UnlockType.ChronoCapacity:
-                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Chrono)]
+                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Chrono)];
             case UnlockType.NatureCapacity:
-                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Nature)]
+                return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Nature)];
+            case UnlockType.ImproveMeditate:
+                return [new SkillStrengthBuff(Math.pow(1.1, this.numberRepeated), SkillType.Meditate, SkillType.MeditateOnMana, SkillType.MeditateOnNature, SkillType.MeditateOnNature)]
             default:
                 return [];
         }

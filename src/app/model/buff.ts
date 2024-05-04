@@ -3,7 +3,7 @@ import { Skill, SkillType } from "./skill";
 import { SpellSource } from "./spell";
 import { WizardDataType } from "./wizard";
 
-export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease, ResourceCapacityBuff }
+export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease, ResourceCapacityBuff, SkillStrengthBuff }
 
 class AdjustValue
 {
@@ -50,6 +50,8 @@ abstract class Buff {
     public adjustSpellPower(spellPower: AdjustValue, spellSource: SpellSource): void {
     }
     public adjustSkillDuration(skill: Skill, durationDelta : AdjustValue) : void {
+    }
+    public adjustSkillPower(skill: Skill, durationDelta : AdjustValue) : void {
     }
     public adjustWizardData(data: WizardDataType, value : AdjustValue) : void {
     }
@@ -122,6 +124,24 @@ class SkillDurationBuff extends Buff {
 
     public override adjustSkillDuration(skill: Skill, durationDelta: AdjustValue): void {
         if (this._skill === skill.type) {
+            durationDelta.multiply(this._power);
+        }
+    }
+}
+class SkillStrengthBuff extends Buff {
+    private _skills: SkillType[];
+    public constructor(private _power : number, ... skills : SkillType[]) {
+        super();
+        this._skills = skills;
+    }
+
+    public override get description() : string {
+        let skill = this._skills.map(x => new Skill(x).name).join(", ");
+        return "Increases " + skill + " value by " + (this._power * 100 - 100) + "%";
+    }
+
+    public override adjustSkillPower(skill: Skill, durationDelta: AdjustValue): void {
+        if (this._skills.includes(skill.type)) {
             durationDelta.multiply(this._power);
         }
     }

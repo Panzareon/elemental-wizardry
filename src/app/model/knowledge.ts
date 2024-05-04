@@ -112,6 +112,9 @@ class Knowledge {
                 if (this.level >= 6) {
                     wizard.addAvailableUnlock(UnlockType.ManaCapacity);
                 }
+                if (this.level >= 8) {
+                    wizard.addAvailableUnlock(UnlockType.ImproveMeditate);
+                }
                 break;
             case KnowledgeType.ChronomancyKnowledge:
                 if (this.level >= 2) {
