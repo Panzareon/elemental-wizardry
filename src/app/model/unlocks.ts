@@ -145,6 +145,7 @@ class Unlocks {
             case UnlockType.ManaCapacity:
             case UnlockType.ChronoCapacity:
             case UnlockType.NatureCapacity:
+            case UnlockType.ImproveMeditate:
                 return true;
             default:
                 return false;
