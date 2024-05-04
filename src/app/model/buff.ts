@@ -15,17 +15,31 @@ class AdjustValue
 
     public multiplier : number = 1;
 
+    public divisor : number = 1;
+
     public addValue : number = 0;
 
+    public subtractValue : number = 0;
+
     public get value(): number {
-        return (this._baseValue + this.addValue) * this.multiplier;
+        return (this._baseValue / this.divisor + this.addValue) * this.multiplier - this.subtractValue;
     }
     public multiply(factor: number) {
-        this.multiplier *= factor;
+        if (factor > 1) {
+            this.multiplier *= factor;
+        }
+        else {
+            this.divisor /= factor;
+        }
     }
 
     public add(value: number) {
-        this.addValue += value;
+        if (value > 0) {
+            this.addValue += value;
+        }
+        else {
+            this.subtractValue -= value;
+        }
     }
 }
 
