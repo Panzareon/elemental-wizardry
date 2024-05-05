@@ -172,6 +172,9 @@ class Knowledge {
                 if (this.level >= 4) {
                     wizard.learnSkill(SkillType.MeditateOnNature);
                 }
+                if (this.level >= 5) {
+                    wizard.learnSpell(SpellType.Growth);
+                }
                 if (this.level >= 6) {
                     wizard.addAvailableUnlock(UnlockType.NatureCapacity);
                 }

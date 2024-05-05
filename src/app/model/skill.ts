@@ -28,7 +28,7 @@ class Skill implements IActive {
     private _exp: number;
     private _durationTimeSpent: number;
     private _durationIncreasedOutput: number;
-    private _availableDurationSpells: SpellType[];
+    private _availableDurationSpells: DurationSpell[];
     private _activeDurationSpells: Spell[];
     private _repeat: boolean;
     private _activeBuffs: Buff[] = [];
@@ -223,7 +223,7 @@ class Skill implements IActive {
         }
     }
     doesImproveDuration(spell: Spell): boolean {
-        return this._availableDurationSpells.includes(spell.type);
+        return this._availableDurationSpells.some(x => x.type === spell.type);
     }
     private getSkillStrength(wizard: Wizard, baseValue: number) : number{
         var value = new AdjustValue(baseValue);
@@ -301,14 +301,15 @@ class Skill implements IActive {
         }
     }
     
-    private getAvailableDurationSpells(): SpellType[] {
+    private getAvailableDurationSpells(): DurationSpell[] {
         switch (this.type) {
             case SkillType.MagicShow:
-                return [SpellType.MagicBolt];
+                return [new DurationSpell(SpellType.MagicBolt, 1, 0.1),
+                        new DurationSpell(SpellType.Growth, 4, 0.05)];
             case SkillType.ChopWood:
-                return [SpellType.MagicBolt];
+                return [new DurationSpell(SpellType.MagicBolt, 1, 0.1)];
             case SkillType.Mining:
-                return [SpellType.MagicBolt];
+                return [new DurationSpell(SpellType.MagicBolt, 1, 0.1)];
             default:
                 return [];
         }
@@ -316,23 +317,33 @@ class Skill implements IActive {
     
     private triggerDurationSpell(wizard: Wizard) {
         for (let spell of this.activeDurationSpells) {
-            let chance = this.durationSpellChance(spell);
+            let durationSpell = this._availableDurationSpells.find(x => x.type === spell.type);
+            if (durationSpell === undefined) {
+                continue;
+            }
+
+            let chance = durationSpell.durationSpellChance(spell);
             let previousPower = spell.getSpellPower(wizard);
             if (Math.random() < chance && spell.canCast(wizard)) {
                 spell.castSpell(wizard);
-                this.getDurationBenefit(spell, previousPower);
+                this._durationIncreasedOutput += durationSpell.getDurationBenefit(spell, previousPower);
                 this.durationSpellCast.next([this, spell]);
             }
         }
     }
-    private getDurationBenefit(spell: Spell, power: number) {
-        // TODO: should depend on spell and skill type
-        this._durationIncreasedOutput += power;
+}
+class DurationSpell{
+    public constructor(private _spellType: SpellType, private _benefitMultiplier: number, private _spellChance: number) {
+    }
+    public get type(): SpellType {
+        return this._spellType;
+    }
+    public getDurationBenefit(spell: Spell, power: number) : number {
+        return power * this._benefitMultiplier;
     }
 
     // Gets the chance per second that the given spell will be cast during the active duration.
-    private durationSpellChance(spell: Spell) {
-        // TODO: should depend on spell and skill type
-        return 0.1;
+    public durationSpellChance(spell: Spell) {
+        return this._spellChance;
     }
 }

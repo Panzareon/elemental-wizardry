@@ -6,6 +6,7 @@ import { Companion, CompanionType } from "./companion";
 import { GameLogicService } from "../game-logic.service";
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { Buff, ResourceProductionBuff } from "./buff";
+import { GrowState } from "./garden-plot";
 
 export { Spell, SpellType, SpellSource, SpellCastingType }
 
@@ -20,6 +21,7 @@ enum SpellType {
     SkipTime = 7,
     AttuneChronomancy = 8,
     Rewind = 9,
+    Growth = 10,
 }
 
 enum SpellCastingType {
@@ -135,6 +137,8 @@ class Spell implements ITimedBuffSource {
                 return "Attune to Chronomancy to be able to handle more complex Chronomancy spells. Requires attunement to Chronomancy to perform.";
             case SpellType.Rewind:
                 return "Rewinds time and return into the body of your younger self with your experiences";
+            case SpellType.Growth:
+                return "Growth a plant quickly";
         }
     }
 
@@ -194,6 +198,9 @@ class Spell implements ITimedBuffSource {
                 let x = spellPower/20;
                 let newLevelMultiplier = x/(1 + x);
                 wizard.rewind(newLevelMultiplier);
+                break;
+            case SpellType.Growth:
+                wizard.gardenPlots.filter(x => x.state === GrowState.Growing).forEach(x => x.update(wizard, 20 * spellPower))
                 break;
         }
 
@@ -319,6 +326,8 @@ class Spell implements ITimedBuffSource {
                 return SpellCast.CreateRitualSpell(
                     [new ResourceAmount(ResourceType.ChronoGem, 10 * costMultiplier)],
                     new RitualCast(this, [new ResourceAmount(ResourceType.Chrono, 100 * costMultiplier), new ResourceAmount(ResourceType.Mana, 100 * costMultiplier)], 60));
+            case SpellType.Growth:
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Nature, 5 * costMultiplier)]);
         }
     }
 
@@ -336,6 +345,7 @@ class Spell implements ITimedBuffSource {
             case SpellType.Rewind:
                 return SpellSource.Chronomancy;
             case SpellType.InfuseNatureGem:
+            case SpellType.Growth:
                 return SpellSource.Nature;
         }
     }
