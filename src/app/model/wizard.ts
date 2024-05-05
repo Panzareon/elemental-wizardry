@@ -411,9 +411,19 @@ class Wizard {
     this._availableUnlocks.length = 0;
     this._knowledge.forEach(x => x.rewind(levelMultiplier));
     this.addKnowledge(KnowledgeType.MagicKnowledge);
+    this.addKnowledge(KnowledgeType.ChronomancyKnowledge);
+    var manaProduction = new Unlocks(UnlockType.ManaProduction);
+    manaProduction.load(1);
+    this.addUnlock(manaProduction);
+    var chronoProduction = new Unlocks(UnlockType.ChronomancyProduction);
+    chronoProduction.load(1);
+    this.addUnlock(chronoProduction);
+    manaProduction.afterLoad(this);
+    chronoProduction.afterLoad(this);
     this._spells.forEach(x => x.rewind(levelMultiplier));
     // this._data doesn't contain anything to rewind (for now)
     
+    this.recalculateStats();
   }
   private getUnlockReward(unlock: Unlocks, onLoad: boolean) {
     switch (unlock.type) {
