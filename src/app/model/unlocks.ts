@@ -160,6 +160,13 @@ class Unlocks {
             if (baseUnlock[0] === undefined || baseUnlock[0].numberActive <= 0) {
                 return false;
             }
+
+            if (baseUnlock[0].type === UnlockType.ManaProduction
+                 && this.type !== UnlockType.ChronomancyProduction
+                 && wizard.getResource(ResourceType.Chrono) === undefined) {
+                // Ensure the first mana production that is converted is into Chrono
+                return false;
+            }
         }
         return true;
     }

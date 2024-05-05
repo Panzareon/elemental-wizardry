@@ -25,9 +25,7 @@ export class UnlockCardComponent {
       return;
     }
 
-    if (unlock.buy(this._data.wizard, costs)) {
-      this._data.wizard.addUnlock(unlock);
-    }
+    unlock.buy(this._data.wizard, costs);
   }
 
   public repeatUnlock(unlock: Unlocks, costs: Costs) {

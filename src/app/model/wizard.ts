@@ -346,16 +346,10 @@ class Wizard {
     this.notifyEvent(EventInfo.unlocked(new Unlocks(unlockType).name + " available"));
     this._availableUnlocks.push(unlockType);
   }
-  public addUnlock(unlock: Unlocks) {
-    this.notifyEvent(EventInfo.unlocked("Unlocked " + unlock.name));
-    this._unlocks.push(unlock);
-    let availableUnlockIndex = this._availableUnlocks.indexOf(unlock.type);
-    if (availableUnlockIndex >= 0) {
-      this._availableUnlocks.splice(availableUnlockIndex, 1);
-    }
-    this.unlocked(unlock);
-  }
   public unlocked(unlock: Unlocks) {
+    if (!this._unlocks.includes(unlock)) {
+      this.addUnlock(unlock);
+    }
     this.recalculateStats();
     this.getUnlockReward(unlock, false);
   }
@@ -412,14 +406,7 @@ class Wizard {
     this._knowledge.forEach(x => x.rewind(levelMultiplier));
     this.addKnowledge(KnowledgeType.MagicKnowledge);
     this.addKnowledge(KnowledgeType.ChronomancyKnowledge);
-    var manaProduction = new Unlocks(UnlockType.ManaProduction);
-    manaProduction.load(1);
-    this.addUnlock(manaProduction);
-    var chronoProduction = new Unlocks(UnlockType.ChronomancyProduction);
-    chronoProduction.load(1);
-    this.addUnlock(chronoProduction);
-    manaProduction.afterLoad(this);
-    chronoProduction.afterLoad(this);
+    this.addResourceType(ResourceType.Chrono);
     this._spells.forEach(x => x.rewind(levelMultiplier));
     // this._data doesn't contain anything to rewind (for now)
     
@@ -524,6 +511,14 @@ class Wizard {
 
   private addGardenPlot() {
     this._gardenPlots.push(new GardenPlot(this._gardenPlots.length));
+  }
+  private addUnlock(unlock: Unlocks) {
+    this.notifyEvent(EventInfo.unlocked("Unlocked " + unlock.name));
+    this._unlocks.push(unlock);
+    let availableUnlockIndex = this._availableUnlocks.indexOf(unlock.type);
+    if (availableUnlockIndex >= 0) {
+      this._availableUnlocks.splice(availableUnlockIndex, 1);
+    }
   }
 }
 enum EventInfoType {

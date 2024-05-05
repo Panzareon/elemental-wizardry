@@ -143,6 +143,7 @@ class Resource {
     private get baseGeneration() : number {
         switch (this.type) {
             case ResourceType.Mana:
+            case ResourceType.Chrono:
                 return Resource.BaseManaGeneration;
             default:
                 return 0;
