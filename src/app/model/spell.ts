@@ -134,7 +134,7 @@ class Spell implements ITimedBuffSource {
             case SpellType.SkipTime:
                 return "Skip forward in time to skip waiting on some external event"
             case SpellType.AttuneChronomancy:
-                return "Attune to Chronomancy to be able to handle more complex Chronomancy spells. Requires attunement to Chronomancy to perform.";
+                return "Attune to Chronomancy to be able to handle more complex Chronomancy spells.";
             case SpellType.Rewind:
                 return "Rewinds time and return into the body of your younger self with your experiences";
             case SpellType.Growth:
@@ -241,15 +241,24 @@ class Spell implements ITimedBuffSource {
                 && wizard.hasResources(this.cast.baseCost);
     }
 
-    public hasRequiredAttunement(wizard: Wizard): boolean {
+    public getRequiredAttunements() : [WizardDataType, number][] {
         switch (this._type) {
             case SpellType.AttuneChronomancy:
-                return wizard.getData(WizardDataType.ChronomancyAttunement) >= 1
+                return [[WizardDataType.ChronomancyAttunement, 1]];
             case SpellType.Rewind:
-                return wizard.getData(WizardDataType.ChronomancyAttunement) >= 2
+                return [[WizardDataType.ChronomancyAttunement, 2]];
             default:
-                return true;
+                return [];
         }
+    }
+    public hasRequiredAttunement(wizard: Wizard): boolean {
+        for (const attunement of this.getRequiredAttunements()) {
+            if (wizard.getData(attunement[0]) < attunement[1]) {
+                return false;
+            }
+        }
+
+        return true;
     }
     public getExp(exp: number) {
         this._exp += exp * this.expGainMultiplier;
