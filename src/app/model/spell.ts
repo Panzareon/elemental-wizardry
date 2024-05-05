@@ -331,7 +331,7 @@ class Spell implements ITimedBuffSource {
         }
     }
 
-    private getSource(): SpellSource {
+    public getSource(): SpellSource {
         switch (this.type) {
             case SpellType.InfuseGem:
             case SpellType.MagicBolt:

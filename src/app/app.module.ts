@@ -53,6 +53,7 @@ import { RitualComponent } from './ritual/ritual.component';
 import { ActiveBuffsComponent } from './active-buffs/active-buffs.component';
 import { BuffTooltipDirective } from './tooltip/buff-tooltip/buff-tooltip.directive';
 import { BuffTooltipComponent } from './tooltip/buff-tooltip/buff-tooltip.component';
+import { StatusComponent } from './status/status.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +95,8 @@ import { BuffTooltipComponent } from './tooltip/buff-tooltip/buff-tooltip.compon
     RitualComponent,
     ActiveBuffsComponent,
     BuffTooltipDirective,
-    BuffTooltipComponent
+    BuffTooltipComponent,
+    StatusComponent
   ],
   imports: [
     BrowserModule,

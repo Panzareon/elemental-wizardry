@@ -24,6 +24,7 @@ export class AppComponent {
         ["equipment", "Equipment", false],
         ["companions", "Companions", false],
         ["unlocks", "Unlocks", false],
+        ["status", "Status", true],
       ]],
       ["Home", [
         ["garden", "Garden", false],

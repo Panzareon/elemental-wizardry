@@ -14,6 +14,7 @@ import { CraftingComponent } from './crafting/crafting.component';
 import { EquipmentComponent } from './equipment/equipment.component';
 import { CompanionsComponent } from './companions/companions.component';
 import { RitualComponent } from './ritual/ritual.component';
+import { StatusComponent } from './status/status.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/actions", pathMatch: "full" },
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: "equipment", component: EquipmentComponent },
   { path: "companions", component: CompanionsComponent },
   { path: "ritual", component: RitualComponent },
+  { path: "status", component: StatusComponent },
 ];
 
 @NgModule({
