@@ -7,7 +7,7 @@ import { Spell } from '../model/spell';
   styleUrls: ['./ritual-circle.component.less']
 })
 export class RitualCircleComponent {
-  private isAnimating : boolean = false;
+  public isAnimating : boolean = false;
   constructor(private elem: ElementRef){}
 
   public startAnimation() {
