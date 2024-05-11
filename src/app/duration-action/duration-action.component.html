@@ -3,6 +3,7 @@
     <mat-card-header class="header"><span>{{name}}</span> <span class="repeat">Repeat:<mat-checkbox [checked]="repeat" (change)="repeat=!repeat"></mat-checkbox></span></mat-card-header>
     <mat-card-content>
         <div class="reward-progress">
+            {{skill.getDurationProgressName()}}:
             <div class="reward-progress-current" [style.width.%]="currentRewardProgress*100"></div>
             <div class="reward-progress-complete" [style.width.px]="progressPerLine*6 - 1" *ngFor="let _ of [].constructor(rewardProgressCompleteLines)"></div>
             <div class="reward-progress-complete" [style.width.px]="rewardProgressComplete % progressPerLine == 0 ? 0 : (rewardProgressComplete % progressPerLine)*6 - 1"></div>
