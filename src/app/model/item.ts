@@ -133,6 +133,8 @@ class ItemTimedBuffSource implements ITimedBuffSource {
                 return [];
         }
     }
+    timedBuffRemoved(timedBuff: TimedBuff, wizard: Wizard): void {
+    }
     activateTimedBuff(timedBuff: TimedBuff, wizard: Wizard, deltaTime: number): boolean {
         return true;
     }

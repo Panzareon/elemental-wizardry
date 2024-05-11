@@ -103,6 +103,7 @@ class WizardSerializer {
             duration: x.duration,
             power: x.power,
             costMultiplier: x.costMultiplier,
+            maxDuration: x.maxDuration,
         }
     }
     serializeInfluence(x: Influence): InfluenceJson {

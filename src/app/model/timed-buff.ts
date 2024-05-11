@@ -11,9 +11,9 @@ enum TimedBuffSourceType {
 class TimedBuff {
     private _buffs: Buff[];
     private _maxDuration: number;
-    constructor(private _source: ITimedBuffSource, private _duration: number, private _power: number, private _costMultiplier: number  = 1) {
+    constructor(private _source: ITimedBuffSource, private _duration: number, private _power: number, private _costMultiplier: number  = 1, maxDuration : number|undefined = undefined) {
         this._buffs = this.getBuffs();
-        this._maxDuration = this._duration;
+        this._maxDuration = maxDuration ?? this._duration;
     }
     getBuffs(): Buff[] {
         return this._source.getBuffs(this);
@@ -24,6 +24,10 @@ class TimedBuff {
 
     public get duration() : number {
         return this._duration;
+    }
+
+    public get maxDuration() : number {
+        return this._maxDuration;
     }
 
     public get durationPercent() : number {
@@ -43,6 +47,14 @@ class TimedBuff {
     }
 
     public activate(wizard: Wizard, deltaTime: number): boolean {
+        var result = this.activateInternal(wizard, deltaTime);
+        if (!result) {
+            this._source.timedBuffRemoved(this, wizard);
+        }
+
+        return result;
+    }
+    private activateInternal(wizard: Wizard, deltaTime: number): boolean {
         if (deltaTime > this._duration) {
             deltaTime = this._duration;
         }
@@ -65,6 +77,8 @@ interface ITimedBuffSource
     getBuffs(timedBuff: TimedBuff): Buff[];
 
     activateTimedBuff(timedBuff: TimedBuff, wizard: Wizard, deltaTime: number): boolean;
+
+    timedBuffRemoved(timedBuff: TimedBuff, wizard: Wizard): void;
     
     serializeTimedBuff(): any;
 }

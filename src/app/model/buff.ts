@@ -3,7 +3,7 @@ import { Skill, SkillType } from "./skill";
 import { SpellSource } from "./spell";
 import { WizardDataType } from "./wizard";
 
-export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease, ResourceCapacityBuff, SkillStrengthBuff }
+export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease, ResourceCapacityBuff, SkillStrengthBuff, DescriptionOnlyBuff }
 
 class AdjustValue
 {
@@ -195,5 +195,15 @@ class ResourceCapacityBuff extends Buff {
                 production.add(this._power);
             }
         }
+    }
+}
+
+// A buff which only adds a description
+class DescriptionOnlyBuff extends Buff {
+    public constructor(private _description: string) {
+        super();
+    }
+    public override get description(): string {
+        return this._description;
     }
 }

@@ -5,7 +5,7 @@ import { EventInfo, Wizard, WizardDataType } from "./wizard";
 import { Companion, CompanionType } from "./companion";
 import { GameLogicService } from "../game-logic.service";
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
-import { Buff, ResourceProductionBuff } from "./buff";
+import { Buff, DescriptionOnlyBuff, ResourceProductionBuff } from "./buff";
 import { GrowState } from "./garden-plot";
 
 export { Spell, SpellType, SpellSource, SpellCastingType }
@@ -195,9 +195,7 @@ class Spell implements ITimedBuffSource {
                 wizard.addToData(WizardDataType.ChronomancyAttunement, 1);
                 break;
             case SpellType.Rewind:
-                let x = spellPower/20;
-                let newLevelMultiplier = x/(1 + x);
-                wizard.rewind(newLevelMultiplier);
+                this.triggerRewind(spellPower, wizard);
                 break;
             case SpellType.Growth:
                 wizard.gardenPlots.filter(x => x.state === GrowState.Growing).forEach(x => x.update(wizard, 20 * spellPower))
@@ -215,6 +213,8 @@ class Spell implements ITimedBuffSource {
         switch (this.type) {
             case SpellType.ExpediteGeneration:
                 return [new ResourceProductionBuff(true, (1 + 0.5 * timedBuff.power), undefined, ResourceKind.Mana, ResourceType.Chrono)];
+            case SpellType.Rewind:
+                return [new DescriptionOnlyBuff("Rewinds again once this ends")]
             default:
                 return [];
         }
@@ -229,6 +229,14 @@ class Spell implements ITimedBuffSource {
         }
 
         return true;
+    }
+
+    public timedBuffRemoved(timedBuff: TimedBuff, wizard: Wizard): void {
+        switch (this.type) {
+            case SpellType.Rewind:
+                this.triggerRewind(timedBuff.power, wizard);
+                return;
+        }
     }
 
     public serializeTimedBuff() {
@@ -357,6 +365,13 @@ class Spell implements ITimedBuffSource {
             case SpellType.Growth:
                 return SpellSource.Nature;
         }
+    }
+
+    private triggerRewind(spellPower: number, wizard: Wizard) {
+        let x = spellPower / 20;
+        let newLevelMultiplier = x / (1 + x);
+        wizard.rewind(newLevelMultiplier);
+        wizard.addBuff(new TimedBuff(this, 20 * 60, spellPower, this.costMultiplier));
     }
 }
 class SpellCast {

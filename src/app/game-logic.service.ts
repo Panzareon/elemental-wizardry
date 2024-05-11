@@ -81,8 +81,21 @@ export class GameLogicService {
     {
       var buff = this.data.wizard.timedBuffs[i];
       if (!buff.activate(this.data.wizard, deltaTime)) {
-        this.data.wizard.timedBuffs.splice(i, 1);
-        i--;
+        var remove = true;
+        if (this.data.wizard.timedBuffs.length < i || this.data.wizard.timedBuffs[i] !== buff) {
+          let newIndex = this.data.wizard.timedBuffs.indexOf(buff);
+          if (newIndex >= 0) {
+            i = newIndex;
+          }
+          else {
+            remove = false;
+          }
+        }
+
+        if (remove) {
+          this.data.wizard.timedBuffs.splice(i, 1);
+          i--;
+        }
       }
     }
     GameLogicService.externalPassiveTick(this.data.wizard, deltaTime);

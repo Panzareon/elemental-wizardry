@@ -62,6 +62,7 @@ interface BuffJson {
     duration: number;
     power: number;
     costMultiplier: number;
+    maxDuration: number;
 }
 interface BuffSourceJson {
     type: TimedBuffSourceType;
