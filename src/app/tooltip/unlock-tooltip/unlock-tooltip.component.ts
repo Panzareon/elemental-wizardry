@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TooltipBase } from '../tooltip-base';
 import { Unlocks } from 'src/app/model/unlocks';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-unlock-tooltip',
@@ -8,5 +9,15 @@ import { Unlocks } from 'src/app/model/unlocks';
   styleUrls: ['./unlock-tooltip.component.less']
 })
 export class UnlockTooltipComponent extends TooltipBase {
+  public constructor(private _data: DataService) {
+    super();
+  }
+
   unlock!: Unlocks;
+  public canUnlock() : boolean {
+    return this.unlock.canUnlock(this._data.wizard)[0];
+  }
+  public unlockPreventedReason() : string {
+    return this.unlock.canUnlock(this._data.wizard)[1] ?? "";
+  }
 }

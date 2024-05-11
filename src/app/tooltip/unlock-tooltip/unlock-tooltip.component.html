@@ -5,4 +5,7 @@
     <mat-card-content>
         {{unlock.description}}
     </mat-card-content>
+    <mat-card-content *ngIf="!canUnlock()">
+      <div class="disabled">{{unlockPreventedReason()}}</div>
+    </mat-card-content>
   </mat-card>

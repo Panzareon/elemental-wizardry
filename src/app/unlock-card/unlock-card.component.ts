@@ -15,9 +15,8 @@ export class UnlockCardComponent {
   @Input() unlock!: Unlocks;
 
   public canUnlock(unlock: Unlocks, costs: Costs) : boolean {
-    return unlock.canUnlock(this._data.wizard) && costs.canSpend(this._data.wizard);
+    return unlock.canUnlock(this._data.wizard)[0] && costs.canSpend(this._data.wizard);
   }
-
 
   public buyUnlock(unlock: Unlocks, costs: Costs) {
     if (this._data.wizard.unlocks.includes(unlock)) {

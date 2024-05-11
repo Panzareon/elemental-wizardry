@@ -157,21 +157,21 @@ class Unlocks {
     public transform(amount: number) {
         this._numberTransformed += amount;
     }
-    public canUnlock(wizard: Wizard) : boolean {
-        let baseUnlock = this.tryGetBaseUnlock(wizard);
-        if (baseUnlock[1] === true) {
-            if (baseUnlock[0] === undefined || baseUnlock[0].numberActive <= 0) {
-                return false;
+    public canUnlock(wizard: Wizard) : [boolean, string?] {
+        let baseUnlocks = this.tryGetBaseUnlock(wizard);
+        for (const baseUnlock of baseUnlocks) {
+            if (baseUnlock.numberActive <= 0) {
+                return [false, "Need " + baseUnlock.name + " to convert"];
             }
 
-            if (baseUnlock[0].type === UnlockType.ManaProduction
+            if (baseUnlock.type === UnlockType.ManaProduction
                  && this.type !== UnlockType.ChronomancyProduction
                  && wizard.getResource(ResourceType.Chrono) === undefined) {
                 // Ensure the first mana production that is converted is into Chrono
-                return false;
+                return [false, "Need to unlock Chronomancy Production first"];
             }
         }
-        return true;
+        return [true, undefined];
     }
     increaseMaxResourceAmount(type: ResourceType) : number {
         switch (this.type) {
@@ -229,7 +229,7 @@ class Unlocks {
         if (!this._cost.includes(costs)) {
             throw new Error("Not matching costs given");
         }
-        if (this.canUnlock(wizard) && costs.spend(wizard)) {
+        if (this.canUnlock(wizard)[0] && costs.spend(wizard)) {
             this.transformBaseUnlock(wizard);
             this.SetNumberRepeated(this._numberRepeated+1);
             wizard.unlocked(this);
@@ -254,25 +254,23 @@ class Unlocks {
             this._buffs = this.getBuffs();
         }
     }
-    private tryGetBaseUnlock(wizard: Wizard) : [Unlocks|undefined, boolean] {
+    private tryGetBaseUnlock(wizard: Wizard) : Unlocks[] {
         switch (this._type) {
             case UnlockType.ChronomancyProduction:
             case UnlockType.NatureProduction:
             {
                 let baseUnlock = wizard.unlocks.find(x => x.type == UnlockType.ManaProduction);
-                return [baseUnlock, true];
+                return [baseUnlock ?? new Unlocks(UnlockType.ManaProduction)];
             }
             default:
-                return [undefined, false];
+                return [];
         }
     }
     private transformBaseUnlock(wizard: Wizard, amount: number = 1){
-        let baseUnlock = this.tryGetBaseUnlock(wizard);
-        if (baseUnlock[1] === false || baseUnlock[0] === undefined) {
-            return;
+        let baseUnlocks = this.tryGetBaseUnlock(wizard);
+        for (const baseUnlock of baseUnlocks) {
+            baseUnlock.transform(amount);
         }
-
-        baseUnlock[0].transform(amount);
     }
     private getCost(): Costs[] {
         const targetUnlockNumber = this.numberRepeated + 1;
