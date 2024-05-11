@@ -17,6 +17,7 @@ enum ResourceType {
     Iron = 11,
     Nature = 12,
     NatureGem = 13,
+    WolfsbaneRoot = 14,
 }
 enum ResourceKind {
     Mana = 1,
@@ -57,6 +58,8 @@ class Resource {
                 return "Mandrake Root";
             case ResourceType.NatureGem:
                 return "Nature Gem";
+            case ResourceType.WolfsbaneRoot:
+                return "Wolfsbane Root";
             default:
                 return ResourceType[this.type];
         }
@@ -134,6 +137,7 @@ class Resource {
             case ResourceType.Gold:
                 return 100;
             case ResourceType.MandrakeRoot:
+            case ResourceType.WolfsbaneRoot:
                 return 100;
             default:
                 return 10;

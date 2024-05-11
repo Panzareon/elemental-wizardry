@@ -9,6 +9,7 @@ enum GardenPlotPlant
 {
     Empty = 0,
     Mandrake = 1,
+    Wolfsbane = 2,
 }
 enum GrowState
 {
@@ -25,6 +26,7 @@ class GardenPlot implements IActive
     private _remainingPlantTime : number = 0;
     private _remainingHarvestTime : number = 0;
     private _state : GrowState = GrowState.Nothing;
+    public selectedSeed: GardenPlotPlant = GardenPlotPlant.Mandrake;
     constructor(private _index : number) {
     }
     public get plantType() : GardenPlotPlant {
@@ -80,6 +82,7 @@ class GardenPlot implements IActive
     public get plantTime(): number {
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:
+            case GardenPlotPlant.Wolfsbane:
                 return 10;
             default:
                 console.error("Cannot plant " + this._plant);
@@ -91,6 +94,8 @@ class GardenPlot implements IActive
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:
                 return 2 * 60;
+            case GardenPlotPlant.Wolfsbane:
+                return 1.5 * 60;
             default:
                 console.error("Cannot grow " + this._plant);
                 return 0;
@@ -100,6 +105,7 @@ class GardenPlot implements IActive
     public get harvestTime(): number {
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:
+            case GardenPlotPlant.Wolfsbane:
                 return 15;
             default:
                 console.error("Cannot harvest " + this._plant);
@@ -116,6 +122,10 @@ class GardenPlot implements IActive
         this._plant = plant;
         this._remainingPlantTime = this.plantTime;
         this._state = GrowState.Planting;
+    }
+
+    public selectSeed(plant: GardenPlotPlant) {
+        this.selectedSeed = plant;
     }
 
     public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
@@ -159,6 +169,9 @@ class GardenPlot implements IActive
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:
                 wizard.addResource(ResourceType.MandrakeRoot, 2 + Math.round(Math.random()))
+                break;
+            case GardenPlotPlant.Wolfsbane:
+                wizard.addResource(ResourceType.WolfsbaneRoot, 1 + Math.round(Math.random() * 3))
                 break;
             default:
                 console.error("Cannot get harvested item of " + this._plant);

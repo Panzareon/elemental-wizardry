@@ -78,7 +78,9 @@ class Influence {
             case InfluenceType.ArtisanGuild:
                 return [new InfluenceDonation(this, ResourceType.Wood, 1, 100)];
             case InfluenceType.AlchemistGuild:
-                return [new InfluenceDonation(this, ResourceType.MandrakeRoot, 1, 100)];
+                return [new InfluenceDonation(this, ResourceType.MandrakeRoot, 1, 100),
+                        new InfluenceDonation(this, ResourceType.WolfsbaneRoot, 5, 500)
+                ];
             case InfluenceType.WizardCouncil:
                 return [
                     new InfluenceDonation(this, ResourceType.ManaGem, 5, 100),

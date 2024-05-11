@@ -8,7 +8,7 @@ import { Spell, SpellSource, SpellType } from "./spell";
 import { UnlockType, Unlocks } from "./unlocks";
 import { TimedBuff } from "./timed-buff";
 import { Influence, InfluenceAmount, InfluenceType } from "./influence";
-import { GardenPlot } from "./garden-plot";
+import { GardenPlot, GardenPlotPlant } from "./garden-plot";
 import { Recipe, RecipeType } from "./recipe";
 import { Item } from "./item";
 import { AdjustValue, Buff } from "./buff";
@@ -27,6 +27,7 @@ class Wizard {
   private _event: Subject<EventInfo> = new Subject();
   private _availableUnlocks: UnlockType[] = [];
   private _gardenPlots: GardenPlot[];
+  private _availablePlants: GardenPlotPlant[] = [GardenPlotPlant.Mandrake];
   private _recipe: Recipe[];
   private _influence: Influence[];
   private _items: Item[];
@@ -146,6 +147,10 @@ class Wizard {
 
   public get gardenPlots(): GardenPlot[] {
     return this._gardenPlots;
+  }
+
+  public get availablePlants() : GardenPlotPlant[] {
+    return this._availablePlants;
   }
 
   public get recipe(): Recipe[] {
@@ -425,6 +430,7 @@ class Wizard {
         break;
       case UnlockType.GardenPlot:
         this.addKnowledge(KnowledgeType.Herbalism);
+        this.addAvailableUnlock(UnlockType.WolfsbaneSeeds);
         if (!onLoad) {
           this.addGardenPlot();
         }
@@ -440,6 +446,9 @@ class Wizard {
         break;
       case UnlockType.NatureProduction:
         this.addResourceType(ResourceType.Nature);
+        break;
+      case UnlockType.WolfsbaneSeeds:
+        this.addAvailablePlant(GardenPlotPlant.Wolfsbane);
         break;
     }
   }
@@ -518,6 +527,12 @@ class Wizard {
     let availableUnlockIndex = this._availableUnlocks.indexOf(unlock.type);
     if (availableUnlockIndex >= 0) {
       this._availableUnlocks.splice(availableUnlockIndex, 1);
+    }
+  }
+  
+  private addAvailablePlant(plant: GardenPlotPlant) {
+    if (!this._availablePlants.includes(plant)) {
+      this._availablePlants.push(plant);
     }
   }
 }

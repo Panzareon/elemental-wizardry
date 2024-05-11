@@ -3,10 +3,21 @@
     <mat-card-header>
         {{plot.plantName}}
     </mat-card-header>
-    <mat-card-content>
-        <ng-container *ngIf="showPlanting(plot)">
-            <mat-button-toggle [checked]="isActive(plot)" (change)="plant(plot)">Plant</mat-button-toggle>
-        </ng-container>
+    <ng-container *ngIf="showPlanting(plot)">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <mat-button-toggle class="plant-button" [checked]="isActive(plot)" (change)="plant(plot)">Plant {{getName(plot.selectedSeed)}}</mat-button-toggle>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-radio-group (change)="selectedPlantChanged(plot, $event)">
+                <mat-radio-button labelPosition="before" value="plant" [checked]="plot.selectedSeed === plant" [value]="plant" *ngFor="let plant of availableSeeds">
+                    {{getName(plant)}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </mat-expansion-panel>
+    </ng-container>
+    <mat-card-content *ngIf="!showPlanting(plot)">
         <ng-container *ngIf="showHarvest(plot)">
             <mat-button-toggle [checked]="isActive(plot)" (change)="harvest(plot)">Harvest</mat-button-toggle>
         </ng-container>

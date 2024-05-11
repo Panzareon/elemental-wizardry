@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../data.service';
 import { GardenPlot, GardenPlotPlant, GrowState } from '../model/garden-plot';
+import { MatRadioChange } from '@angular/material/radio';
 
 @Component({
   selector: 'app-garden',
@@ -14,6 +15,9 @@ export class GardenComponent {
   public get plots() : GardenPlot[] {
     return this.data.wizard.gardenPlots;
   }
+  public get availableSeeds() : GardenPlotPlant[] {
+    return this.data.wizard.availablePlants;
+  }
   public showPlanting(plot: GardenPlot) : boolean {
     return plot.state == GrowState.Planting || plot.state == GrowState.Nothing;
   }
@@ -25,8 +29,7 @@ export class GardenComponent {
   }
   public plant(plot: GardenPlot) {
     if (plot.plantType == GardenPlotPlant.Empty){
-      // TODO: other plants
-      plot.plant(GardenPlotPlant.Mandrake);
+      plot.plant(plot.selectedSeed);
     }
     if (plot.state == GrowState.Planting) {
       if (!this.isActive(plot)) {
@@ -49,5 +52,14 @@ export class GardenComponent {
   }
   public getProgress(plot: GardenPlot) : number {
     return plot.activeProgress;
+  }
+  public getName(plant: GardenPlotPlant): string {
+    if (plant == GardenPlotPlant.Empty) {
+      return "";
+    }
+    return GardenPlotPlant[plant];
+  }
+  public selectedPlantChanged(plot: GardenPlot,event: MatRadioChange) {
+    plot.selectSeed(event.value)
   }
 }

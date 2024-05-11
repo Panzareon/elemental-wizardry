@@ -24,6 +24,7 @@ enum UnlockType {
     ChronoCapacity = 12,
     NatureCapacity = 13,
     ImproveMeditate = 14,
+    WolfsbaneSeeds = 15,
 }
 
 class Unlocks {
@@ -135,6 +136,8 @@ class Unlocks {
                 return "Increases max capacity for Nature by 10%";
             case UnlockType.ImproveMeditate:
                 return "Increases mana gains from all meditation skills by 10%";
+            case UnlockType.WolfsbaneSeeds:
+                return "Allows planting Wolfsbane in the garden";
         }
     }
     public get buffs() : Buff[] {
@@ -311,6 +314,8 @@ class Unlocks {
                 return [Costs.fromResources([new ResourceAmount(ResourceType.NatureGem, targetUnlockNumber), new ResourceAmount(ResourceType.Nature, Math.round(20 * Math.pow(1.12, targetUnlockNumber - 1)))])];
             case UnlockType.ImproveMeditate:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, Math.round(10 * Math.pow(1.1, targetUnlockNumber - 1))), new ResourceAmount(ResourceType.Chrono, Math.round(20 * Math.pow(1.1, targetUnlockNumber - 1)))])];
+            case UnlockType.WolfsbaneSeeds:
+                return [Costs.fromInfluence(InfluenceType.AlchemistGuild, 10, 5)];
         }
     }
     
