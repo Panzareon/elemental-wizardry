@@ -16,4 +16,7 @@ export class CompanionsComponent {
   public toggleAction(action: CompanionAction) {
     action.isActive = !action.isActive;
   }
+  public isAvailable(action: CompanionAction): any {
+    return action.isAvailable(this._data.wizard);
+  }
 }

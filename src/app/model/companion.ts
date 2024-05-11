@@ -1,3 +1,4 @@
+import { LocationType } from "./gameLocation";
 import { ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
@@ -76,7 +77,20 @@ class CompanionAction {
         this._isActive = value;
     }
 
+    public isAvailable(wizard: Wizard) : boolean {
+        switch (this.type) {
+            case CompanionActionType.ChopWood:
+                return wizard.location.some(x => x.type === LocationType.Forest);
+            case CompanionActionType.Mining:
+                return wizard.location.some(x => x.type === LocationType.Mountain);
+        }
+    }
+
     public activate(wizard: Wizard, deltaTime: number) {
+        if (!this.isAvailable(wizard)) {
+            this.isActive = false;
+            return;
+        }
         switch (this._type) {
             case CompanionActionType.ChopWood:
                 wizard.addResource(ResourceType.Wood, deltaTime * 0.1 * this._companion.level);

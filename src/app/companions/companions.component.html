@@ -2,9 +2,11 @@
     <mat-card-header>{{companion.name}} Lvl. {{companion.level | number: '1.0-1'}}</mat-card-header>
     <mat-card-content>
         <mat-button-toggle-group multiple="true">
-            <mat-button-toggle *ngFor="let action of companion.actions" [checked]="action.isActive" (change)="toggleAction(action)">
-                {{action.name}}
-            </mat-button-toggle>
+            <ng-container *ngFor="let action of companion.actions">
+                <mat-button-toggle *ngIf="isAvailable(action)" [checked]="action.isActive" (change)="toggleAction(action)">
+                    {{action.name}}
+                </mat-button-toggle>
+            </ng-container>
         </mat-button-toggle-group>
     </mat-card-content>
 </mat-card>
