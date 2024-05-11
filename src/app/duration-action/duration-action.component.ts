@@ -11,7 +11,9 @@ import { SpellIconComponent } from '../spell-icon/spell-icon.component';
   styleUrls: ['./duration-action.component.less']
 })
 export class DurationActionComponent {
+  public readonly progressPerLine = 27;
   durationSpellCastSubscription?: Subscription;
+
   constructor(private data: DataService) { }
 
   ngOnInit() {
@@ -43,6 +45,15 @@ export class DurationActionComponent {
     return this.skill.activeDurationSpells.length + "/" + this.availableSpells.length;
   }
   
+  public get currentRewardProgress() : number {
+    return this.skill.durationProgress - this.rewardProgressComplete;
+  }
+  public get rewardProgressComplete() : number {
+    return Math.floor(this.skill.durationProgress)
+  }
+  public get rewardProgressCompleteLines() : number {
+    return Math.floor(this.rewardProgressComplete/this.progressPerLine);
+  }
   public toggleSkill(skill: Skill) {
     if (this.isActive(skill)) {
       this.data.wizard.setInactive(skill);

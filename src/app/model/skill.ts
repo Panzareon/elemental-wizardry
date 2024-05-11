@@ -225,6 +225,30 @@ class Skill implements IActive {
     doesImproveDuration(spell: Spell): boolean {
         return this._availableDurationSpells.some(x => x.type === spell.type);
     }
+    public getDurationProgressName() : string{
+        switch (this._type) {
+            case SkillType.MagicShow:
+                return "Audience Excitement";
+            case SkillType.ChopWood:
+                return "Collected Wood";
+            case SkillType.Mining:
+                return "Collected";
+            default:
+                throw new Error(this.type + " doesn not provide a progress name");
+        }
+    }
+    public get durationProgress() : number{
+        switch (this._type) {
+            case SkillType.MagicShow:
+                return this.activeProgress * 2 + this._durationIncreasedOutput;
+            case SkillType.ChopWood:
+                return this.activeProgress + this._durationIncreasedOutput;
+            case SkillType.Mining:
+                return this.activeProgress + this._durationIncreasedOutput / 2;
+            default:
+                throw new Error(this.type + " doesn not provide a duration progress");
+        }
+    }
     private getSkillStrength(wizard: Wizard, baseValue: number) : number{
         var value = new AdjustValue(baseValue);
         wizard.buffs.forEach(x => x.adjustSkillPower(this, value));

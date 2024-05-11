@@ -9,6 +9,25 @@
         flex-shrink: 0;
     }
 }
+.reward-progress {
+    width: 161px;
+    .reward-progress-current, .reward-progress-complete {
+        height: 5px;
+        border-radius: 2px;
+    }
+    .reward-progress-current {
+        background-color: white;
+        margin: 3px 0;
+    }
+    .reward-progress-complete {
+        background: repeating-linear-gradient(90deg, white, white 5px, transparent 5px, transparent 6px);
+        margin: 1px 0;
+    }
+    .reward-progress-complete:last-child {
+        margin-bottom: 3px;
+    }
+}
+
 
 .spell {
     display: flex;
