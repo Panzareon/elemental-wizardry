@@ -42,6 +42,7 @@ interface SpellJson {
     exp: number;
     numberCasts: number;
     available: boolean;
+    levelAfterRewind: number;
     ritual?: SpellRitualInfo;
 }
 interface SpellRitualInfo {
@@ -56,6 +57,7 @@ interface KnowledgeJson {
     exp: number;
     previousLevel: number;
     available: boolean;
+    levelAfterRewind: number;
 }
 interface BuffJson {
     source: BuffSourceJson;

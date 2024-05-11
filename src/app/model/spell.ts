@@ -44,6 +44,7 @@ class Spell implements ITimedBuffSource {
     private _exp: number;
     private _numberCasts : number = 0;
     private _available: boolean = true;
+    private _levelAfterRewind: number = 0;
     constructor(type: SpellType) {
         this._type = type;
         this._level = 1;
@@ -81,6 +82,10 @@ class Spell implements ITimedBuffSource {
 
     public get level() : number {
         return this._level;
+    }
+
+    public get levelAfterRewind() : number {
+        return this._levelAfterRewind;
     }
 
     public get exp() : number {
@@ -306,11 +311,12 @@ class Spell implements ITimedBuffSource {
         }
     }
 
-    public load(level: number, exp: number, numberCasts : number, available : boolean) {
+    public load(level: number, exp: number, numberCasts : number, available : boolean, levelAfterRewind: number) {
         this._level = level;
         this._exp = exp;
         this._numberCasts = numberCasts;
         this._available = available;
+        this._levelAfterRewind = levelAfterRewind;
         this._cast = this.getCastDefinition();
     }
 
@@ -320,6 +326,10 @@ class Spell implements ITimedBuffSource {
 
     public rewind(levelMultiplier: number): void {
         this._level = 1 + Math.floor((this.level - 1) * levelMultiplier);
+        if (this._level < this._levelAfterRewind) {
+            this._level = this._levelAfterRewind;
+        }
+        this._levelAfterRewind = this._level;
         this._exp = 0;
         this._cast = this.getCastDefinition();
         this._available = false;

@@ -66,6 +66,7 @@ class WizardSerializer {
             exp: x.exp,
             numberCasts: x.numberCasts,
             available: x.available,
+            levelAfterRewind: x.levelAfterRewind,
             ritual: x.cast.ritualCast !== undefined ? {
                 isPrepared: x.cast.ritualCast.isPrepared,
                 isChanneling: x.cast.ritualCast.isChanneling,
@@ -80,6 +81,7 @@ class WizardSerializer {
             exp: x.exp,
             available: x.available,
             previousLevel: x.previousLevel,
+            levelAfterRewind: x.levelAfterRewind,
         }
     }
     serializeLocation(x: GameLocation): LocationJson {

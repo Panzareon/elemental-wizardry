@@ -27,6 +27,7 @@ class Knowledge {
     private _expMultiplier: number = 1;
     private _previousLevel = 0;
     private _available = true;
+    private _levelAfterRewind: number = 0;
     constructor(type: KnowledgeType) {
         this._type = type;
         this._level = 1;
@@ -44,6 +45,9 @@ class Knowledge {
     }
     public get previousLevel() : number {
         return this._previousLevel;
+    }
+    public get levelAfterRewind() : number {
+        return this._levelAfterRewind;
     }
     public get available() : boolean {
         return this._available;
@@ -86,11 +90,12 @@ class Knowledge {
     get levelUpProgress() : number {
         return this._exp / this.nextLevelExp;
     }
-    load(level: number, exp: number, previousLevel : number, available: boolean) {
+    load(level: number, exp: number, previousLevel : number, available: boolean, levelAfterRewind: number) {
         this._level = level;
         this._exp = exp;
         this._previousLevel = previousLevel;
         this._available = available;
+        this._levelAfterRewind = levelAfterRewind;
     }
     public getUnlocks(wizard: Wizard) {
         switch (this.type){
@@ -196,6 +201,10 @@ class Knowledge {
     public rewind(levelMultiplier: number): void {
         this._previousLevel = this.level;
         this._level = 1 + Math.floor((this.level - 1) * levelMultiplier);
+        if (this._level < this._levelAfterRewind) {
+            this._level = this._levelAfterRewind;
+        }
+        this._levelAfterRewind = this._level;
         this._exp = 0;
         this._available = false;
     }
