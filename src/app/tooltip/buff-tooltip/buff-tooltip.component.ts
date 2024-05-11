@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { TooltipBase } from '../tooltip-base';
 import { TimedBuff } from 'src/app/model/timed-buff';
 
@@ -8,5 +8,9 @@ import { TimedBuff } from 'src/app/model/timed-buff';
   styleUrls: ['./buff-tooltip.component.less']
 })
 export class BuffTooltipComponent extends TooltipBase {
+  public constructor(changeDetectorRef : ChangeDetectorRef) {
+    super(changeDetectorRef);
+  }
+
   buff!: TimedBuff;
 }

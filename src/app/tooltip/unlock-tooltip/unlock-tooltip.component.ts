@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { TooltipBase } from '../tooltip-base';
 import { Unlocks } from 'src/app/model/unlocks';
 import { DataService } from 'src/app/data.service';
@@ -9,8 +9,8 @@ import { DataService } from 'src/app/data.service';
   styleUrls: ['./unlock-tooltip.component.less']
 })
 export class UnlockTooltipComponent extends TooltipBase {
-  public constructor(private _data: DataService) {
-    super();
+  public constructor(private _data: DataService, changeDetectorRef : ChangeDetectorRef) {
+    super(changeDetectorRef);
   }
 
   unlock!: Unlocks;

@@ -1,17 +1,27 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from "@angular/core";
 import { MatCard } from "@angular/material/card";
 
 export { TooltipBase }
 
 @Component({template: ''})
-abstract class TooltipBase {
+abstract class TooltipBase implements AfterViewInit {
     public visible : boolean = false;
     private _left: number = 0;
     private _top: number = 0;
+    private _minLeft: number = 0;
+    private _topDiff: number = 0;
+
+    public constructor(private _changeDetectorRef : ChangeDetectorRef) {
+    }
+    
+    ngAfterViewInit (): void {
+        this._minLeft = this.tooltip!.nativeElement.getBoundingClientRect().width / 2;
+        this._topDiff = window.innerHeight - this.tooltip!.nativeElement.getBoundingClientRect().height;
+        this._changeDetectorRef.detectChanges();
+    }
     public get left(): number {
-        let minLeft = this.tooltip?.nativeElement.getBoundingClientRect().width / 2;
-        if (minLeft > this._left) {
-            return minLeft;
+        if (this._minLeft > this._left) {
+            return this._minLeft;
         }
         return this._left;
     }
@@ -22,12 +32,11 @@ abstract class TooltipBase {
         if (this.tooltip === undefined) {
             return this._top;
         }
-        let topDiff = window.innerHeight - this.tooltip.nativeElement.getBoundingClientRect().height;
-        if (topDiff < 0)
+        if (this._topDiff < 0)
         {
             return window.scrollY;
         }
-        let maxTop = topDiff + window.scrollY;
+        let maxTop = this._topDiff + window.scrollY;
         if (maxTop < this._top) {
             return maxTop;
         }

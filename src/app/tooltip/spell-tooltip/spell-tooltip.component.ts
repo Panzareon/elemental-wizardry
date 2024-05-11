@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Spell } from 'src/app/model/spell';
 import { TooltipBase } from '../tooltip-base';
 
@@ -8,5 +8,9 @@ import { TooltipBase } from '../tooltip-base';
   styleUrls: ['./spell-tooltip.component.less']
 })
 export class SpellTooltipComponent extends TooltipBase {
+  public constructor(changeDetectorRef : ChangeDetectorRef) {
+    super(changeDetectorRef);
+  }
+
   spell!: Spell;
 }

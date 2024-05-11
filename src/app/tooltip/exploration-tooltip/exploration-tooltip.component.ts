@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { TooltipBase } from '../tooltip-base';
 import { ExploreResult, GameLocation } from 'src/app/model/gameLocation';
 import { DataService } from 'src/app/data.service';
@@ -9,9 +9,10 @@ import { DataService } from 'src/app/data.service';
   styleUrls: ['./exploration-tooltip.component.less']
 })
 export class ExplorationTooltipComponent extends TooltipBase {
-  constructor(private _data: DataService){
-    super();
+  public constructor(private _data: DataService, changeDetectorRef : ChangeDetectorRef) {
+    super(changeDetectorRef);
   }
+
   location!: GameLocation;
   isLocked(exploreResult: ExploreResult): boolean {
     return !exploreResult.isAvailable(this._data.wizard);
