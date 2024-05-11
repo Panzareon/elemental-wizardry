@@ -25,4 +25,7 @@ export class InfluenceComponent {
   donate(donation: InfluenceDonation) {
     donation.donate(this.data.wizard, 1);
   }
+  isResourceAvailable(donation: InfluenceDonation): boolean {
+    return this.data.wizard.hasResource(donation.resource, 0);
+  }
 }
