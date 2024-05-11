@@ -102,8 +102,8 @@ class WizardDeserializer {
     deserializeBuffs(buff: BuffJson, spells: Spell[]) : TimedBuff {
         switch (buff.source.type) {
             case TimedBuffSourceType.Spell:
-                let spell = spells.find(x => x.type == buff.source.data);
-                return new TimedBuff(spell!, buff.duration, buff.power, buff.costMultiplier, buff.maxDuration);
+                let spell = spells.find(x => x.type == buff.source.data) ?? new Spell(buff.source.data);
+                return new TimedBuff(spell, buff.duration, buff.power, buff.costMultiplier, buff.maxDuration);
             case TimedBuffSourceType.Item:
                 return new TimedBuff(new ItemTimedBuffSource(buff.source.data), buff.duration, buff.power, buff.costMultiplier, buff.maxDuration);
         }

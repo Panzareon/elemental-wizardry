@@ -22,6 +22,7 @@ enum SpellType {
     AttuneChronomancy = 8,
     Rewind = 9,
     Growth = 10,
+    DelayRewind = 11,
 }
 
 enum SpellCastingType {
@@ -139,6 +140,8 @@ class Spell implements ITimedBuffSource {
                 return "Rewinds time and return into the body of your younger self with your experiences";
             case SpellType.Growth:
                 return "Growth a plant quickly";
+            case SpellType.DelayRewind:
+                return "Delays the next time rewind is cast";
         }
     }
 
@@ -199,6 +202,13 @@ class Spell implements ITimedBuffSource {
                 break;
             case SpellType.Growth:
                 wizard.gardenPlots.filter(x => x.state === GrowState.Growing).forEach(x => x.update(wizard, 20 * spellPower))
+                break;
+            case SpellType.DelayRewind:
+                let rewindBuff = wizard.timedBuffs.find(x => x.source.buffSource === TimedBuffSourceType.Spell && x.source.serializeTimedBuff() === SpellType.Rewind);
+                if (rewindBuff === undefined) {
+                    throw new Error("Rewind buff not found");
+                }
+                rewindBuff.addDuration(spellPower * 20 * 60);
                 break;
         }
 
@@ -345,6 +355,10 @@ class Spell implements ITimedBuffSource {
                     new RitualCast(this, [new ResourceAmount(ResourceType.Chrono, 100 * costMultiplier), new ResourceAmount(ResourceType.Mana, 100 * costMultiplier)], 60));
             case SpellType.Growth:
                 return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Nature, 5 * costMultiplier)]);
+            case SpellType.DelayRewind:
+                return SpellCast.CreateRitualSpell(
+                    [new ResourceAmount(ResourceType.ChronoGem, 1)],
+                    new RitualCast(this, [new ResourceAmount(ResourceType.Chrono, 20)], 10));
         }
     }
 
@@ -360,6 +374,7 @@ class Spell implements ITimedBuffSource {
             case SpellType.SkipTime:
             case SpellType.AttuneChronomancy:
             case SpellType.Rewind:
+            case SpellType.DelayRewind:
                 return SpellSource.Chronomancy;
             case SpellType.InfuseNatureGem:
             case SpellType.Growth:
@@ -472,9 +487,10 @@ class RitualCast implements IActive {
             case SpellType.SummonFamiliar:
                 return !wizard.companions.some(x => x.type === CompanionType.Familiar);
             case SpellType.Rewind:
+            case SpellType.DelayRewind:
                 return true;
             default:
-                return false;
+                throw new Error("Cannot prepare " +this._spell.type);
         }
     }
     public prepare(wizard: Wizard) {

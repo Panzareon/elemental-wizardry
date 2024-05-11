@@ -1,12 +1,12 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
-import { Buff, ResourceProductionBuff } from "./buff";
+import { Buff, ResourceProductionBuff, WizardDataIncrease } from "./buff";
 import { InfluenceType } from "./influence";
 import { RecipeType } from "./recipe";
 import { Resource, ResourceKind, ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { SpellType } from "./spell";
 import { UnlockType } from "./unlocks";
-import { Wizard } from "./wizard";
+import { Wizard, WizardDataType } from "./wizard";
 
 export { Knowledge, KnowledgeType, IKnowledgeAction }
 
@@ -130,6 +130,9 @@ class Knowledge {
                 }
                 if (this.level >= 5) {
                     wizard.learnSpell(SpellType.ConverseWithFutureSelf);
+                    if (wizard.getData(WizardDataType.NumberRewinds) > 0) {
+                        wizard.learnSpell(SpellType.DelayRewind);
+                    }
                 }
                 if (this.level >= 6) {
                     wizard.learnSpell(SpellType.SkipTime);

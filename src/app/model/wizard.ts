@@ -392,6 +392,7 @@ class Wizard {
     }
   }
   rewind(levelMultiplier: number) {
+    this.addToData(WizardDataType.NumberRewinds, 1);
     this._resources.length = 0;
     this.addResourceType(ResourceType.Mana);
     this._skills.length = 0;
@@ -586,4 +587,5 @@ enum WizardDataType {
   ManaAttunement = 0,
   ChronomancyAttunement = 1,
   NatureAttunement = 2,
+  NumberRewinds = 3,
 }

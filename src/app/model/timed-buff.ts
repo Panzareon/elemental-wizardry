@@ -54,6 +54,10 @@ class TimedBuff {
 
         return result;
     }
+    public addDuration(duration: number) {
+        this._duration += duration;
+        this._maxDuration += duration;
+    }
     private activateInternal(wizard: Wizard, deltaTime: number): boolean {
         if (deltaTime > this._duration) {
             deltaTime = this._duration;
