@@ -1,7 +1,6 @@
 <ng-container *ngIf="preparedRitual !== null" >
-    <app-ritual-circle #ritualCircle></app-ritual-circle>
-    <div class="tooltip-wrapper" *ngIf="preparedRitual.cast.ritualCast !== undefined && !preparedRitual.cast.ritualCast.isChanneling">
-        <button mat-stroked-button (click)="channel(preparedRitual)" class="spell">
+    <div class="tooltip-wrapper" *ngIf="preparedRitual.cast.ritualCast !== undefined">
+        <button mat-stroked-button (click)="channel(preparedRitual)" class="spell" [disabled]="preparedRitual.cast.ritualCast.isChanneling">
             <span class="spell-content">
                 <app-spell-icon [spell]="preparedRitual" #icon></app-spell-icon>
                 <div class="description">
@@ -15,6 +14,7 @@
             </span>
         </button>
     </div>
+    <app-ritual-circle #ritualCircle></app-ritual-circle>
 </ng-container>
 <ng-container *ngIf="preparedRitual === null">
     <ng-container *ngFor="let spell of spells">
