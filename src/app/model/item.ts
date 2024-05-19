@@ -1,4 +1,4 @@
-import { Buff, ResourceProductionBuff, SkillDurationBuff, SpellPowerBuff, WizardDataIncrease } from "./buff";
+import { Buff, DescriptionOnlyBuff, ResourceProductionBuff, SkillDurationBuff, SpellPowerBuff, WizardDataIncrease } from "./buff";
 import { ResourceKind } from "./resource";
 import { SkillType } from "./skill";
 import { SpellSource } from "./spell";
@@ -81,15 +81,17 @@ class Item
     public use(wizard: Wizard) : boolean {
         switch (this._type) {
             case ItemType.SmallManaPotion:
-                wizard.addBuff(new TimedBuff(new ItemTimedBuffSource(this._type), 30, 5 + (this._level - 1) * 1))
-                return true;
             case ItemType.ManaPotion:
-                wizard.addBuff(new TimedBuff(new ItemTimedBuffSource(this._type), 30, 20 + (this._level - 1) * 4))
+                wizard.addBuff(this.createTimedBuff())
                 return true;
             default:
                 return false;
         }
     }
+    private createTimedBuff(): TimedBuff {
+        return new TimedBuff(new ItemTimedBuffSource(this._type), 30, 5 + (this._level - 1) * 1);
+    }
+
     private getBuffs(): Buff[] {
         switch (this.type) {
             case ItemType.WoodenWand:
@@ -102,7 +104,10 @@ class Item
                 return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.Mining)];
             case ItemType.SmallManaPotion:
             case ItemType.ManaPotion:
-                return [];
+                let timedBuff = this.createTimedBuff();
+                let result = ([new DescriptionOnlyBuff("Lasts for " + timedBuff.maxDuration + " seconds")] as Buff[]);
+                result.push(...timedBuff.buffs);
+                return result;
             case ItemType.ChronomancyWand:
                 return [
                     new SpellPowerBuff(1.5 + (this._level - 1) * 0.05),
@@ -137,6 +142,8 @@ class ItemTimedBuffSource implements ITimedBuffSource {
         switch (this._type) {
             case ItemType.SmallManaPotion:
                 return [new ResourceProductionBuff(false, (1 * timedBuff.power), undefined, ResourceKind.Mana)];
+            case ItemType.ManaPotion:
+                return [new ResourceProductionBuff(false, (4 * timedBuff.power), undefined, ResourceKind.Mana)];
             default:
                 return [];
         }
