@@ -16,6 +16,7 @@ enum ActiveType {
     KnowledgeStudy = 3,
     GardenPlot = 4,
     ExploreLocation = 5,
+    RecipeMachine = 6,
 }
 
 interface IActive {

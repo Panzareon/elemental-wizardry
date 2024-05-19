@@ -112,6 +112,10 @@ export class GameLogicService {
       var companion = wizard.companions[i];
       companion.activate(wizard, deltaTime);
     }
+    for (let i = 0; i < wizard.recipeMachines.length; i++) {
+      var recipeMachine = wizard.recipeMachines[i];
+      recipeMachine.update(wizard, deltaTime);
+    }
   }
 
   private fallbackToMeditate() {

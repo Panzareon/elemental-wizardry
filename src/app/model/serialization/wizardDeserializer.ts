@@ -10,9 +10,10 @@ import { Skill } from "../skill";
 import { Spell, SpellType } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, RecipeMachineJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 import { Companion, CompanionType } from "../companion";
 import { ActiveType, IActive } from "../active";
+import { RecipeMachine } from "../recipeMachine";
 
 export { WizardDeserializer }
 
@@ -22,6 +23,7 @@ class WizardDeserializer {
     public deserialize() : Wizard {
         let spells = this.json.spells.map(x => this.deserializeSpell(x));
         let items = this.json.items?.map(x => this.deserializeItems(x)) ?? [];
+        let recipes = this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [];
         var wizard = new Wizard(
             this.json.resources.map(x => this.deserializeResource(x)),
             this.json.skills.map(x => this.deserializeSkills(x, spells)),
@@ -34,7 +36,8 @@ class WizardDeserializer {
             this.json.availableUnlocks,
             this.json.influence?.map(x => this.deserializeInfluence(x)) ?? [],
             this.json.gardenPlots?.map((x, index) => this.deserializeGardenPlot(x, index)) ?? [],
-            this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [],
+            this.json.recipeMachines?.map((x, index) => this.deserializeRecipeMachine(x, index, recipes)) ?? [],
+            recipes,
             items.map(x => x[0]),
             this.json.companions?.map(x => this.deserializeCompanion(x)) ??[],
             this.json.data ?? {},
@@ -70,6 +73,8 @@ class WizardDeserializer {
                 return wizard.knowledge.find(x => x.type === serializedActive[1])?.studyActive ?? null;
             case ActiveType.GardenPlot:
                 return wizard.gardenPlots.length > serializedActive[1] ? wizard.gardenPlots[serializedActive[1]] : null;
+            case ActiveType.RecipeMachine:
+                return wizard.recipeMachines.length > serializedActive[1] ? wizard.recipeMachines[serializedActive[1]] : null;
         }
     }
     deserializeSpell(x: SpellJson): Spell {
@@ -132,6 +137,20 @@ class WizardDeserializer {
         }
         gardenPlot.load(x.state, x.remainingPlantTime, x.remainingGrowTime, x.remainingHarvestTime);
         return gardenPlot;
+    }
+    deserializeRecipeMachine(x: RecipeMachineJson, index: number, recipes: Recipe[]): RecipeMachine {
+        let recipeMachine = new RecipeMachine(x.type, index);
+        let recipe = undefined;
+        let recipeStep = undefined;
+        if (x.recipe !== undefined && x.currentStepIndex !== undefined) {
+            recipe = recipes.find(r => r.type === x.recipe);
+            if (recipe !== undefined) {
+                recipeStep = recipe.craftOrder[x.currentStepIndex];
+            }
+        }
+
+        recipeMachine.load(recipe, recipeStep, x.progress);
+        return recipeMachine;
     }
     deserializeRecipe(x: RecipeJson): Recipe {
         return new Recipe(x.type);

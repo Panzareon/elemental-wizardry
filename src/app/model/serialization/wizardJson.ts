@@ -6,6 +6,7 @@ import { InfluenceType } from "../influence";
 import { ItemType } from "../item";
 import { KnowledgeType } from "../knowledge";
 import { RecipeType } from "../recipe";
+import { RecipeMachineType } from "../recipeMachine";
 import { ResourceType } from "../resource";
 import { SkillType } from "../skill";
 import { SpellType } from "../spell";
@@ -13,7 +14,7 @@ import { TimedBuffSourceType } from "../timed-buff";
 import { UnlockType } from "../unlocks";
 import { WizardDataType } from "../wizard";
 
-export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson, GardenPlotJson, RecipeJson, ItemJson, CompanionJson }
+export { WizardJson, ResourceJson, SpellJson, KnowledgeJson, UnlocksJson, SkillJson, LocationJson, BuffJson, InfluenceJson, GardenPlotJson, RecipeJson, ItemJson, CompanionJson, RecipeMachineJson }
 
 interface WizardJson {
     resources: ResourceJson[];
@@ -26,6 +27,7 @@ interface WizardJson {
     availableUnlocks: UnlockType[];
     influence: InfluenceJson[];
     gardenPlots: GardenPlotJson[];
+    recipeMachines: RecipeMachineJson[];
     recipe: RecipeJson[];
     items: ItemJson[];
     companions: CompanionJson[];
@@ -98,6 +100,12 @@ interface GardenPlotJson {
     remainingPlantTime: number;
     remainingGrowTime: number;
     remainingHarvestTime: number;
+}
+interface RecipeMachineJson {
+    type: RecipeMachineType;
+    recipe?: RecipeType;
+    currentStepIndex?: number;
+    progress: number;
 }
 interface RecipeJson {
     type: RecipeType;

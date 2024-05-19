@@ -18,6 +18,7 @@ enum ResourceType {
     Nature = 12,
     NatureGem = 13,
     WolfsbaneRoot = 14,
+    Cauldron = 15,
 }
 enum ResourceKind {
     Mana = 1,

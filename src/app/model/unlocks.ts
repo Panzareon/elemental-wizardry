@@ -25,6 +25,7 @@ enum UnlockType {
     NatureCapacity = 13,
     ImproveMeditate = 14,
     WolfsbaneSeeds = 15,
+    EnchantCauldron = 16,
 }
 
 class Unlocks {
@@ -91,6 +92,7 @@ class Unlocks {
             case UnlockType.ChronomancyProduction:
             case UnlockType.GardenPlot:
             case UnlockType.NatureProduction:
+            case UnlockType.EnchantCauldron:
                 return 5;
             case UnlockType.ManaCapacity:
             case UnlockType.ChronoCapacity:
@@ -138,6 +140,8 @@ class Unlocks {
                 return "Increases mana gains from all meditation skills by 10%";
             case UnlockType.WolfsbaneSeeds:
                 return "Allows planting Wolfsbane in the garden";
+            case UnlockType.EnchantCauldron:
+                return "Enchants a cauldron to allow brewing magical potions in it";
         }
     }
     public get buffs() : Buff[] {
@@ -258,6 +262,7 @@ class Unlocks {
         switch (this._type) {
             case UnlockType.ChronomancyProduction:
             case UnlockType.NatureProduction:
+            case UnlockType.EnchantCauldron:
             {
                 let baseUnlock = wizard.unlocks.find(x => x.type == UnlockType.ManaProduction);
                 return [baseUnlock ?? new Unlocks(UnlockType.ManaProduction)];
@@ -314,6 +319,8 @@ class Unlocks {
                 return [Costs.fromResources([new ResourceAmount(ResourceType.ManaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Mana, Math.round(10 * Math.pow(1.1, targetUnlockNumber - 1))), new ResourceAmount(ResourceType.Chrono, Math.round(20 * Math.pow(1.1, targetUnlockNumber - 1)))])];
             case UnlockType.WolfsbaneSeeds:
                 return [Costs.fromInfluence(InfluenceType.AlchemistGuild, 10, 5)];
+            case UnlockType.EnchantCauldron:
+                return [Costs.fromResources([new ResourceAmount(ResourceType.Cauldron, 1), new ResourceAmount(ResourceType.Mana, targetUnlockNumber * 20)])]
         }
     }
     

@@ -94,7 +94,9 @@ class Influence {
             case InfluenceType.ArtisanGuild:
                 return [new InfluenceUnlock(50, InfluenceUnlockType.CraftingMentor)];
             case InfluenceType.AlchemistGuild:
-                return [new InfluenceUnlock(10, InfluenceUnlockType.AlchemistStore)];
+                return [new InfluenceUnlock(10, InfluenceUnlockType.AlchemistStore),
+                        new InfluenceUnlock(70, InfluenceUnlockType.EnchantCauldron)
+                ];
             case InfluenceType.WizardCouncil:
                 return [new InfluenceUnlock(100, InfluenceUnlockType.WizardStore)]
         }
@@ -157,6 +159,7 @@ enum InfluenceUnlockType {
     CraftingMentor,
     AlchemistStore,
     WizardStore,
+    EnchantCauldron,
 }
 class InfluenceUnlock {
     constructor(public amount: number, public type: InfluenceUnlockType) {}
@@ -169,6 +172,8 @@ class InfluenceUnlock {
                 return "Alchemist Store";
             case InfluenceUnlockType.WizardStore:
                 return "Wizard Store";
+            case InfluenceUnlockType.EnchantCauldron:
+                return "Enchant Cauldron Unlock";
         }
     }
 
@@ -177,8 +182,10 @@ class InfluenceUnlock {
             case InfluenceUnlockType.CraftingMentor:
                 return "Meet a master artisan you can hire as your mentor.";
             case InfluenceUnlockType.AlchemistStore:
-                case InfluenceUnlockType.WizardStore:
+            case InfluenceUnlockType.WizardStore:
                 return "Get access to the store";
+            case InfluenceUnlockType.EnchantCauldron:
+                return "Learn how to enchant cauldrons to brew magic potions";
         }
     }
 
@@ -193,6 +200,9 @@ class InfluenceUnlock {
             case InfluenceUnlockType.WizardStore:
                 wizard.findLocation(LocationType.WizardStore);
                 break;
+            case InfluenceUnlockType.EnchantCauldron:
+                wizard.addAvailableUnlock(UnlockType.EnchantCauldron);
+                break;
         }
     }
     public hasUnlocked(wizard: Wizard) : boolean {
@@ -203,6 +213,8 @@ class InfluenceUnlock {
                 return wizard.location.find(x => x.type == LocationType.AlchemistStore) !== undefined;
             case InfluenceUnlockType.WizardStore:
                 return wizard.location.find(x => x.type == LocationType.WizardStore) !== undefined;
+            case InfluenceUnlockType.EnchantCauldron:
+                return wizard.hasUnlockAvailable(UnlockType.EnchantCauldron);
         }
     }
 }

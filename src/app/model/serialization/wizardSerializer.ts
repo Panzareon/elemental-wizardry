@@ -10,8 +10,9 @@ import { Skill, SkillActionType } from "../skill";
 import { Spell } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
-import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
+import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, RecipeMachineJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
 import { Companion } from "../companion";
+import { RecipeMachine } from "../recipeMachine";
 
 export { WizardSerializer }
 
@@ -31,6 +32,7 @@ class WizardSerializer {
             availableUnlocks: this.wizard.availableUnlocks,
             influence: this.wizard.influence.map(x => this.serializeInfluence(x)),
             gardenPlots: this.wizard.gardenPlots.map(x => this.serializeGardenPlot(x)),
+            recipeMachines: this.wizard.recipeMachines.map(x => this.serializeRecipeMachine(x)),
             recipe: this.wizard.recipe.map(x => this.serializeRecipe(x)),
             items: this.wizard.items.map(x => this.serializeItem(x, this.wizard)),
             companions: this.wizard.companions.map(x => this.serializeCompanion(x)),
@@ -121,6 +123,14 @@ class WizardSerializer {
             remainingPlantTime: x.remainingPlantTime,
             remainingGrowTime: x.remainingGrowTime,
             remainingHarvestTime: x.remainingHarvestTime,
+        }
+    }
+    serializeRecipeMachine(x: RecipeMachine): RecipeMachineJson {
+        return {
+            type: x.type,
+            recipe: x.recipe?.type,
+            currentStepIndex: x.currentPart !== undefined ? x.recipe?.craftOrder.indexOf(x.currentPart) : undefined,
+            progress: x.progress,
         }
     }
     serializeRecipe(x: Recipe): RecipeJson {

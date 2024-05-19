@@ -1,9 +1,10 @@
 import { Costs } from "./costs";
 import { Item, ItemType } from "./item";
+import { RecipeMachineType } from "./recipeMachine";
 import { ResourceAmount, ResourceType } from "./resource";
 import { Wizard } from "./wizard";
 
-export { Recipe, RecipeType, RecipeSource }
+export { Recipe, RecipeType, RecipeSource, RecipeCraftPart }
 
 enum RecipeType
 {
@@ -12,20 +13,25 @@ enum RecipeType
     Iron = 2,
     IronAxe = 3,
     IronPickaxe = 4,
+    Cauldron = 5,
+    ManaPotion = 6,
 }
 enum RecipeSource
 {
     SimpleWorkshop = 0,
+    Cauldron = 1,
 }
 
 class Recipe
 {
     private _source : RecipeSource;
     private _costs: Costs;
+    private _craftOrder: RecipeCraftPart[];
 
     public constructor(private _type : RecipeType) {
         this._source = this.getSource();
         this._costs = this.getCosts();
+        this._craftOrder = this.getCraftOrder();
     }
     public get name() : string {
         switch (this._type) {
@@ -54,29 +60,53 @@ class Recipe
     }
 
     public craft(wizard: Wizard) {
-        if (!this.costs.spend(wizard)) {
-            return;
-        }
+        if (this.craftOrder.length === 0) {
+            if (!this.costs.spend(wizard)) {
+                return;
+            }
 
-        this.getResult(wizard);
+            this.getResult(wizard);
+        }
+        else {
+            let requiredMachine = this.craftOrder[0].machine;
+            let availableMachine = wizard.recipeMachines.find(x => x.type === requiredMachine && x.recipe === undefined);
+            if (availableMachine === undefined) {
+                return;
+            }
+
+            if (!this.costs.spend(wizard)) {
+                return;
+            }
+
+            availableMachine.craft(this);
+        }
     }
-    private getResult(wizard: Wizard) {
+    public get craftOrder() : RecipeCraftPart[]{
+        return this._craftOrder;
+    }
+    public getResult(wizard: Wizard) : boolean {
         switch (this._type) {
             case RecipeType.WoodenWand:
                 wizard.addItem(new Item(ItemType.WoodenWand, 1 + Math.floor(Math.random() * 3)));
-                break;
+                return true;
             case RecipeType.StoneAxe:
                 wizard.addItem(new Item(ItemType.StoneAxe, 1 + Math.floor(Math.random() * 3)));
-                break;
+                return true;
             case RecipeType.Iron:
                 wizard.addResource(ResourceType.Iron, 1 + Math.floor(Math.random() * 3));
-                break;
+                return true;
             case RecipeType.IronAxe:
                 wizard.addItem(new Item(ItemType.IronAxe, 1 + Math.floor(Math.random() * 3)));
-                break;
+                return true;
             case RecipeType.IronPickaxe:
                 wizard.addItem(new Item(ItemType.IronPickaxe, 1 + Math.floor(Math.random() * 3)));
-                break;
+                return true;
+            case RecipeType.Cauldron:
+                wizard.addResource(ResourceType.Cauldron, 1)
+                return true;
+            case RecipeType.ManaPotion:
+                wizard.addItem(new Item(ItemType.ManaPotion, 1 + Math.floor(Math.random() * 2)));
+                return true;
         }
     }
 
@@ -87,7 +117,10 @@ class Recipe
             case RecipeType.Iron:
             case RecipeType.IronAxe:
             case RecipeType.IronPickaxe:
+            case RecipeType.Cauldron:
                 return RecipeSource.SimpleWorkshop;
+            case RecipeType.ManaPotion:
+                return RecipeSource.Cauldron;
         }
     }
     private getCosts(): Costs {
@@ -102,7 +135,42 @@ class Recipe
                 return Costs.fromResources([new ResourceAmount(ResourceType.Wood, 1), new ResourceAmount(ResourceType.Iron, 2)]);
             case RecipeType.IronPickaxe:
                 return Costs.fromResources([new ResourceAmount(ResourceType.Wood, 1), new ResourceAmount(ResourceType.Iron, 2)]);
+            case RecipeType.Cauldron:
+                return Costs.fromResource(ResourceType.Iron, 10);
+            case RecipeType.ManaPotion:
+                return Costs.fromResources([new ResourceAmount(ResourceType.MandrakeRoot, 1), new ResourceAmount(ResourceType.WolfsbaneRoot, 1)]);
         }
     }
 
+    private getCraftOrder() : RecipeCraftPart[] {
+        switch (this._type){
+            case RecipeType.ManaPotion:
+                return [new RecipeCraftPart(RecipeMachineType.EnchantedCauldron, 5, true, "Prepare Components"),
+                    new RecipeCraftPart(RecipeMachineType.EnchantedCauldron, 100, false, "Brewing"),
+                    new RecipeCraftPart(RecipeMachineType.EnchantedCauldron, 5, true, "Bottling"),
+                ]
+            default:
+                return [];
+        }
+    }
+}
+class RecipeCraftPart {
+    public constructor(private _machine : RecipeMachineType, private _duration : number, private _asActive: boolean, private _name: string) {
+    }
+
+    public get machine() : RecipeMachineType {
+        return this._machine;
+    }
+
+    public get duration() : number {
+        return this._duration;
+    }
+
+    public get asActive() : boolean {
+        return this._asActive;
+    }
+
+    public get name() : string {
+        return this._name;
+    }
 }

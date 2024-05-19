@@ -13,58 +13,30 @@ import { Recipe, RecipeType } from "./recipe";
 import { Item } from "./item";
 import { AdjustValue, Buff } from "./buff";
 import { Companion, CompanionType } from "./companion";
+import { RecipeMachine, RecipeMachineType } from "./recipeMachine";
 export { Wizard, EventInfo, EventInfoType, WizardDataType }
 
 class Wizard {
-  private _resources: Resource[];
-  private _skills: Skill[];
-  private _knowledge: Knowledge[];
-  private _unlocks: Unlocks[];
-  private _active: IActive[];
-  private _location: GameLocation[];
-  private _spells: Spell[];
-  private _buffs: TimedBuff[];
   private _event: Subject<EventInfo> = new Subject();
-  private _availableUnlocks: UnlockType[] = [];
-  private _gardenPlots: GardenPlot[];
   private _availablePlants: GardenPlotPlant[] = [GardenPlotPlant.Mandrake];
-  private _recipe: Recipe[];
-  private _influence: Influence[];
-  private _items: Item[];
-  private _companions: Companion[];
   private _attunedItems: Item[] = [];
-  private _data: {[id in WizardDataType]? : number};
 
-  public constructor(resources: Resource[],
-    skills: Skill[],
-    knowledge: Knowledge[],
-    actives: IActive[],
-    unlocks: Unlocks[],
-    location: GameLocation[],
-    spells: Spell[],
-    buffs: TimedBuff[],
-    availableUnlocks: UnlockType[],
-    influence: Influence[],
-    gardenPlots: GardenPlot[],
-    recipe: Recipe[],
-    items: Item[],
-    companions: Companion[],
-    data: {[id in WizardDataType]? : number}) {
-      this._resources = resources;
-      this._skills = skills;
-      this._knowledge = knowledge;
-      this._active = actives;
-      this._unlocks = unlocks;
-      this._location = location;
-      this._spells = spells;
-      this._buffs = buffs;
-      this._availableUnlocks = availableUnlocks;
-      this._influence = influence;
-      this._gardenPlots = gardenPlots;
-      this._recipe = recipe;
-      this._items = items;
-      this._companions = companions;
-      this._data = data;
+  public constructor(private _resources: Resource[],
+    private _skills: Skill[],
+    private _knowledge: Knowledge[],
+    private _active: IActive[],
+    private _unlocks: Unlocks[],
+    private _location: GameLocation[],
+    private _spells: Spell[],
+    private _buffs: TimedBuff[],
+    private _availableUnlocks: UnlockType[],
+    private _influence: Influence[],
+    private _gardenPlots: GardenPlot[],
+    private _recipeMachines: RecipeMachine[],
+    private _recipe: Recipe[],
+    private _items: Item[],
+    private _companions: Companion[],
+    private _data: {[id in WizardDataType]? : number}) {
       this._unlocks.forEach(x => this.getUnlockReward(x, true));
       for (let resource of this._resources) {
         this.resourceAdded(resource);
@@ -80,6 +52,7 @@ class Wizard {
       [],
       [],
       [new GameLocation(LocationType.Village)],
+      [],
       [],
       [],
       [],
@@ -147,6 +120,10 @@ class Wizard {
 
   public get gardenPlots(): GardenPlot[] {
     return this._gardenPlots;
+  }
+
+  public get recipeMachines(): RecipeMachine[] {
+    return this._recipeMachines;
   }
 
   public get availablePlants() : GardenPlotPlant[] {
@@ -451,6 +428,11 @@ class Wizard {
       case UnlockType.WolfsbaneSeeds:
         this.addAvailablePlant(GardenPlotPlant.Wolfsbane);
         break;
+      case UnlockType.EnchantCauldron:
+        this.addRecipe(RecipeType.ManaPotion);
+        if (!onLoad) {
+          this.addEnchantedCauldron();
+        }
     }
   }
 
@@ -521,6 +503,9 @@ class Wizard {
 
   private addGardenPlot() {
     this._gardenPlots.push(new GardenPlot(this._gardenPlots.length));
+  }
+  private addEnchantedCauldron() {
+    this._recipeMachines.push(new RecipeMachine(RecipeMachineType.EnchantedCauldron, this._recipeMachines.length))
   }
   private addUnlock(unlock: Unlocks) {
     this.notifyEvent(EventInfo.unlocked("Unlocked " + unlock.name));

@@ -164,6 +164,9 @@ class Knowledge {
                 if (this.level >= 5) {
                     wizard.addRecipe(RecipeType.IronPickaxe);
                 }
+                if (this.level >= 6) {
+                    wizard.addRecipe(RecipeType.Cauldron);
+                }
                 break;
             case KnowledgeType.Herbalism:
                 if (this.level >= 2) {
