@@ -9,7 +9,7 @@
             <mat-button-toggle [checked]="isStudyActive(knowledge)" (change)="toggleStudy(knowledge)">
             Study
             </mat-button-toggle>
-            <mat-button-toggle [checked]="isTrainingActive(knowledge)" (change)="toggleTraining(knowledge)">
+            <mat-button-toggle [checked]="isTrainingActive(knowledge)" (change)="toggleTraining(knowledge)" *ngIf="knowledge.trainingActive !== undefined">
             Training
             </mat-button-toggle>
         </mat-card-content>

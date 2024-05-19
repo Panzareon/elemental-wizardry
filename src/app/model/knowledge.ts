@@ -16,6 +16,7 @@ enum KnowledgeType {
     CraftingKnowledge = 2,
     Herbalism = 3,
     NatureMagic = 4,
+    Potioncraft = 5,
 }
 
 class Knowledge {
@@ -23,7 +24,7 @@ class Knowledge {
     private _level: number;
     private _exp: number;
     private _studyActive: IActive;
-    private _trainingActive: IActive;
+    private _trainingActive?: IActive;
     private _expMultiplier: number = 1;
     private _previousLevel = 0;
     private _available = true;
@@ -33,7 +34,9 @@ class Knowledge {
         this._level = 1;
         this._exp = 0;
         this._studyActive = new KnowledgeStudy(this);
-        this._trainingActive = new KnowledgeTraining(this);
+        if (type != KnowledgeType.Potioncraft) {
+            this._trainingActive = new KnowledgeTraining(this);
+        }
     }
 
     public get type() : KnowledgeType {
@@ -83,7 +86,7 @@ class Knowledge {
         return this._studyActive;
     }
 
-    get trainingActive() : IActive {
+    get trainingActive() : IActive | undefined {
         return this._trainingActive;
     }
 
@@ -190,6 +193,16 @@ class Knowledge {
                     wizard.addAvailableUnlock(UnlockType.NatureCapacity);
                 }
                 break;
+            case KnowledgeType.Potioncraft:
+                if (this.level >= 2) {
+                    wizard.addRecipe(RecipeType.SmallManaPotionBatch);
+                }
+                if (this.level >= 5) {
+                    wizard.addRecipe(RecipeType.ManaPotion);
+                }
+                if (this.level >= 6) {
+                    wizard.addRecipe(RecipeType.ManaPotionBatch);
+                }
         }
     }
     public calculate(wizard: Wizard) {
@@ -286,6 +299,8 @@ class KnowledgeTraining implements IKnowledgeAction {
             case KnowledgeType.NatureMagic:
             case KnowledgeType.Herbalism:
                 return ResourceType.Nature;
+            default:
+                throw new Error("Cannot train " + KnowledgeType[this._knowledge.type]);
         }
     }
 }

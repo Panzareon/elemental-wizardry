@@ -28,6 +28,9 @@ export class KnowledgeComponent {
   }
 
   toggleTraining(knowledge: Knowledge) {
+    if (knowledge.trainingActive === undefined) {
+      return;
+    }
     if (this.isTrainingActive(knowledge)) {
       this.data.wizard.setInactive(knowledge.trainingActive);
     }
@@ -35,7 +38,10 @@ export class KnowledgeComponent {
       this.data.wizard.setActive(knowledge.trainingActive);
     }
   }
-  isTrainingActive(knowledge: Knowledge) {
+  isTrainingActive(knowledge: Knowledge) : boolean {
+    if (knowledge.trainingActive === undefined) {
+      return false;
+    }
     return this.data.wizard.active.includes(knowledge.trainingActive);
   }
 }

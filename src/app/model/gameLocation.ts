@@ -372,7 +372,7 @@ class GameLocation {
                 return [
                     new Offer(ResourceType.Gold, 10, new OfferResourceResult(ResourceType.MandrakeRoot)),
                     new Offer(ResourceType.Gold, 50, new OfferResourceResult(ResourceType.WolfsbaneRoot)),
-                    new Offer(ResourceType.Gold, 100, new OfferItemResult(ItemType.ManaPotion, 1)),
+                    new Offer(ResourceType.Gold, 100, new OfferItemResult(ItemType.SmallManaPotion, 1)),
                     new Offer(ResourceType.Gold, 100, new OfferResourceResult(ResourceType.Cauldron)),
                 ];
             case LocationType.WizardStore:

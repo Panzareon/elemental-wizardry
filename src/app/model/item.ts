@@ -13,8 +13,9 @@ enum ItemType
     StoneAxe = 1,
     IronAxe = 2,
     IronPickaxe = 3,
-    ManaPotion = 4,
+    SmallManaPotion = 4,
     ChronomancyWand = 5,
+    ManaPotion = 6,
 }
 enum ItemUsageType {
     Equip = 0,
@@ -45,6 +46,7 @@ class Item
             case ItemType.WoodenWand:
             case ItemType.ChronomancyWand:
                 return ItemUsageType.Equip;
+            case ItemType.SmallManaPotion:
             case ItemType.ManaPotion:
                 return ItemUsageType.Usable;
         }
@@ -64,10 +66,12 @@ class Item
                 return "Iron Axe";
             case ItemType.IronPickaxe:
                 return "Iron Pickaxe";
-            case ItemType.ManaPotion:
-                return "Mana Potion";
+            case ItemType.SmallManaPotion:
+                return "Small Mana Potion";
             case ItemType.ChronomancyWand:
                 return "Chronomancy Wand";
+            case ItemType.ManaPotion:
+                return "Mana Potion";
         }
     }
     public get buffs(): Buff[] {
@@ -76,8 +80,11 @@ class Item
 
     public use(wizard: Wizard) : boolean {
         switch (this._type) {
-            case ItemType.ManaPotion:
+            case ItemType.SmallManaPotion:
                 wizard.addBuff(new TimedBuff(new ItemTimedBuffSource(this._type), 30, 5 + (this._level - 1) * 1))
+                return true;
+            case ItemType.ManaPotion:
+                wizard.addBuff(new TimedBuff(new ItemTimedBuffSource(this._type), 30, 20 + (this._level - 1) * 4))
                 return true;
             default:
                 return false;
@@ -93,6 +100,7 @@ class Item
                 return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.ChopWood)];
             case ItemType.IronPickaxe:
                 return [new SkillDurationBuff(1.5 + (this._level - 1) * 0.1, SkillType.Mining)];
+            case ItemType.SmallManaPotion:
             case ItemType.ManaPotion:
                 return [];
             case ItemType.ChronomancyWand:
@@ -127,7 +135,7 @@ class ItemTimedBuffSource implements ITimedBuffSource {
     }
     getBuffs(timedBuff: TimedBuff): Buff[] {
         switch (this._type) {
-            case ItemType.ManaPotion:
+            case ItemType.SmallManaPotion:
                 return [new ResourceProductionBuff(false, (1 * timedBuff.power), undefined, ResourceKind.Mana)];
             default:
                 return [];
@@ -141,6 +149,7 @@ class ItemTimedBuffSource implements ITimedBuffSource {
 
     get icon(): string {
         switch (this._type) {
+            case ItemType.SmallManaPotion:
             case ItemType.ManaPotion:
                 return "mana-potion.svg";
             case ItemType.WoodenWand:

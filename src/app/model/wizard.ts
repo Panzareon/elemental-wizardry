@@ -429,7 +429,8 @@ class Wizard {
         this.addAvailablePlant(GardenPlotPlant.Wolfsbane);
         break;
       case UnlockType.EnchantCauldron:
-        this.addRecipe(RecipeType.ManaPotion);
+        this.addRecipe(RecipeType.SmallManaPotion);
+        this.addKnowledge(KnowledgeType.Potioncraft);
         if (!onLoad) {
           this.addEnchantedCauldron();
         }

@@ -14,7 +14,10 @@ enum RecipeType
     IronAxe = 3,
     IronPickaxe = 4,
     Cauldron = 5,
-    ManaPotion = 6,
+    SmallManaPotion = 6,
+    SmallManaPotionBatch = 7,
+    ManaPotion = 8,
+    ManaPotionBatch = 9,
 }
 enum RecipeSource
 {
@@ -43,6 +46,14 @@ class Recipe
                 return "Iron Axe";
             case RecipeType.IronPickaxe:
                 return "Iron Pickaxe";
+            case RecipeType.SmallManaPotion:
+                return "Small Mana Potion";
+            case RecipeType.SmallManaPotionBatch:
+                return "Small Mana Potion x5";
+            case RecipeType.ManaPotion:
+                return "Mana Potion";
+            case RecipeType.ManaPotionBatch:
+                return "Mana Potion x5";
             default:
                 return RecipeType[this._type];
         }
@@ -104,9 +115,28 @@ class Recipe
             case RecipeType.Cauldron:
                 wizard.addResource(ResourceType.Cauldron, 1)
                 return true;
+            case RecipeType.SmallManaPotion:
+                wizard.addItem(new Item(ItemType.SmallManaPotion, 1 + Math.floor(Math.random() * 2)));
+                return true;
+            case RecipeType.SmallManaPotionBatch:
+            {
+                let level = 1 + Math.floor(Math.random() * 2);
+                for (let x = 0; x < 5; x++) {
+                    wizard.addItem(new Item(ItemType.SmallManaPotion, level));
+                }
+                return true;
+            }
             case RecipeType.ManaPotion:
                 wizard.addItem(new Item(ItemType.ManaPotion, 1 + Math.floor(Math.random() * 2)));
                 return true;
+            case RecipeType.ManaPotionBatch:
+            {
+                let level = 1 + Math.floor(Math.random() * 2);
+                for (let x = 0; x < 5; x++) {
+                    wizard.addItem(new Item(ItemType.ManaPotion, level));
+                }
+                return true;
+            }
         }
     }
 
@@ -119,7 +149,10 @@ class Recipe
             case RecipeType.IronPickaxe:
             case RecipeType.Cauldron:
                 return RecipeSource.SimpleWorkshop;
+            case RecipeType.SmallManaPotion:
+            case RecipeType.SmallManaPotionBatch:
             case RecipeType.ManaPotion:
+            case RecipeType.ManaPotionBatch:
                 return RecipeSource.Cauldron;
         }
     }
@@ -137,14 +170,20 @@ class Recipe
                 return Costs.fromResources([new ResourceAmount(ResourceType.Wood, 1), new ResourceAmount(ResourceType.Iron, 2)]);
             case RecipeType.Cauldron:
                 return Costs.fromResource(ResourceType.Iron, 10);
-            case RecipeType.ManaPotion:
+            case RecipeType.SmallManaPotion:
                 return Costs.fromResources([new ResourceAmount(ResourceType.MandrakeRoot, 1), new ResourceAmount(ResourceType.WolfsbaneRoot, 1)]);
+            case RecipeType.SmallManaPotionBatch:
+                return Costs.fromResources([new ResourceAmount(ResourceType.MandrakeRoot, 4), new ResourceAmount(ResourceType.WolfsbaneRoot, 4)]);
+            case RecipeType.ManaPotion:
+                return Costs.fromResources([new ResourceAmount(ResourceType.MandrakeRoot, 1), new ResourceAmount(ResourceType.WolfsbaneRoot, 1), new ResourceAmount(ResourceType.ManaGem, 1)]);
+            case RecipeType.ManaPotionBatch:
+                return Costs.fromResources([new ResourceAmount(ResourceType.MandrakeRoot, 4), new ResourceAmount(ResourceType.WolfsbaneRoot, 4), new ResourceAmount(ResourceType.ManaGem, 5)]);
         }
     }
 
     private getCraftOrder() : RecipeCraftPart[] {
         switch (this._type){
-            case RecipeType.ManaPotion:
+            case RecipeType.SmallManaPotion:
                 return [new RecipeCraftPart(RecipeMachineType.EnchantedCauldron, 5, true, "Prepare Components"),
                     new RecipeCraftPart(RecipeMachineType.EnchantedCauldron, 100, false, "Brewing"),
                     new RecipeCraftPart(RecipeMachineType.EnchantedCauldron, 5, true, "Bottling"),
