@@ -11,9 +11,5 @@
 
 <h4>Explore Locations</h4>
 <div class="action-list locations">
-    <div class="button-wrapper" *ngFor="let location of getExplorableLocations()" appExplorationTooltip [location]="location">
-        <mat-button-toggle class="action location" [checked]="isExploreActive(location)" (change)="toggleExplore(location)">
-            {{location.name}}
-        </mat-button-toggle>
-    </div>
+    <app-expedition [location]="location" *ngFor="let location of getExplorableLocations()"></app-expedition>
 </div>

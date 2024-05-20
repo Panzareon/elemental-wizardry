@@ -34,26 +34,7 @@ export class ActionsComponent {
     }
   }
 
-  toggleExplore(location: GameLocation) {
-    if (location.exploreActive === undefined) {
-      return;
-    }
-    if (this.isExploreActive(location)) {
-      this.data.wizard.setInactive(location.exploreActive);
-    }
-    else
-    {
-      this.data.wizard.setActive(location.exploreActive);
-    }
-  }
   public isActive(skill: Skill) : boolean {
     return this.data.wizard.active.includes(skill);
-  }
-  public isExploreActive(location: GameLocation) : boolean {
-    if (location.exploreActive !== undefined) {
-      return this.data.wizard.active.includes(location.exploreActive);
-    }
-
-    return false;
   }
 }

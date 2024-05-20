@@ -55,6 +55,7 @@ import { BuffTooltipDirective } from './tooltip/buff-tooltip/buff-tooltip.direct
 import { BuffTooltipComponent } from './tooltip/buff-tooltip/buff-tooltip.component';
 import { StatusComponent } from './status/status.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { ExpeditionComponent } from './expedition/expedition.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import {MatRadioModule} from '@angular/material/radio';
     ActiveBuffsComponent,
     BuffTooltipDirective,
     BuffTooltipComponent,
-    StatusComponent
+    StatusComponent,
+    ExpeditionComponent
   ],
   imports: [
     BrowserModule,

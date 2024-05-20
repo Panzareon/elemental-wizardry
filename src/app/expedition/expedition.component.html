@@ -1,0 +1,5 @@
+<div class="button-wrapper" appExplorationTooltip [location]="location">
+    <mat-button-toggle class="action location" [checked]="isExploreActive()" (change)="toggleExplore()">
+        {{location.name}}
+    </mat-button-toggle>
+</div>
