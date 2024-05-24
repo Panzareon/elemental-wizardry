@@ -14,6 +14,7 @@ import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, Knowl
 import { Companion, CompanionType } from "../companion";
 import { ActiveType, IActive } from "../active";
 import { RecipeMachine } from "../recipeMachine";
+import { ExploreActionDuration } from "../exploreAction";
 
 export { WizardDeserializer }
 
@@ -48,6 +49,7 @@ class WizardDeserializer {
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
         wizard.influence.forEach(x => x.checkUnlocks(wizard));
         wizard.resources.forEach(x => x.addAmount(0, wizard));
+        wizard.location.forEach(x => x.exploreAction?.checkResult(wizard));
 
         if (this.json.actives !== undefined) {
             for (const serializedActive of this.json.actives) {
@@ -75,6 +77,8 @@ class WizardDeserializer {
                 return wizard.gardenPlots.length > serializedActive[1] ? wizard.gardenPlots[serializedActive[1]] : null;
             case ActiveType.RecipeMachine:
                 return wizard.recipeMachines.length > serializedActive[1] ? wizard.recipeMachines[serializedActive[1]] : null;
+            case ActiveType.ExploreAction:
+                return wizard.location.find(x => x.type === serializedActive[1][0])?.exploreAction?.options.find(x => x instanceof ExploreActionDuration && (x as ExploreActionDuration).uniqueId === serializedActive[1][1]) as ExploreActionDuration;
         }
     }
     deserializeSpell(x: SpellJson): Spell {
@@ -117,6 +121,10 @@ class WizardDeserializer {
         let location = new GameLocation(x.type);
         if (x.exploreProgress && location.exploreActive) {
             location.exploreActive.load(x.exploreProgress);
+        }
+        if (x.exploreAction !== undefined) {
+            let action = location.setExploreAction(x.exploreAction.type);
+            action.load(x.exploreAction.step, x.exploreAction.selected, x.exploreAction.selectedData)
         }
         return location;
     }

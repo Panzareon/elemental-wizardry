@@ -1,5 +1,6 @@
 import { ActiveType } from "../active";
 import { CompanionActionType, CompanionType } from "../companion";
+import { ExploreActionType } from "../exploreAction";
 import { ExploreResultType, LocationType } from "../gameLocation";
 import { GardenPlotPlant, GrowState } from "../garden-plot";
 import { InfluenceType } from "../influence";
@@ -89,6 +90,12 @@ interface SkillDurationInfo {
 interface LocationJson {
     type: LocationType;
     exploreProgress: [ExploreResultType, number, boolean, boolean][];
+    exploreAction?: {
+        type: ExploreActionType,
+        step: number,
+        selected: number|undefined,
+        selectedData: any,
+    }
 }
 interface InfluenceJson {
     type: InfluenceType;

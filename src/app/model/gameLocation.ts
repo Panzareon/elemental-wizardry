@@ -1,5 +1,6 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { Buff } from "./buff";
+import { ExploreAction, ExploreActionType } from "./exploreAction";
 import { InfluenceType } from "./influence";
 import { Item, ItemType } from "./item";
 import { KnowledgeType } from "./knowledge";
@@ -85,7 +86,8 @@ class ExploreResult {
     private _done: boolean = false;
     private _repeatable: boolean;
     private _available: boolean;
-    constructor(private _type: ExploreResultType, private _locationType : LocationType) {
+    private _mightRepeat: boolean = false;
+    constructor(private _type: ExploreResultType, private _location : GameLocation) {
         this._targetProgress = this.getTargetProgress();
         this._progress = 0;
         this._repeatable = this.isRepeatable();
@@ -124,6 +126,24 @@ class ExploreResult {
                 return ExploreResultType[this.type];
         }
     }
+    public isDone(wizard: Wizard) : boolean {
+        if (!this._mightRepeat || !this._done || this._location.exploreAction !== undefined) {
+            return this._done;
+        }
+
+        switch (this.type){
+            case ExploreResultType.Mine:
+                this._done = wizard.skills.some(x => x.type == SkillType.Mining);
+                break;
+        }
+
+        if (!this._done) {
+            this._progress -= this._targetProgress;
+        }
+
+        return this._done;
+    }
+
     public isAvailable(wizard: Wizard) : boolean {
         if (this._available === false) {
             if (this.isAvailableInternal(wizard)[0]) {
@@ -137,7 +157,7 @@ class ExploreResult {
         return this.isAvailableInternal(wizard)[1]
     }
     public activate(wizard: Wizard, deltaTime: number) {
-        if (this._done) {
+        if (this.isDone(wizard)) {
             return;
         }
 
@@ -160,6 +180,9 @@ class ExploreResult {
         this._progress = progress;
         this._done = !this._repeatable && done;
         this._available = available;
+        if (this._done && !this._repeatable) {
+            this._mightRepeat = true;
+        }
     }
     private getTargetProgress(): number {
         switch (this._type) {
@@ -195,7 +218,7 @@ class ExploreResult {
         switch (this._type) {
             case ExploreResultType.Random:
                 if (Math.random() < 0.1) {
-                    switch (this._locationType) {
+                    switch (this._location.type) {
                         case LocationType.Village: {
                             let resource = wizard.addResource(ResourceType.Gold, 5);
                             wizard.notifyEvent(EventInfo.gainResource(resource, "Found 5 gold on the ground"));
@@ -234,7 +257,8 @@ class ExploreResult {
                 wizard.findLocation(LocationType.Mountain);
                 break;
             case ExploreResultType.Mine:
-                wizard.learnSkill(SkillType.Mining);
+                this._location.setExploreAction(ExploreActionType.ExploreMine);
+                this._mightRepeat = true;
                 break;
         }
     }
@@ -279,6 +303,10 @@ class ExploreLocation implements IActive {
         return [ActiveType.ExploreLocation, this.location.type];
     }
     public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
+        if (this.location.exploreAction !== undefined) {
+            return ActiveActivateResult.CannotContinue;
+        }
+
         for (const reward of this._rewards) {
             reward.activate(wizard, deltaTime);
         }
@@ -301,20 +329,20 @@ class ExploreLocation implements IActive {
         const result : ExploreResult[] = [];
         switch (this.location.type) {
             case LocationType.Village:
-                result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
-                result.push(new ExploreResult(ExploreResultType.Store, this.location.type));
-                result.push(new ExploreResult(ExploreResultType.ChronomancyMentor, this.location.type));
-                result.push(new ExploreResult(ExploreResultType.Forest, this.location.type));
-                result.push(new ExploreResult(ExploreResultType.ArtisanGuild, this.location.type));
-                result.push(new ExploreResult(ExploreResultType.AlchemistGuild, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.Random, this.location));
+                result.push(new ExploreResult(ExploreResultType.Store, this.location));
+                result.push(new ExploreResult(ExploreResultType.ChronomancyMentor, this.location));
+                result.push(new ExploreResult(ExploreResultType.Forest, this.location));
+                result.push(new ExploreResult(ExploreResultType.ArtisanGuild, this.location));
+                result.push(new ExploreResult(ExploreResultType.AlchemistGuild, this.location));
                 break;
             case LocationType.Forest:
-                result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
-                result.push(new ExploreResult(ExploreResultType.Mountain, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.Random, this.location));
+                result.push(new ExploreResult(ExploreResultType.Mountain, this.location));
                 break;
             case LocationType.Mountain:
-                result.push(new ExploreResult(ExploreResultType.Random, this.location.type));
-                result.push(new ExploreResult(ExploreResultType.Mine, this.location.type));
+                result.push(new ExploreResult(ExploreResultType.Random, this.location));
+                result.push(new ExploreResult(ExploreResultType.Mine, this.location));
         }
         return result;
     }
@@ -324,6 +352,7 @@ class GameLocation {
     private _type: LocationType;
     private _offers: Offer[];
     private _exploreActive: ExploreLocation | undefined;
+    private _exploreAction?: ExploreAction;
     constructor(type: LocationType) {
         this._type = type;
         this._offers = this.generateOffers();
@@ -363,7 +392,18 @@ class GameLocation {
     public get exploreActive(): ExploreLocation|undefined {
         return this._exploreActive;
     }
+    public get exploreAction(): ExploreAction|undefined
+    {
+        return this._exploreAction;
+    }
 
+    public setExploreAction(action: ExploreActionType) : ExploreAction {
+        this._exploreAction = new ExploreAction(action, this);
+        return this._exploreAction;
+    }
+    public removeExploreAction() {
+        this._exploreAction = undefined;
+    }
     generateOffers(): Offer[] {
         switch (this.type) {
             case LocationType.Store:

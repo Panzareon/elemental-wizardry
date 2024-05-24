@@ -90,6 +90,13 @@ class WizardSerializer {
         return {
             type: x.type,
             exploreProgress: x.exploreActive?.progress ?? [],
+            exploreAction: x.exploreAction === undefined ? undefined
+                : {
+                    type: x.exploreAction.type,
+                    step: x.exploreAction.step,
+                    selected: x.exploreAction.selectedOption?.uniqueId,
+                    selectedData: x.exploreAction.selectedOption?.serializeData(),
+                }
         }
     }
     serializeUnlocks(x: Unlocks): UnlocksJson {

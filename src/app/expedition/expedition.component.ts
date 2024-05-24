@@ -1,6 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { GameLocation } from '../model/gameLocation';
 import { DataService } from '../data.service';
+import { ExploreActionDuration, ExploreActionOption } from '../model/exploreAction';
+import { IActive } from '../model/active';
+import { Wizard } from '../model/wizard';
+import { retry } from 'rxjs';
 
 @Component({
   selector: 'app-expedition',
@@ -31,5 +35,25 @@ export class ExpeditionComponent {
     }
 
     return false;
+  }
+  isActionActive(option: ExploreActionOption): boolean {
+    let active = this.asActive(option);
+    return active !== undefined && this.data.wizard.active.includes(active);
+  }
+  toggleAction(option: ExploreActionOption) {
+    let active = this.asActive(option);
+    if (this.isActionActive(option) && active !== undefined) {
+      this.data.wizard.setInactive(active);
+    }
+    else {
+      this.location.exploreAction?.selectOption(this.data.wizard, option);
+    }
+  }
+  private asActive(option: ExploreActionOption) : IActive|undefined {
+    if (option instanceof ExploreActionDuration) {
+      return option as ExploreActionDuration
+    }
+
+    return undefined;
   }
 }

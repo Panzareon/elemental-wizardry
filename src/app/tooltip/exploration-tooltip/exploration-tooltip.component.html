@@ -9,7 +9,7 @@
         <mat-card class="progress-bar">
             <div class="progress" [style.width.%]="target.progressRatio * 100"></div>
         </mat-card>
-        <img class="progress-icon" src="assets/icons/check-mark.svg" *ngIf="target.done"/>
+        <img class="progress-icon" src="assets/icons/check-mark.svg" *ngIf="isDone(target)"/>
         <img class="progress-icon" src="assets/icons/lock.svg" *ngIf="isLocked(target)"/>
       </div>
     </mat-card-content>

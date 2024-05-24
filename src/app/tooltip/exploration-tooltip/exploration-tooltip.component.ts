@@ -17,6 +17,9 @@ export class ExplorationTooltipComponent extends TooltipBase {
   isLocked(exploreResult: ExploreResult): boolean {
     return !exploreResult.isAvailable(this._data.wizard);
   }
+  isDone(exploreResult: ExploreResult): any {
+    return exploreResult.isDone(this._data.wizard);
+  }
   unlockCondition(exploreResult: ExploreResult) : string|null {
     if (!this.isLocked(exploreResult)) {
       return null;

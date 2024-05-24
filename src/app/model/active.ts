@@ -17,6 +17,7 @@ enum ActiveType {
     GardenPlot = 4,
     ExploreLocation = 5,
     RecipeMachine = 6,
+    ExploreAction = 7,
 }
 
 interface IActive {
