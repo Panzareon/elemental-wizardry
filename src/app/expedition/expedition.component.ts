@@ -40,6 +40,9 @@ export class ExpeditionComponent {
     let active = this.asActive(option);
     return active !== undefined && this.data.wizard.active.includes(active);
   }
+  isAvailable(option: ExploreActionOption): boolean {
+    return option.isAvailable(this.data.wizard);
+  }
   toggleAction(option: ExploreActionOption) {
     let active = this.asActive(option);
     if (this.isActionActive(option) && active !== undefined) {
@@ -48,6 +51,17 @@ export class ExpeditionComponent {
     else {
       this.location.exploreAction?.selectOption(this.data.wizard, option);
     }
+  }
+  getProgress(option: ExploreActionOption|undefined) : number{
+    if (option === undefined) {
+      return 0;
+    }
+    let active = this.asActive(option);
+    if (active !== undefined) {
+      return active.activeProgress;
+    }
+
+    return 0;
   }
   private asActive(option: ExploreActionOption) : IActive|undefined {
     if (option instanceof ExploreActionDuration) {

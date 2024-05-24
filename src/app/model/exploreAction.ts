@@ -2,6 +2,7 @@ import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { Buff } from "./buff";
 import { GameLocation } from "./gameLocation";
 import { SkillType } from "./skill";
+import { Spell, SpellType } from "./spell";
 import { Wizard } from "./wizard";
 
 export {ExploreAction, ExploreActionType, ExploreActionOption, ExploreActionDuration}
@@ -66,8 +67,10 @@ class ExploreAction
         this._options = this.createOptions();
         return this.checkResult(wizard);
     }
-    public selectOption(wizard: Wizard, option: ExploreActionOption) {
+    public setSelectedOption(option: ExploreActionOption) {
         this._selectedOption = option;
+    }
+    public selectOption(wizard: Wizard, option: ExploreActionOption) {
         option.select(wizard, this._location, this);
     }
     public checkResult(wizard: Wizard): boolean {
@@ -93,7 +96,8 @@ class ExploreAction
                     return [new ExploreActionDuration("Check Entrance", this, 10, 1), new ExploreActionCancel("Turn back")];
                 }
                 if (this._step == 1) {
-                    return [new ExploreActionDuration("Clear Rubble", this, 20, 1)]
+                    return [new ExploreActionDuration("Clear Rubble", this, 20, 1)
+                                .addSpellOption(SpellType.MagicBolt, 10)]
                 }
 
                 return [];
@@ -101,6 +105,7 @@ class ExploreAction
     }
 }
 abstract class ExploreActionOption {
+    private _additionalOptions: ExploreActionOption[] = [];
     protected constructor(private _name: string, private _uniqueId: number|undefined) {
     }
     
@@ -110,11 +115,23 @@ abstract class ExploreActionOption {
     get uniqueId() : number|undefined {
         return this._uniqueId;
     }
+    get additionalOptions() : ExploreActionOption[] {
+        return this._additionalOptions;
+    }
     abstract select(wizard: Wizard, location: GameLocation, action: ExploreAction) : void;
 
-    abstract load(data: any) : void;
+    public isAvailable(wizard: Wizard) : boolean {
+        return true;
+    }
 
-    abstract serializeData() : any;
+    public load(data: any): void {
+    }
+    public serializeData() : any {
+        return undefined;
+    }
+    public addAdditionalOption(option: ExploreActionOption) {
+        this._additionalOptions.push(option);
+    }
 }
 
 class ExploreActionDuration extends ExploreActionOption implements IActive {
@@ -148,6 +165,7 @@ class ExploreActionDuration extends ExploreActionOption implements IActive {
 
     override select(wizard: Wizard, location: GameLocation, action: ExploreAction): void {
         wizard.setActive(this);
+        action.setSelectedOption(this);
     }
 
     override load(data: any): void {
@@ -156,6 +174,17 @@ class ExploreActionDuration extends ExploreActionOption implements IActive {
 
     override serializeData() {
         return this._currentDuration;
+    }
+    public addProgress(wizard: Wizard, additionalProgress: number) {
+        this._currentDuration+= additionalProgress;
+        if (this._currentDuration >= this._maxDuration) {
+            this._action.nextStep(wizard);
+        }
+    }
+
+    public addSpellOption(spell: SpellType, spellCastProgress: number) : ExploreActionDuration {
+        this.addAdditionalOption(new ExploreActionCastSpell(spell, spellCastProgress, this._action, this));
+        return this;
     }
 }
 class ExploreActionCancel extends ExploreActionOption {
@@ -166,9 +195,31 @@ class ExploreActionCancel extends ExploreActionOption {
     override select(wizard: Wizard, location: GameLocation, action: ExploreAction): void {
         location.removeExploreAction();
     }
-    override load(data: any): void {
+}
+class ExploreActionCastSpell extends ExploreActionOption {
+    constructor(private _spell: SpellType, private _spellCastProgress: number, private _action: ExploreAction, private _duration? : ExploreActionDuration) {
+        super("Cast " + new Spell(_spell).name, undefined)
     }
-    override serializeData() : any {
-        return undefined;
+
+    override select(wizard: Wizard, location: GameLocation, action: ExploreAction): void {
+        let spell = wizard.availableSpells.find(x => x.type == this._spell);
+        if (spell === undefined) {
+            return;
+        }
+
+        if (spell.canCast(wizard)){
+            let spellPower = spell.getSpellPower(wizard);
+            spell.castSpell(wizard);
+            if (this._duration !== undefined) {
+                this._duration.addProgress(wizard, spellPower * this._spellCastProgress)
+            }
+            else {
+                this._action.nextStep(wizard);
+            }
+        }
+    }
+
+    public override isAvailable(wizard: Wizard): boolean {
+        return wizard.availableSpells.some(x => x.type == this._spell);
     }
 }

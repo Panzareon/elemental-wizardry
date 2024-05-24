@@ -1,5 +1,6 @@
 <div class="button-wrapper" appExplorationTooltip [location]="location">
-    <mat-card>
+    <mat-card class="progress-card">
+        <div class="progress" [style.width.%]="getProgress(location.exploreAction?.selectedOption)*100" *ngIf="location.exploreAction?.selectedOption !== undefined"></div>
         <mat-card-header>
             {{location.name}}
         </mat-card-header>
@@ -9,7 +10,14 @@
         <mat-card-content *ngIf="location.exploreAction !== undefined">
             {{location.exploreAction.description}}<br>
             <ng-container *ngFor="let option of location.exploreAction.options">
-                <mat-button-toggle [checked]="isActionActive(option)" (change)="toggleAction(option)">{{option.name}}</mat-button-toggle><br>
+                <ng-container *ngIf="isAvailable(option)">
+                    <mat-button-toggle [checked]="isActionActive(option)" (change)="toggleAction(option)">{{option.name}}</mat-button-toggle><br>
+                    <ng-container *ngFor="let additionalOption of option.additionalOptions">
+                        <ng-container *ngIf="isAvailable(additionalOption)">
+                            <mat-button-toggle [checked]="isActionActive(additionalOption)" (change)="toggleAction(additionalOption)" class="additional-option">{{additionalOption.name}}</mat-button-toggle><br>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
             </ng-container>
         </mat-card-content>
     </mat-card>
