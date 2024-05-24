@@ -1,5 +1,6 @@
 import { LocationType } from "./gameLocation";
 import { ResourceType } from "./resource";
+import { SkillType } from "./skill";
 import { Wizard } from "./wizard";
 
 export { Companion, CompanionType, CompanionAction, CompanionActionType }
@@ -80,9 +81,9 @@ class CompanionAction {
     public isAvailable(wizard: Wizard) : boolean {
         switch (this.type) {
             case CompanionActionType.ChopWood:
-                return wizard.location.some(x => x.type === LocationType.Forest);
+                return wizard.skills.some(x => x.type === SkillType.ChopWood);
             case CompanionActionType.Mining:
-                return wizard.location.some(x => x.type === LocationType.Mountain);
+                return wizard.skills.some(x => x.type === SkillType.Mining);
         }
     }
 
