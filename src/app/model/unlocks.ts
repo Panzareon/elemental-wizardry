@@ -94,6 +94,7 @@ class Unlocks {
             case UnlockType.GardenPlot:
             case UnlockType.NatureProduction:
             case UnlockType.EnchantCauldron:
+            case UnlockType.AquamancyProduction:
                 return 5;
             case UnlockType.ManaCapacity:
             case UnlockType.ChronoCapacity:
