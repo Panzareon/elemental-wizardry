@@ -16,6 +16,6 @@ export class ResourceInfoComponent {
   }
 
   public get generation() : number {
-    return this.resource.getGenerationPerSecond(this.data.wizard);
+    return this.resource.getGenerationPerSecond(this.data.wizard).value;
   }
 }

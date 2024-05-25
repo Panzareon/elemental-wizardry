@@ -23,6 +23,8 @@ enum SpellType {
     Rewind = 9,
     Growth = 10,
     DelayRewind = 11,
+    ConjureWater = 12,
+    InfuseAquaGem = 13,
 }
 
 enum SpellCastingType {
@@ -34,6 +36,7 @@ enum SpellSource {
     Mana = 0,
     Chronomancy = 1,
     Nature = 2,
+    Aqua = 3,
 }
 
 class Spell implements ITimedBuffSource {
@@ -67,6 +70,8 @@ class Spell implements ITimedBuffSource {
                 return "Converse With Future Self";
             case SpellType.SkipTime:
                 return "Skip Time";
+            case SpellType.ConjureWater:
+                return "Conjure Water";
             default:
                 return SpellType[this.type];
         }
@@ -147,6 +152,10 @@ class Spell implements ITimedBuffSource {
                 return "Growth a plant quickly";
             case SpellType.DelayRewind:
                 return "Delays the next time rewind is cast";
+            case SpellType.ConjureWater:
+                return "Create water with aqua";
+            case SpellType.InfuseAquaGem:
+                return "Infuses a gemstone with Aqua to create a Aqua Gem";
         }
     }
 
@@ -214,6 +223,9 @@ class Spell implements ITimedBuffSource {
                     throw new Error("Rewind buff not found");
                 }
                 rewindBuff.addDuration(spellPower * 20 * 60);
+                break;
+            case SpellType.InfuseAquaGem:
+                wizard.addResource(ResourceType.AquaGem, (1 + (spellPower - 1) / 2));
                 break;
         }
 
@@ -369,6 +381,10 @@ class Spell implements ITimedBuffSource {
                 return SpellCast.CreateRitualSpell(
                     [new ResourceAmount(ResourceType.ChronoGem, 1)],
                     new RitualCast(this, [new ResourceAmount(ResourceType.Chrono, 20)], 10));
+            case SpellType.ConjureWater:
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Aqua, 2 * costMultiplier)]);
+            case SpellType.InfuseAquaGem:
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Aqua, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)]);
         }
     }
 
@@ -389,6 +405,9 @@ class Spell implements ITimedBuffSource {
             case SpellType.InfuseNatureGem:
             case SpellType.Growth:
                 return SpellSource.Nature;
+            case SpellType.ConjureWater:
+            case SpellType.InfuseAquaGem:
+                return SpellSource.Aqua;
         }
     }
 

@@ -1,17 +1,17 @@
-import { TimedBuff, TimedBuffSourceType } from "../timed-buff";
+import { ITimedBuffSource, TimedBuff, TimedBuffSourceType } from "../timed-buff";
 import { GameLocation } from "../gameLocation";
 import { GardenPlot, GardenPlotPlant } from "../garden-plot";
 import { Influence } from "../influence";
 import { Item, ItemTimedBuffSource } from "../item";
 import { Knowledge } from "../knowledge";
 import { Recipe } from "../recipe";
-import { Resource } from "../resource";
+import { Resource, TimedBuffResourceAdjustment } from "../resource";
 import { Skill } from "../skill";
-import { Spell, SpellType } from "../spell";
+import { Spell } from "../spell";
 import { Unlocks } from "../unlocks";
 import { Wizard } from "../wizard";
 import { BuffJson, CompanionJson, GardenPlotJson, InfluenceJson, ItemJson, KnowledgeJson, LocationJson, RecipeJson, RecipeMachineJson, ResourceJson, SkillJson, SpellJson, UnlocksJson, WizardJson } from "./wizardJson";
-import { Companion, CompanionType } from "../companion";
+import { Companion } from "../companion";
 import { ActiveType, IActive } from "../active";
 import { RecipeMachine } from "../recipeMachine";
 import { ExploreActionDuration } from "../exploreAction";
@@ -25,15 +25,16 @@ class WizardDeserializer {
         let spells = this.json.spells.map(x => this.deserializeSpell(x));
         let items = this.json.items?.map(x => this.deserializeItems(x)) ?? [];
         let recipes = this.json.recipe?.map(x => this.deserializeRecipe(x)) ?? [];
+        let resources = this.json.resources.map(x => this.deserializeResource(x));
         var wizard = new Wizard(
-            this.json.resources.map(x => this.deserializeResource(x)),
+            resources,
             this.json.skills.map(x => this.deserializeSkills(x, spells)),
             this.json.knowledge.map(x => this.deserializeKnowledge(x)),
             [],
             this.json.unlocks.map(x => this.deserializeUnlocks(x)),
             this.json.locations.map(x => this.deserializeLocation(x)),
             spells,
-            this.json.buffs.map(x => this.deserializeBuffs(x, spells)),
+            this.json.buffs.flatMap(x => this.deserializeBuffs(x, spells, resources)),
             this.json.availableUnlocks,
             this.json.influence?.map(x => this.deserializeInfluence(x)) ?? [],
             this.json.gardenPlots?.map((x, index) => this.deserializeGardenPlot(x, index)) ?? [],
@@ -108,14 +109,24 @@ class WizardDeserializer {
         knowledge.load(x.level, x.exp, x.previousLevel ?? 0, x.available ?? true, x.levelAfterRewind ?? 0);
         return knowledge;
     }
-    deserializeBuffs(buff: BuffJson, spells: Spell[]) : TimedBuff {
+    deserializeBuffs(buff: BuffJson, spells: Spell[], resources: Resource[]) : TimedBuff[] {
+        let source : ITimedBuffSource|undefined;
         switch (buff.source.type) {
             case TimedBuffSourceType.Spell:
-                let spell = spells.find(x => x.type == buff.source.data) ?? new Spell(buff.source.data);
-                return new TimedBuff(spell, buff.duration, buff.power, buff.costMultiplier, buff.maxDuration);
+                source = spells.find(x => x.type == buff.source.data) ?? new Spell(buff.source.data);
+                break;
             case TimedBuffSourceType.Item:
-                return new TimedBuff(new ItemTimedBuffSource(buff.source.data), buff.duration, buff.power, buff.costMultiplier, buff.maxDuration);
+                source = new ItemTimedBuffSource(buff.source.data);
+                break;
+            case TimedBuffSourceType.Resource:
+                let resource = resources.find(x => x.type === buff.source.data[0]) ?? new Resource(buff.source.data[0]);
+                source = resource.productionAdjustment instanceof TimedBuffResourceAdjustment ? resource.productionAdjustment : undefined;
         }
+        if (source === undefined) {
+            return [];
+        }
+
+        return [new TimedBuff(source, buff.duration, buff.power, buff.costMultiplier, buff.maxDuration)];
     }
     deserializeLocation(x: LocationJson): GameLocation {
         let location = new GameLocation(x.type);

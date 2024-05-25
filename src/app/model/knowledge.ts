@@ -17,6 +17,7 @@ enum KnowledgeType {
     Herbalism = 3,
     NatureMagic = 4,
     Potioncraft = 5,
+    AquamancyKnowledge = 6,
 }
 
 class Knowledge {
@@ -121,6 +122,9 @@ class Knowledge {
                 if (this.level >= 6) {
                     wizard.addAvailableUnlock(UnlockType.ManaCapacity);
                 }
+                if (this.level >= 7) {
+                    wizard.addKnowledge(KnowledgeType.AquamancyKnowledge);
+                }
                 if (this.level >= 8) {
                     wizard.addAvailableUnlock(UnlockType.ImproveMeditate);
                 }
@@ -203,6 +207,18 @@ class Knowledge {
                 if (this.level >= 6) {
                     wizard.addRecipe(RecipeType.ManaPotionBatch);
                 }
+                break;
+            case KnowledgeType.AquamancyKnowledge:
+                if (this.level >= 2) {
+                    wizard.addAvailableUnlock(UnlockType.AquamancyProduction);
+                }
+                if (this.level >= 3) {
+                    wizard.learnSpell(SpellType.InfuseAquaGem);
+                }
+                if (this.level >= 4) {
+                    wizard.learnSpell(SpellType.ConjureWater);
+                }
+                break;
         }
     }
     public calculate(wizard: Wizard) {
@@ -299,7 +315,9 @@ class KnowledgeTraining implements IKnowledgeAction {
             case KnowledgeType.NatureMagic:
             case KnowledgeType.Herbalism:
                 return ResourceType.Nature;
-            default:
+            case KnowledgeType.AquamancyKnowledge:
+                return ResourceType.Aqua;
+            case KnowledgeType.Potioncraft:
                 throw new Error("Cannot train " + KnowledgeType[this._knowledge.type]);
         }
     }

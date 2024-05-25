@@ -186,8 +186,8 @@ class Skill implements IActive {
             {
                 let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.1);
                 let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
-                let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard)).reduce((x, y) => x + y, 0);
-                return manaResources.map(x => new ResourceProductionBuff(false, manaGeneration * x.getGenerationPerSecond(wizard) / baseGenerationSum, x.type));
+                let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard).value).reduce((x, y) => x + y, 0);
+                return manaResources.map(x => new ResourceProductionBuff(false, manaGeneration * x.getGenerationPerSecond(wizard).value / baseGenerationSum, x.type));
             }
             case SkillType.MeditateOnMana:
             {

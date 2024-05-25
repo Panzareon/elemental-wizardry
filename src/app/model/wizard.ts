@@ -434,6 +434,10 @@ class Wizard {
         if (!onLoad) {
           this.addEnchantedCauldron();
         }
+        break;
+      case UnlockType.AquamancyProduction:
+        this.addResourceType(ResourceType.Aqua);
+        break;
     }
   }
 

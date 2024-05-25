@@ -26,6 +26,7 @@ enum UnlockType {
     ImproveMeditate = 14,
     WolfsbaneSeeds = 15,
     EnchantCauldron = 16,
+    AquamancyProduction = 17,
 }
 
 class Unlocks {
@@ -142,6 +143,8 @@ class Unlocks {
                 return "Allows planting Wolfsbane in the garden";
             case UnlockType.EnchantCauldron:
                 return "Enchants a cauldron to allow brewing magical potions in it";
+            case UnlockType.AquamancyProduction:
+                return "Converts a Mana Production upgrade into 0.1 Aqua generation per second";
         }
     }
     public get buffs() : Buff[] {
@@ -209,6 +212,11 @@ class Unlocks {
                     return this.numberActive * Resource.BaseManaGeneration;
                 }
                 break;
+            case UnlockType.AquamancyProduction:
+                if (type == ResourceType.Aqua) {
+                    return this.numberActive * Resource.BaseManaGeneration;
+                }
+                break;
         }
         return 0;
     }
@@ -263,6 +271,7 @@ class Unlocks {
             case UnlockType.ChronomancyProduction:
             case UnlockType.NatureProduction:
             case UnlockType.EnchantCauldron:
+            case UnlockType.AquamancyProduction:
             {
                 let baseUnlock = wizard.unlocks.find(x => x.type == UnlockType.ManaProduction);
                 return [baseUnlock ?? new Unlocks(UnlockType.ManaProduction)];
@@ -321,6 +330,11 @@ class Unlocks {
                 return [Costs.fromInfluence(InfluenceType.AlchemistGuild, 10, 5)];
             case UnlockType.EnchantCauldron:
                 return [Costs.fromResources([new ResourceAmount(ResourceType.Cauldron, 1), new ResourceAmount(ResourceType.Mana, targetUnlockNumber * 20)])]
+            case UnlockType.AquamancyProduction:
+                if (targetUnlockNumber == 1) {
+                    return [Costs.fromResource(ResourceType.Mana, 40)];
+                }
+                return [Costs.fromResources([new ResourceAmount(ResourceType.AquaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Aqua, targetUnlockNumber * 10)])];
         }
     }
     

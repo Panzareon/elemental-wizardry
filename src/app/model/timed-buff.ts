@@ -6,6 +6,7 @@ export { TimedBuff, ITimedBuffSource, TimedBuffSourceType }
 enum TimedBuffSourceType {
     Spell = 0,
     Item = 1,
+    Resource = 2,
 }
 
 class TimedBuff {
