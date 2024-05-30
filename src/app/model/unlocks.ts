@@ -348,7 +348,7 @@ class Unlocks {
             case UnlockType.NatureCapacity:
                 return [new ResourceCapacityBuff(true, Math.pow(1.1, this.numberRepeated), ResourceType.Nature)];
             case UnlockType.ImproveMeditate:
-                return [new SkillStrengthBuff(Math.pow(1.1, this.numberRepeated), SkillType.Meditate, SkillType.MeditateOnMana, SkillType.MeditateOnNature, SkillType.MeditateOnNature)]
+                return [new SkillStrengthBuff(Math.pow(1.1, this.numberRepeated), SkillType.Meditate, SkillType.MeditateOnMana, SkillType.MeditateOnNature, SkillType.MeditateOnAqua, SkillType.MeditateOnChrono)]
             default:
                 return [];
         }

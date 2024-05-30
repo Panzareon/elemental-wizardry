@@ -217,6 +217,7 @@ class Knowledge {
                 }
                 if (this.level >= 4) {
                     wizard.learnSpell(SpellType.ConjureWater);
+                    wizard.learnSkill(SkillType.MeditateOnAqua);
                 }
                 break;
         }

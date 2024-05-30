@@ -15,6 +15,7 @@ enum SkillType {
     MeditateOnMana = 4,
     MeditateOnChrono = 5,
     MeditateOnNature = 6,
+    MeditateOnAqua = 7,
 }
 enum SkillActionType {
     Ongoing = 0,
@@ -68,6 +69,8 @@ class Skill implements IActive {
                 return "Meditate on Chrono";
             case SkillType.MeditateOnNature:
                 return "Meditate on Nature";
+            case SkillType.MeditateOnAqua:
+                return "Meditate on Aqua";
             default:
                 return SkillType[this.type];
         }
@@ -204,6 +207,11 @@ class Skill implements IActive {
                 let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15);
                 return [new ResourceProductionBuff(AdjustValueType.Add, manaGeneration, ResourceType.Nature)];
             }
+            case SkillType.MeditateOnAqua:
+            {
+                let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.11);
+                return [new ResourceProductionBuff(AdjustValueType.Add, manaGeneration, ResourceType.Aqua)];
+            }
             case SkillType.MagicShow:
                 return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -1, ResourceType.Mana)];
             default:
@@ -317,6 +325,7 @@ class Skill implements IActive {
             case SkillType.MeditateOnMana:
             case SkillType.MeditateOnChrono:
             case SkillType.MeditateOnNature:
+            case SkillType.MeditateOnAqua:
                 return SkillActionType.Ongoing;
             case SkillType.MagicShow:
             case SkillType.ChopWood:
