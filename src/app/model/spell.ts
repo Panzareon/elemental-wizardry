@@ -5,7 +5,7 @@ import { EventInfo, Wizard, WizardDataType } from "./wizard";
 import { Companion, CompanionType } from "./companion";
 import { GameLogicService } from "../game-logic.service";
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
-import { Buff, DescriptionOnlyBuff, ResourceProductionBuff } from "./buff";
+import { AdjustValueType, Buff, DescriptionOnlyBuff, ResourceProductionBuff } from "./buff";
 import { GrowState } from "./garden-plot";
 
 export { Spell, SpellType, SpellSource, SpellCastingType }
@@ -239,7 +239,7 @@ class Spell implements ITimedBuffSource {
     public getBuffs(timedBuff: TimedBuff): Buff[] {
         switch (this.type) {
             case SpellType.ExpediteGeneration:
-                return [new ResourceProductionBuff(true, (1 + 0.5 * timedBuff.power), undefined, ResourceKind.Mana, ResourceType.Chrono)];
+                return [new ResourceProductionBuff(AdjustValueType.Multiply, (1 + 0.5 * timedBuff.power), undefined, ResourceKind.Mana, ResourceType.Chrono)];
             case SpellType.Rewind:
                 return [new DescriptionOnlyBuff("Rewinds again once this ends")]
             default:
@@ -473,7 +473,7 @@ class RitualCast implements IActive {
         return this._duration;
     }
     public get activeBuffs(): Buff[] {
-        return this._channelCost.map(x => new ResourceProductionBuff(false, -x.amount / this._duration, x.resourceType));
+        return this._channelCost.map(x => new ResourceProductionBuff(AdjustValueType.Add, -x.amount / this._duration, x.resourceType));
     }
     public activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
         if (!this._isPrepared) {

@@ -1,5 +1,5 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
-import { Buff, ResourceProductionBuff, WizardDataIncrease } from "./buff";
+import { AdjustValueType, Buff, ResourceProductionBuff, WizardDataIncrease } from "./buff";
 import { InfluenceType } from "./influence";
 import { RecipeType } from "./recipe";
 import { Resource, ResourceKind, ResourceType } from "./resource";
@@ -282,7 +282,7 @@ class KnowledgeTraining implements IKnowledgeAction {
         return this._knowledge.levelUpProgress;
     }
     get activeBuffs(): Buff[] {
-        return [new ResourceProductionBuff(false, -1 * this._knowledge.level / 2, this.requiredResource)];
+        return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -1 * this._knowledge.level / 2, this.requiredResource)];
     }
     public get serialize(): [ActiveType, any] {
         return [ActiveType.KnowledgeTraining, this._knowledge.type];

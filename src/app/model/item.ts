@@ -1,4 +1,4 @@
-import { Buff, DescriptionOnlyBuff, ResourceProductionBuff, SkillDurationBuff, SpellPowerBuff, WizardDataIncrease } from "./buff";
+import { AdjustValueType, Buff, DescriptionOnlyBuff, ResourceProductionBuff, SkillDurationBuff, SpellPowerBuff, WizardDataIncrease } from "./buff";
 import { ResourceKind } from "./resource";
 import { SkillType } from "./skill";
 import { SpellSource } from "./spell";
@@ -141,9 +141,9 @@ class ItemTimedBuffSource implements ITimedBuffSource {
     getBuffs(timedBuff: TimedBuff): Buff[] {
         switch (this._type) {
             case ItemType.SmallManaPotion:
-                return [new ResourceProductionBuff(false, (1 * timedBuff.power), undefined, ResourceKind.Mana)];
+                return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, (1 * timedBuff.power), undefined, ResourceKind.Mana)];
             case ItemType.ManaPotion:
-                return [new ResourceProductionBuff(false, (4 * timedBuff.power), undefined, ResourceKind.Mana)];
+                return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, (4 * timedBuff.power), undefined, ResourceKind.Mana)];
             default:
                 return [];
         }

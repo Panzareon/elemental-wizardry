@@ -3,7 +3,7 @@ import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { ResourceKind, ResourceType } from "./resource";
 import { Spell, SpellType } from "./spell";
 import { EventInfo, Wizard } from "./wizard";
-import { AdjustValue, Buff, ResourceProductionBuff } from "./buff";
+import { AdjustValue, AdjustValueType, Buff, ResourceProductionBuff } from "./buff";
 
 export { Skill, SkillType, SkillActionType }
 
@@ -186,26 +186,26 @@ class Skill implements IActive {
             {
                 let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.1);
                 let manaResources = wizard.resources.filter(x => x.kind == ResourceKind.Mana);
-                let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard).value).reduce((x, y) => x + y, 0);
-                return manaResources.map(x => new ResourceProductionBuff(false, manaGeneration * x.getGenerationPerSecond(wizard).value / baseGenerationSum, x.type));
+                let baseGenerationSum = manaResources.map(x => x.getGenerationPerSecond(wizard).valueAfterMultiplier).reduce((x, y) => x + y, 0);
+                return manaResources.map(x => new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, manaGeneration * x.getGenerationPerSecond(wizard).valueAfterMultiplier / baseGenerationSum, x.type));
             }
             case SkillType.MeditateOnMana:
             {
                 let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15);
-                return [new ResourceProductionBuff(false, manaGeneration, ResourceType.Mana)];
+                return [new ResourceProductionBuff(AdjustValueType.Add, manaGeneration, ResourceType.Mana)];
             }
             case SkillType.MeditateOnChrono:
             {
                 let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15);
-                return [new ResourceProductionBuff(false, manaGeneration, ResourceType.Chrono)];
+                return [new ResourceProductionBuff(AdjustValueType.Add, manaGeneration, ResourceType.Chrono)];
             }
             case SkillType.MeditateOnNature:
             {
                 let manaGeneration = this.getSkillStrength(wizard, 1 + this.level * 0.15);
-                return [new ResourceProductionBuff(false, manaGeneration, ResourceType.Nature)];
+                return [new ResourceProductionBuff(AdjustValueType.Add, manaGeneration, ResourceType.Nature)];
             }
             case SkillType.MagicShow:
-                return [new ResourceProductionBuff(false, -1, ResourceType.Mana)];
+                return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -1, ResourceType.Mana)];
             default:
                 return [];
         }

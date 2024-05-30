@@ -1,4 +1,4 @@
-import { AdjustValue, Buff, ResourceProductionBuff } from "./buff";
+import { AdjustValue, AdjustValueType, Buff, ResourceProductionBuff } from "./buff";
 import { ITimedBuffSource, TimedBuff, TimedBuffSourceType } from "./timed-buff";
 import { Wizard } from "./wizard";
 
@@ -238,9 +238,8 @@ abstract class TimedBuffResourceAdjustment extends ProductionAdjustment implemen
 }
 
 class AquaProductionAdjustment extends TimedBuffResourceAdjustment {
-    private buff = new ResourceProductionBuff(true, 2, ResourceType.Aqua);
     private timedBuff? : TimedBuff;
-    private triggerBuff = false;
+    private triggerBuffPower = 0;
 
     public constructor(){
         super(ResourceType.Aqua);
@@ -252,39 +251,45 @@ class AquaProductionAdjustment extends TimedBuffResourceAdjustment {
         return "Reflow";
     }
     override getBuffs(timedBuff: TimedBuff): Buff[] {
-        return [this.buff];
+        return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, timedBuff.power, ResourceType.Aqua)];
     }
 
     override timedBuffRemoved(timedBuff: TimedBuff, wizard: Wizard): void {
-        this.timedBuff = undefined;
+        if (this.timedBuff === timedBuff){
+            this.timedBuff = undefined;
+        }
     }
 
     override addAmount(resource: Resource, value: number, wizard: Wizard): number {
-        this.onSubtractAmount(value < 0);
+        this.onSubtractAmount(-value);
         return super.addAmount(resource, value, wizard);
     }
 
     protected override applyGeneration(resource: Resource, generation: AdjustValue, deltaTime: number, wizard: Wizard): void {
-        this.onSubtractAmount(generation.subtractValue > 0);
+        this.onSubtractAmount(generation.subtractValue);
 
-        if (generation.subtractValue == 0 && this.triggerBuff) {
-            this.triggerBuff = false;
-            if (this.timedBuff === undefined) {
-                this.timedBuff = new TimedBuff(this, 3, 1);
-                wizard.addBuff(this.timedBuff);
+        if (generation.subtractValue == 0 && this.triggerBuffPower > 0) {
+            if (this.timedBuff !== undefined) {
+                this.timedBuff.addDuration(-this.timedBuff.duration);
             }
+
+            this.timedBuff = new TimedBuff(this, 3, this.triggerBuffPower / 5);
+            wizard.addBuff(this.timedBuff);
+            this.triggerBuffPower = 0;
         }
 
+        var previousPower = this.triggerBuffPower;
         super.applyGeneration(resource, generation, deltaTime, wizard);
+        this.triggerBuffPower = previousPower;
     }
 
-    private onSubtractAmount(subtract: boolean) {
-        if (subtract && this.timedBuff !== undefined) {
+    private onSubtractAmount(subtract: number) {
+        if (subtract > 0 && this.timedBuff !== undefined) {
             this.timedBuff.addDuration(-this.timedBuff.duration);
         }
 
-        if (subtract) {
-            this.triggerBuff = true;
+        if (subtract > 0) {
+            this.triggerBuffPower += subtract;
         }
     }
 

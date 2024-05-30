@@ -3,8 +3,14 @@ import { Skill, SkillType } from "./skill";
 import { SpellSource } from "./spell";
 import { WizardDataType } from "./wizard";
 
-export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease, ResourceCapacityBuff, SkillStrengthBuff, DescriptionOnlyBuff }
+export { Buff, AdjustValue, ResourceProductionBuff, SpellPowerBuff, SkillDurationBuff, WizardDataIncrease, ResourceCapacityBuff, SkillStrengthBuff, DescriptionOnlyBuff, AdjustValueType }
 
+enum AdjustValueType
+{
+    Multiply = 0,
+    Add = 1,
+    NotMultipliedAdd = 2,
+}
 class AdjustValue
 {
     constructor (private _baseValue : number) {}
@@ -19,10 +25,36 @@ class AdjustValue
 
     public addValue : number = 0;
 
+    public notMultipliedAddValue : number = 0;
+
     public subtractValue : number = 0;
 
     public get value(): number {
-        return (this._baseValue / this.divisor + this.addValue) * this.multiplier - this.subtractValue;
+        return this.valueAfterMultiplier + this.notMultipliedAddValue - this.subtractValue;
+    }
+    public get valueAfterMultiplier() {
+        return (this._baseValue / this.divisor + this.addValue) * this.multiplier;
+    }
+
+    public get reductionAmount() :number {
+        return (this._baseValue / (1 - this.divisor)) + this.subtractValue;
+    }
+    public adjust(type: AdjustValueType, value: number) {
+        function shouldBeUnreachable(value: never) {}
+        switch (type)
+        {
+            case AdjustValueType.Multiply:
+                this.multiply(value);
+                return;
+            case AdjustValueType.Add:
+                this.add(value);
+                return;
+            case AdjustValueType.NotMultipliedAdd:
+                this.notMultipliedAdd(value);
+                return;
+            default:
+                shouldBeUnreachable(type);
+        }
     }
     public multiply(factor: number) {
         if (factor > 1) {
@@ -36,6 +68,15 @@ class AdjustValue
     public add(value: number) {
         if (value > 0) {
             this.addValue += value;
+        }
+        else {
+            this.subtractValue -= value;
+        }
+    }
+
+    public notMultipliedAdd(value: number) {
+        if (value > 0) {
+            this.notMultipliedAddValue += value;
         }
         else {
             this.subtractValue -= value;
@@ -61,7 +102,7 @@ abstract class Buff {
 
 class ResourceProductionBuff extends Buff {
     public constructor(
-        private _multiply : boolean,
+        private _type : AdjustValueType,
         private _power : number,
         private _resource : ResourceType | undefined = undefined,
         private _resourceKind : ResourceKind | undefined = undefined,
@@ -78,19 +119,25 @@ class ResourceProductionBuff extends Buff {
         if (this._excludeResource !== undefined) {
             productionSource += " except " + new Resource(this._excludeResource).name;
         }
-        return "Increases " + productionSource + " production by " + (this._multiply ? (this._power * 100 - 100).toFixed(2) + "%" : this._power +"/second");
+        return "Increases " + productionSource + " production by " + this.adjustValueDescription();
+    }
+
+    private adjustValueDescription() : string {
+        switch (this._type)
+        {
+            case AdjustValueType.Multiply:
+                return (this._power * 100 - 100).toFixed(2) + "%";
+            case AdjustValueType.Add:
+            case AdjustValueType.NotMultipliedAdd:
+                return this._power + "/second";
+        }
     }
 
     public override adjustResourceProduction(resource: Resource, production : AdjustValue) : void {
         if ((this._resource === undefined || this._resource === resource.type)
              && (this._resourceKind === undefined || this._resourceKind === resource.kind)
              && (this._excludeResource === undefined || this._excludeResource !== resource.type)) {
-            if (this._multiply) {
-                production.multiply(this._power);
-            }
-            else {
-                production.add(this._power);
-            }
+            production.adjust(this._type, this._power)
         }
     }
 }
