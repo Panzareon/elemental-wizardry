@@ -21,6 +21,7 @@ enum ResourceType {
     Cauldron = 15,
     Aqua = 16,
     AquaGem = 17,
+    Water = 18,
 }
 enum ResourceKind {
     Mana = 1,
