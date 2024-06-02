@@ -1,4 +1,5 @@
 import { AdjustValue, AdjustValueType, Buff, ResourceProductionBuff } from "./buff";
+import { SoftCap } from "./helper/softcap";
 import { ITimedBuffSource, TimedBuff, TimedBuffSourceType } from "./timed-buff";
 import { Wizard } from "./wizard";
 
@@ -31,8 +32,18 @@ class ResourceAmount {
     constructor(public resourceType: ResourceType, public amount: number) {}
 }
 
-class AdjustMaxAmount {
+interface IResourceDependentStat {
+    adjustMaxAmount(partial: number): number;
+    adjustResourceProduction(value: AdjustValue) : void;
+}
+
+class AdjustMaxAmount implements IResourceDependentStat {
     constructor(public resource: Resource, public maxAmountMultiplier: number) {}
+    public adjustMaxAmount(partial: number): number {
+        return partial + this.resource.amount * this.maxAmountMultiplier
+    }
+    public adjustResourceProduction(value: AdjustValue): void {
+    }
 }
 
 class Resource {
@@ -41,14 +52,14 @@ class Resource {
     private _amount: number;
     private _maxAmount: number;
     private _generationPerSecond: number;
-    private _adjustMaxAmount: AdjustMaxAmount[];
+    private _ResourceDependentStat: IResourceDependentStat[];
     private _resourceAdjustment: ProductionAdjustment;
     constructor(type: ResourceType) {
         this._type = type;
         this._amount = 0;
         this._maxAmount = this.baseMaxAmount;
         this._generationPerSecond = this.baseGeneration;
-        this._adjustMaxAmount = [];
+        this._ResourceDependentStat = [];
         this._resourceAdjustment = this.getResourceAdjustment();
     }
 
@@ -72,7 +83,7 @@ class Resource {
     }
     public getMaxAmount(wizard: Wizard): number {
         var baseValue = new AdjustValue(this._maxAmount);
-        baseValue.add(this._adjustMaxAmount.reduce((partial, x) => partial + x.resource.amount * x.maxAmountMultiplier, 0));
+        baseValue.add(this._ResourceDependentStat.reduce((partial, x) => x.adjustMaxAmount(partial), 0));
         wizard.buffs.forEach(x => x.adjustResourceCapacity(this, baseValue));
         return baseValue.value;
     }
@@ -80,6 +91,9 @@ class Resource {
         let generation = new AdjustValue(this.baseGenerationPerSecond);
         for (let buff of wizard.buffs) {
             buff.adjustResourceProduction(this, generation);
+        }
+        for (let dependentStat of this._ResourceDependentStat) {
+            dependentStat.adjustResourceProduction(generation);
         }
 
         return generation;
@@ -107,7 +121,7 @@ class Resource {
         for (const unlock of wizard.unlocks) {
             this._maxAmount += unlock.increaseMaxResourceAmount(this.type);
         }
-        this._adjustMaxAmount = wizard.resources.flatMap(x => this.adjustsMaxAmount(x));
+        this._ResourceDependentStat = wizard.resources.flatMap(x => this.adjustsMaxAmount(x));
         this._generationPerSecond = this.baseGeneration;
         for (const unlock of wizard.unlocks) {
             this._generationPerSecond += unlock.increaseResourceGeneration(this.type);
@@ -153,7 +167,7 @@ class Resource {
                 return 0;
         }
     }
-    private adjustsMaxAmount(x: Resource): AdjustMaxAmount[] {
+    private adjustsMaxAmount(x: Resource): IResourceDependentStat[] {
         switch (this.type) {
             case ResourceType.Mana:
                 if (x.type == ResourceType.ManaGem) {
@@ -173,6 +187,9 @@ class Resource {
             case ResourceType.Aqua:
                 if (x.type == ResourceType.AquaGem) {
                     return [new AdjustMaxAmount(x, 10)];
+                }
+                if (x.type == ResourceType.Water) {
+                    return [new AquaProductionFromWater(x)]
                 }
                 break;
         }
@@ -238,6 +255,19 @@ abstract class TimedBuffResourceAdjustment extends ProductionAdjustment implemen
     }
 }
 
+//#region Aqua
+class AquaProductionFromWater implements IResourceDependentStat {
+    private productionSoftCap = new SoftCap(10, 0.25, 0.001).addCap(100, 0.1);
+
+    constructor(private water: Resource){ }
+    public adjustMaxAmount(partial: number): number {
+        return partial;
+    }
+    public adjustResourceProduction(value: AdjustValue): void {
+        value.add(this.productionSoftCap.getValue(this.water.amount));
+    }
+}
+
 class AquaProductionAdjustment extends TimedBuffResourceAdjustment {
     private timedBuff? : TimedBuff;
     private triggerBuffPower = 0;
@@ -298,3 +328,4 @@ class AquaProductionAdjustment extends TimedBuffResourceAdjustment {
         this.timedBuff = wizard.timedBuffs.find(x => x.source === this)
     }
 }
+//#endregion

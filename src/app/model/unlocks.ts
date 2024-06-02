@@ -215,7 +215,7 @@ class Unlocks {
                 break;
             case UnlockType.AquamancyProduction:
                 if (type == ResourceType.Aqua) {
-                    return this.numberActive * Resource.BaseManaGeneration * 0.75;
+                    return this.numberActive * Resource.BaseManaGeneration * 0.5;
                 }
                 break;
         }
