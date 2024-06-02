@@ -45,6 +45,7 @@ class WizardDeserializer {
             this.json.data ?? {},
         );
         wizard.unlocks.forEach(x => x.afterLoad(wizard));
+        wizard.resources.forEach(x => x.productionAdjustment.load(wizard));
         wizard.recalculateStats();
         items.filter(x => x[1]).forEach(x => wizard.attuneItem(x[0]));
         wizard.knowledge.forEach(x => x.getUnlocks(wizard));
