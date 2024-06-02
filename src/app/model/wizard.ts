@@ -438,6 +438,9 @@ class Wizard {
       case UnlockType.AquamancyProduction:
         this.addResourceType(ResourceType.Aqua);
         break;
+      case UnlockType.RainBarrel:
+        this.addResourceType(ResourceType.Water);
+        break;
     }
   }
 

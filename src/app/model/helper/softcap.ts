@@ -27,6 +27,7 @@ class SoftCap {
 
             let delta = cap[0] - previousCapDelta;
             result += delta * previousMultiplier;
+            remainingValue -= delta;
             previousCapDelta += delta;
             previousMultiplier = cap[1];
         }

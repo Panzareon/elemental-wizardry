@@ -27,6 +27,7 @@ enum UnlockType {
     WolfsbaneSeeds = 15,
     EnchantCauldron = 16,
     AquamancyProduction = 17,
+    RainBarrel = 18,
 }
 
 class Unlocks {
@@ -79,6 +80,8 @@ class Unlocks {
                 return "Nature Capacity";
             case UnlockType.ImproveMeditate:
                 return "Improve Meditate";
+            case UnlockType.RainBarrel:
+                return "Rain Barrel";
         }
         return UnlockType[this.type];
     }
@@ -95,6 +98,7 @@ class Unlocks {
             case UnlockType.NatureProduction:
             case UnlockType.EnchantCauldron:
             case UnlockType.AquamancyProduction:
+            case UnlockType.RainBarrel:
                 return 5;
             case UnlockType.ManaCapacity:
             case UnlockType.ChronoCapacity:
@@ -146,6 +150,8 @@ class Unlocks {
                 return "Enchants a cauldron to allow brewing magical potions in it";
             case UnlockType.AquamancyProduction:
                 return "Converts a Mana Production upgrade into 0.1 Aqua generation per second";
+            case UnlockType.RainBarrel:
+                return "Increases water storage by 100 and allows collecting rain"
         }
     }
     public get buffs() : Buff[] {
@@ -193,6 +199,11 @@ class Unlocks {
                     return this.numberActive * 10;
                 }
                 break;
+            case UnlockType.RainBarrel:
+                if (type == ResourceType.Water) {
+                    return this.numberActive * 100;
+                }
+                break;
         }
         return 0;
     }
@@ -216,6 +227,11 @@ class Unlocks {
             case UnlockType.AquamancyProduction:
                 if (type == ResourceType.Aqua) {
                     return this.numberActive * Resource.BaseManaGeneration * 0.5;
+                }
+                break;
+            case UnlockType.RainBarrel:
+                if (type == ResourceType.Water) {
+                    return this.numberActive * 0.1;
                 }
                 break;
         }
@@ -336,6 +352,9 @@ class Unlocks {
                     return [Costs.fromResource(ResourceType.Mana, 40)];
                 }
                 return [Costs.fromResources([new ResourceAmount(ResourceType.AquaGem, targetUnlockNumber), new ResourceAmount(ResourceType.Aqua, targetUnlockNumber * 10)])];
+            case UnlockType.RainBarrel:
+                return [new Costs([new ResourceAmount(ResourceType.Gold, targetUnlockNumber * 50)], [new InfluenceAmount(InfluenceType.ArtisanGuild, targetUnlockNumber * 20, targetUnlockNumber * 100)]),
+                        Costs.fromResource(ResourceType.Wood, 10 * targetUnlockNumber)];
         }
     }
     

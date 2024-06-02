@@ -92,7 +92,9 @@ class Influence {
     private createUnlocks() : InfluenceUnlock[] {
         switch (this.type) {
             case InfluenceType.ArtisanGuild:
-                return [new InfluenceUnlock(50, InfluenceUnlockType.CraftingMentor)];
+                return [new InfluenceUnlock(50, InfluenceUnlockType.CraftingMentor),
+                        new InfluenceUnlock(80, InfluenceUnlockType.RainBarrel)
+                ];
             case InfluenceType.AlchemistGuild:
                 return [new InfluenceUnlock(10, InfluenceUnlockType.AlchemistStore),
                         new InfluenceUnlock(70, InfluenceUnlockType.EnchantCauldron)
@@ -160,6 +162,7 @@ enum InfluenceUnlockType {
     AlchemistStore,
     WizardStore,
     EnchantCauldron,
+    RainBarrel,
 }
 class InfluenceUnlock {
     constructor(public amount: number, public type: InfluenceUnlockType) {}
@@ -174,6 +177,8 @@ class InfluenceUnlock {
                 return "Wizard Store";
             case InfluenceUnlockType.EnchantCauldron:
                 return "Enchant Cauldron Unlock";
+            case InfluenceUnlockType.RainBarrel:
+                return "Rain Barrel unlock";
         }
     }
 
@@ -186,10 +191,13 @@ class InfluenceUnlock {
                 return "Get access to the store";
             case InfluenceUnlockType.EnchantCauldron:
                 return "Learn how to enchant cauldrons to brew magic potions";
+            case InfluenceUnlockType.RainBarrel:
+                return "Allows building Rain Barrels to collect and store rain water";
         }
     }
 
     public unlock(wizard: Wizard) {
+        function shouldBeUnreachable(value: never) {}
         switch (this.type) {
             case InfluenceUnlockType.CraftingMentor:
                 wizard.addAvailableUnlock(UnlockType.CraftingMentor);
@@ -203,6 +211,11 @@ class InfluenceUnlock {
             case InfluenceUnlockType.EnchantCauldron:
                 wizard.addAvailableUnlock(UnlockType.EnchantCauldron);
                 break;
+            case InfluenceUnlockType.RainBarrel:
+                wizard.addAvailableUnlock(UnlockType.RainBarrel);
+                break;
+            default:
+                shouldBeUnreachable(this.type);
         }
     }
     public hasUnlocked(wizard: Wizard) : boolean {
@@ -215,6 +228,8 @@ class InfluenceUnlock {
                 return wizard.location.find(x => x.type == LocationType.WizardStore) !== undefined;
             case InfluenceUnlockType.EnchantCauldron:
                 return wizard.hasUnlockAvailable(UnlockType.EnchantCauldron);
+            case InfluenceUnlockType.RainBarrel:
+                return wizard.hasUnlockAvailable(UnlockType.RainBarrel);
         }
     }
 }

@@ -228,7 +228,7 @@ class Spell implements ITimedBuffSource {
                 wizard.addResource(ResourceType.AquaGem, (1 + (spellPower - 1) / 2));
                 break;
             case SpellType.ConjureWater:
-                wizard.addResource(ResourceType.Water, spellPower);
+                wizard.addResource(ResourceType.Water, spellPower * 5);
                 break;
         }
 
