@@ -107,6 +107,7 @@ interface GardenPlotJson {
     remainingPlantTime: number;
     remainingGrowTime: number;
     remainingHarvestTime: number;
+    water: number;
 }
 interface RecipeMachineJson {
     type: RecipeMachineType;

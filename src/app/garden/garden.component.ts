@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../data.service';
 import { GardenPlot, GardenPlotPlant, GrowState } from '../model/garden-plot';
 import { MatRadioChange } from '@angular/material/radio';
+import { ResourceType } from '../model/resource';
 
 @Component({
   selector: 'app-garden',
@@ -9,6 +10,7 @@ import { MatRadioChange } from '@angular/material/radio';
   styleUrls: ['./garden.component.less']
 })
 export class GardenComponent {
+  private readonly waterAmount = 5;
   constructor(private data: DataService) {
   }
 
@@ -61,5 +63,14 @@ export class GardenComponent {
   }
   public selectedPlantChanged(plot: GardenPlot,event: MatRadioChange) {
     plot.selectSeed(event.value)
+  }
+  public canWater(plot: GardenPlot): boolean {
+    return plot.state === GrowState.Growing && this.data.wizard.hasResource(ResourceType.Water, this.waterAmount);
+  }
+
+  public water(plot: GardenPlot) {
+    if (this.data.wizard.spendResource(ResourceType.Water, this.waterAmount)) {
+      plot.addWater(this.waterAmount);
+    }
   }
 }

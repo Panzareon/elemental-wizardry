@@ -130,6 +130,7 @@ class WizardSerializer {
             remainingPlantTime: x.remainingPlantTime,
             remainingGrowTime: x.remainingGrowTime,
             remainingHarvestTime: x.remainingHarvestTime,
+            water: x.water,
         }
     }
     serializeRecipeMachine(x: RecipeMachine): RecipeMachineJson {

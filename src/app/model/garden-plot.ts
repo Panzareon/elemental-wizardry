@@ -21,11 +21,13 @@ enum GrowState
 
 class GardenPlot implements IActive
 {
+    private readonly WaterDurationMultiplier = 5;
     private _plant : GardenPlotPlant = GardenPlotPlant.Empty;
     private _remainingGrowTime : number = 0;
     private _remainingPlantTime : number = 0;
     private _remainingHarvestTime : number = 0;
     private _state : GrowState = GrowState.Nothing;
+    private _water : number = 0;
     public selectedSeed: GardenPlotPlant = GardenPlotPlant.Mandrake;
     constructor(private _index : number) {
     }
@@ -47,7 +49,12 @@ class GardenPlot implements IActive
     public get remainingHarvestTime() : number {
         return this._remainingHarvestTime;
     }
-
+    public get water() : number {
+        return this._water;
+    }
+    public get maxWater() : number {
+        return 20;
+    }
     public get activeName(): string {
         switch (this.state) {
             case GrowState.Planting:
@@ -83,7 +90,7 @@ class GardenPlot implements IActive
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:
             case GardenPlotPlant.Wolfsbane:
-                return 10;
+                return 2;
             default:
                 console.error("Cannot plant " + this._plant);
                 return 0;
@@ -93,9 +100,9 @@ class GardenPlot implements IActive
     public get growTime(): number {
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:
-                return 2 * 60;
+                return 2.5 * 60;
             case GardenPlotPlant.Wolfsbane:
-                return 1.5 * 60;
+                return 2 * 60;
             default:
                 console.error("Cannot grow " + this._plant);
                 return 0;
@@ -106,7 +113,7 @@ class GardenPlot implements IActive
         switch (this._plant) {
             case GardenPlotPlant.Mandrake:
             case GardenPlotPlant.Wolfsbane:
-                return 15;
+                return 5;
             default:
                 console.error("Cannot harvest " + this._plant);
                 return 0;
@@ -154,11 +161,20 @@ class GardenPlot implements IActive
     }
 
     public update(wizard: Wizard, deltaTime: number) {
+        this._water -= deltaTime / this.WaterDurationMultiplier
+        if (this._water < 0) {
+            this._water = 0;
+        }
         if (this._state != GrowState.Growing) {
             return;
         }
 
         this._remainingGrowTime -= deltaTime;
+
+        if (this._water > 0) {
+            this._remainingGrowTime -= deltaTime;
+        }
+
         if (this._remainingGrowTime <= 0) {
             this._remainingHarvestTime = this.harvestTime;
             this._state = GrowState.Harvesting;
@@ -182,10 +198,17 @@ class GardenPlot implements IActive
         this._plant = GardenPlotPlant.Empty;
     }
 
-    public load(state: GrowState, remainingPlantTime: number, remainingGrowTime: number, remainingHarvestTime: number) {
+    public addWater(amount: number) {
+        this._water += amount;
+        if (this._water > this.maxWater) {
+            this._water = this.maxWater;
+        }
+    }
+    public load(state: GrowState, remainingPlantTime: number, remainingGrowTime: number, remainingHarvestTime: number, water: number) {
         this._state = state;
         this._remainingPlantTime = remainingPlantTime;
         this._remainingGrowTime = remainingGrowTime;
         this._remainingHarvestTime = remainingHarvestTime;
+        this._water = water;
     }
 }

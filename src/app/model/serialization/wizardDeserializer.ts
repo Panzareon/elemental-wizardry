@@ -155,7 +155,7 @@ class WizardDeserializer {
         if (x.type !== GardenPlotPlant.Empty) {
             gardenPlot.plant(x.type);
         }
-        gardenPlot.load(x.state, x.remainingPlantTime, x.remainingGrowTime, x.remainingHarvestTime);
+        gardenPlot.load(x.state, x.remainingPlantTime, x.remainingGrowTime, x.remainingHarvestTime, x.water ?? 0);
         return gardenPlot;
     }
     deserializeRecipeMachine(x: RecipeMachineJson, index: number, recipes: Recipe[]): RecipeMachine {

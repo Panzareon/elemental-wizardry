@@ -1,5 +1,8 @@
 <mat-card class="progress-card stackable-card" *ngFor="let plot of plots">
     <div class="progress" [style.width.%]="getProgress(plot)*100"></div>
+    <div class="water-amount-max" [class.available]="plot.water > 0">
+        <div class="water-amount" [style.height.%]="plot.water/plot.maxWater*100"></div>
+    </div>
     <mat-card-header>
         {{plot.plantName}}
     </mat-card-header>
@@ -20,6 +23,9 @@
     <mat-card-content *ngIf="!showPlanting(plot)">
         <ng-container *ngIf="showHarvest(plot)">
             <mat-button-toggle [checked]="isActive(plot)" (change)="harvest(plot)">Harvest</mat-button-toggle>
+        </ng-container>
+        <ng-container *ngIf="canWater(plot)">
+            <button mat-stroked-button (click)="water(plot)">Water</button>
         </ng-container>
     </mat-card-content>
 </mat-card>
