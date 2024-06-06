@@ -1,19 +1,33 @@
 
-<div *ngFor="let spell of spells" appSpellTooltip [spell]="spell" class="tooltip-wrapper">
-    <button mat-stroked-button (click)="cast(spell, icon)" [disabled]="!canCast(spell)" class="spell">
-        <span class="spell-content">
-            <app-spell-icon [spell]="spell" #icon></app-spell-icon>
-            <div class="description">
-                <div class="name">
-                    {{spell.name}}
+<div class="spells">
+    <div *ngFor="let spell of spells" appSpellTooltip [spell]="spell" class="tooltip-wrapper">
+        <button mat-stroked-button (click)="select(spell)" class="spell">
+            <span class="spell-content">
+                <app-spell-icon [spell]="spell"></app-spell-icon>
+                <div class="description">
+                    <div class="name">
+                        {{spell.name}}
+                    </div>
                 </div>
-                <div class="cost">
-                    <app-resource-cost *ngFor="let cost of spell.cast.baseCost" [cost]="cost"></app-resource-cost>
-                </div>
-                <div class="attunement" [ngClass]="{'disabled' : !hasAttunement(attunement)}" *ngFor="let attunement of spell.getRequiredAttunements()">
-                    {{getName(attunement[0])}} {{getAttunement(attunement[0])}}/{{attunement[1]}}
-                </div>
-            </div>
-        </span>
-    </button>
+            </span>
+        </button>
+    </div>
+</div>
+<div class="spell-description" *ngIf="selectedSpell !== undefined">
+    <div class="name">
+        <app-spell-icon [spell]="selectedSpell" #icon></app-spell-icon>
+        <div class="description">
+            {{selectedSpell.name}} Lvl {{selectedSpell.level}}
+        </div>
+    </div>
+    <div class="cost">
+        <app-resource-cost *ngFor="let cost of selectedSpell.cast.baseCost" [cost]="cost"></app-resource-cost>
+    </div>
+    <mat-card class="exp">
+      <div class="progress" [style.width.%]="selectedSpell.levelUpProgress * 100"></div>
+    </mat-card>
+    {{selectedSpell.description}}
+    <div class="attunement" [ngClass]="{'disabled' : !hasAttunement(attunement)}" *ngFor="let attunement of selectedSpell.getRequiredAttunements()">
+        Requires {{getName(attunement[0])}} {{getAttunement(attunement[0])}}/{{attunement[1]}}
+    </div>
 </div>

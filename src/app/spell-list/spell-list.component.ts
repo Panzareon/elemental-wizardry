@@ -5,22 +5,24 @@ import { SpellIconComponent } from '../spell-icon/spell-icon.component';
 import { WizardDataType } from '../model/wizard';
 
 @Component({
-  selector: 'app-spellbook',
-  templateUrl: './spellbook.component.html',
-  styleUrls: ['./spellbook.component.less']
+  selector: 'app-spell-list',
+  templateUrl: './spell-list.component.html',
+  styleUrls: ['./spell-list.component.less']
 })
-export class SpellbookComponent {
+export class SpellListComponent {
   constructor(private data: DataService) {
   }
-
-  public selectedSpell? : Spell;
 
   public get spells() : Spell[] {
     return this.data.wizard.availableSpells;
   }
 
-  public select(spell: Spell) {
-    this.selectedSpell = spell;
+  public canCast(spell: Spell) : boolean {
+    return spell.cast.type === SpellCastingType.Simple && spell.canCast(this.data.wizard);
+  }
+  public cast(spell: Spell, spellIcon: SpellIconComponent) {
+    spell.castSpell(this.data.wizard);
+    spellIcon.animate();
   }
   public getName(dataType: WizardDataType) {
     return WizardDataType[dataType];

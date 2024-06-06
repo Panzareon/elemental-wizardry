@@ -15,12 +15,14 @@ import { EquipmentComponent } from './equipment/equipment.component';
 import { CompanionsComponent } from './companions/companions.component';
 import { RitualComponent } from './ritual/ritual.component';
 import { StatusComponent } from './status/status.component';
+import { SpellListComponent } from './spell-list/spell-list.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/actions", pathMatch: "full" },
   { path: "actions", component: ActionsComponent },
   { path: "knowledge", component: KnowledgeComponent },
   { path: "spellbook", component: SpellbookComponent },
+  { path: "spell-list", component: SpellListComponent },
   { path: "store", component: StoreComponent },
   { path: "unlocks", component: UnlocksComponent },
   { path: "influence", component: InfluenceComponent },

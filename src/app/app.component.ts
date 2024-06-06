@@ -20,6 +20,7 @@ export class AppComponent {
       ["Character", [
         ["actions", "Actions", true],
         ["knowledge", "Knowledge", true],
+        ["spell-list", "Spells", false],
         ["spellbook", "Spellbook", false],
         ["equipment", "Equipment", false],
         ["companions", "Companions", false],
@@ -51,9 +52,10 @@ export class AppComponent {
   }
   public get tabs() : [string,[string, string, boolean][]][] {
     this._tabs[0][1][2][2] ||= this.hasSpell;
-    this._tabs[0][1][3][2] ||= this.hasItems;
-    this._tabs[0][1][4][2] ||= this.hasCompanions;
-    this._tabs[0][1][5][2] ||= this.hasUnlocks;
+    this._tabs[0][1][3][2] ||= this.hasSpell;
+    this._tabs[0][1][4][2] ||= this.hasItems;
+    this._tabs[0][1][5][2] ||= this.hasCompanions;
+    this._tabs[0][1][6][2] ||= this.hasUnlocks;
     this._tabs[1][1][0][2] ||= this.hasGardenPlots;
     this._tabs[1][1][1][2] ||= this.hasRecipe;
     this._tabs[1][1][2][2] ||= this.hasRitualSpell;
