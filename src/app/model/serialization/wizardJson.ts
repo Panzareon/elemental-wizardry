@@ -42,6 +42,7 @@ interface ResourceJson {
 interface SpellJson {
     type: SpellType;
     level: number;
+    castLevel: number;
     exp: number;
     numberCasts: number;
     available: boolean;

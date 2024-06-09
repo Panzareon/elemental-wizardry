@@ -85,7 +85,7 @@ class WizardDeserializer {
     }
     deserializeSpell(x: SpellJson): Spell {
         let spell = new Spell(x.type);
-        spell.load(x.level, x.exp, x.numberCasts ?? x.ritual?.numberCasts ?? 0, x.available ?? true, x.levelAfterRewind ?? 0);
+        spell.load(x.level, x.exp, x.numberCasts ?? x.ritual?.numberCasts ?? 0, x.available ?? true, x.levelAfterRewind ?? 0, x.castLevel ?? x.level);
         if (x.ritual !== undefined && spell.cast.ritualCast !== undefined) {
             spell.cast.ritualCast.load(x.ritual.channelProgress, x.ritual.isChanneling, x.ritual.isPrepared)
         }

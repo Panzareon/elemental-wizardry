@@ -48,9 +48,11 @@ class Spell implements ITimedBuffSource {
     private _numberCasts : number = 0;
     private _available: boolean = true;
     private _levelAfterRewind: number = 0;
+    private _castLevel: number;
     constructor(type: SpellType) {
         this._type = type;
         this._level = 1;
+        this._castLevel = this._level;
         this._exp = 0;
         this._cast = this.getCastDefinition();
         this._source = this.getSource();
@@ -89,6 +91,10 @@ class Spell implements ITimedBuffSource {
         return this._level;
     }
 
+    public get castLevel() : number {
+        return this._castLevel;
+    }
+
     public get levelAfterRewind() : number {
         return this._levelAfterRewind;
     }
@@ -111,11 +117,11 @@ class Spell implements ITimedBuffSource {
     }
 
     public get costMultiplier() {
-        return Math.pow(1.5, this._level - 1);
+        return Math.pow(1.5, this._castLevel - 1);
     }
 
     public get expGainMultiplier() {
-        return Math.pow(3, this._level - 1);;
+        return Math.pow(3, this._castLevel - 1);;
     }
 
     public get levelUpProgress() {
@@ -160,9 +166,17 @@ class Spell implements ITimedBuffSource {
     }
 
     public getSpellPower(wizard: Wizard) {
-        return Math.pow(1.3, this._level - 1) * wizard.getSpellPower(this._source);
+        return Math.pow(1.3, this._castLevel - 1) * wizard.getSpellPower(this._source);
     }
 
+    setCastLevel(castLevel: number) {
+        if (castLevel < 1 || castLevel > this.level || castLevel%1 !== 0) {
+            throw new Error(castLevel + " is not a valid level to cast the spell at");
+        }
+
+        this._castLevel = castLevel;
+        this.refreshCosts();
+    }
     public castSpell(wizard: Wizard) {
         if (this.cast.type !== SpellCastingType.Simple) {
             return;
@@ -304,6 +318,9 @@ class Spell implements ITimedBuffSource {
         if (this._exp >= lvlUpExp) {
             this._exp -= lvlUpExp;
             this._level++;
+            if (this.castLevel === this._level - 1) {
+                this._castLevel = this._level;
+            }
             this.refreshCosts();
         }
     }
@@ -326,8 +343,9 @@ class Spell implements ITimedBuffSource {
         }
     }
 
-    public load(level: number, exp: number, numberCasts : number, available : boolean, levelAfterRewind: number) {
+    public load(level: number, exp: number, numberCasts : number, available : boolean, levelAfterRewind: number, castLevel: number) {
         this._level = level;
+        this._castLevel = castLevel;
         this._exp = exp;
         this._numberCasts = numberCasts;
         this._available = available;
@@ -345,6 +363,7 @@ class Spell implements ITimedBuffSource {
             this._level = this._levelAfterRewind;
         }
         this._levelAfterRewind = this._level;
+        this._castLevel = this._level;
         this._exp = 0;
         this._cast = this.getCastDefinition();
         this._available = false;

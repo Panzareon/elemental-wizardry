@@ -23,6 +23,19 @@
     <div class="cost">
         <app-resource-cost *ngFor="let cost of selectedSpell.cast.baseCost" [cost]="cost"></app-resource-cost>
     </div>
+    <div>
+        <button mat-stroked-button (click)="cast(selectedSpell, icon)" [disabled]="!canCast(selectedSpell)" class="spell" *ngIf="castableSpell(selectedSpell)">
+            Cast
+        </button>
+        <a routerLink="/ritual" *ngIf="isRitual(selectedSpell)">Ritual</a>
+    </div>
+    <div class="adjust-cast-level">
+        Cast with Level:
+        <button mat-stroked-button (click)="adjustLevel(selectedSpell, -1)" [disabled]="selectedSpell.castLevel <= 1">-</button>
+        {{selectedSpell.castLevel}}
+        <button mat-stroked-button (click)="adjustLevel(selectedSpell, +1)" [disabled]="selectedSpell.castLevel >= selectedSpell.level">+</button>
+
+    </div>
     <mat-card class="exp">
       <div class="progress" [style.width.%]="selectedSpell.levelUpProgress * 100"></div>
     </mat-card>

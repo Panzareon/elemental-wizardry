@@ -65,6 +65,7 @@ class WizardSerializer {
         return {
             type: x.type,
             level: x.level,
+            castLevel: x.castLevel,
             exp: x.exp,
             numberCasts: x.numberCasts,
             available: x.available,
