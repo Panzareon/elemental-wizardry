@@ -4,6 +4,6 @@
     </mat-expansion-panel-header>
     <div *ngFor="let offer of store.offers" class="offer">
         <span>{{offer.result.name}}</span>
-        <button mat-stroked-button (click)="buy(offer)" [disabled]="!canAfford(offer)">Buy ({{offer.resourceCost}}x {{getName(offer.fromResource)}})</button>
+        <button mat-stroked-button (click)="buy(offer)" [disabled]="!canAfford(offer)">Buy (<app-costs [cost]="offer.costs" ></app-costs>)</button>
     </div>
 </mat-expansion-panel>

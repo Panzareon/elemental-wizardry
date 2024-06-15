@@ -16,17 +16,13 @@ export class StoreComponent {
     return this.data.wizard.location.filter(x => x.offers.length > 0);
   }
 
-  public getName(resourceType: ResourceType) {
-    return new Resource(resourceType).name;
-  }
-
   public buy(offer: Offer){
-    if (this.data.wizard.spendResource(offer.fromResource, offer.resourceCost)) {
+    if (offer.costs.spend(this.data.wizard)) {
       offer.result.add(this.data.wizard);
     }
   }
 
   public canAfford(offer: Offer) {
-    return this.data.wizard.hasResource(offer.fromResource, offer.resourceCost);
+    return offer.costs.canSpend(this.data.wizard);
   }
 }

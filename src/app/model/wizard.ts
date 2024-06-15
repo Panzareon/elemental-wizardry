@@ -581,4 +581,5 @@ enum WizardDataType {
   ChronomancyAttunement = 1,
   NatureAttunement = 2,
   NumberRewinds = 3,
+  AquaAttunement = 4,
 }

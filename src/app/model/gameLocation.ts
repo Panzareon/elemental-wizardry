@@ -1,10 +1,11 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { Buff } from "./buff";
+import { Costs } from "./costs";
 import { ExploreAction, ExploreActionType } from "./exploreAction";
 import { InfluenceType } from "./influence";
 import { Item, ItemType } from "./item";
 import { KnowledgeType } from "./knowledge";
-import { Resource, ResourceType } from "./resource";
+import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { UnlockType } from "./unlocks";
 import { EventInfo, EventInfoType, Wizard } from "./wizard";
@@ -21,15 +22,11 @@ enum LocationType {
 }
 
 class Offer {
-    constructor(private _fromResource: ResourceType, private _resourceCost: number, private _result: IOfferResult) {
+    constructor(private _costs: Costs, private _result: IOfferResult) {
     }
 
-    public get fromResource() {
-        return this._fromResource;
-    }
-
-    public get resourceCost() {
-        return this._resourceCost;
+    public get costs() {
+        return this._costs;
     }
 
     public get result() : IOfferResult {
@@ -407,17 +404,22 @@ class GameLocation {
     generateOffers(): Offer[] {
         switch (this.type) {
             case LocationType.Store:
-                return [new Offer(ResourceType.Gold, 50, new OfferResourceResult(ResourceType.Gemstone))];
+                return [new Offer(Costs.fromResource(ResourceType.Gold, 50), new OfferResourceResult(ResourceType.Gemstone))];
             case LocationType.AlchemistStore:
                 return [
-                    new Offer(ResourceType.Gold, 10, new OfferResourceResult(ResourceType.MandrakeRoot)),
-                    new Offer(ResourceType.Gold, 50, new OfferResourceResult(ResourceType.WolfsbaneRoot)),
-                    new Offer(ResourceType.Gold, 100, new OfferItemResult(ItemType.SmallManaPotion, 1)),
-                    new Offer(ResourceType.Gold, 100, new OfferResourceResult(ResourceType.Cauldron)),
+                    new Offer(Costs.fromResource(ResourceType.Gold, 10), new OfferResourceResult(ResourceType.MandrakeRoot)),
+                    new Offer(Costs.fromResource(ResourceType.Gold, 50), new OfferResourceResult(ResourceType.WolfsbaneRoot)),
+                    new Offer(Costs.fromResource(ResourceType.Gold, 100), new OfferItemResult(ItemType.SmallManaPotion, 1)),
+                    new Offer(Costs.fromResource(ResourceType.Gold, 100), new OfferResourceResult(ResourceType.Cauldron)),
                 ];
             case LocationType.WizardStore:
                 return [
-                    new Offer(ResourceType.Gold, 250, new OfferItemResult(ItemType.ChronomancyWand, 1)),
+                    new Offer(Costs.fromResources([new ResourceAmount(ResourceType.Gold, 250), new ResourceAmount(ResourceType.ChronoGem, 1)]),
+                     new OfferItemResult(ItemType.ChronomancyWand, 1)),
+                    new Offer(Costs.fromResources([new ResourceAmount(ResourceType.Gold, 250), new ResourceAmount(ResourceType.NatureGem, 1)]),
+                     new OfferItemResult(ItemType.NatureWand, 1)),
+                    new Offer(Costs.fromResources([new ResourceAmount(ResourceType.Gold, 250), new ResourceAmount(ResourceType.AquaGem, 1)]),
+                     new OfferItemResult(ItemType.AquaWand, 1)),
                 ];
             case LocationType.Forest:
             case LocationType.Village:

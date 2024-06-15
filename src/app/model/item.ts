@@ -16,6 +16,8 @@ enum ItemType
     SmallManaPotion = 4,
     ChronomancyWand = 5,
     ManaPotion = 6,
+    NatureWand = 7,
+    AquaWand = 8,
 }
 enum ItemUsageType {
     Equip = 0,
@@ -45,6 +47,8 @@ class Item
             case ItemType.StoneAxe:
             case ItemType.WoodenWand:
             case ItemType.ChronomancyWand:
+            case ItemType.NatureWand:
+            case ItemType.AquaWand:
                 return ItemUsageType.Equip;
             case ItemType.SmallManaPotion:
             case ItemType.ManaPotion:
@@ -72,6 +76,10 @@ class Item
                 return "Chronomancy Wand";
             case ItemType.ManaPotion:
                 return "Mana Potion";
+            case ItemType.NatureWand:
+                return "Nature Wand";
+            case ItemType.AquaWand:
+                return "Aqua Wand";
         }
     }
     public get buffs(): Buff[] {
@@ -113,6 +121,18 @@ class Item
                     new SpellPowerBuff(1.5 + (this._level - 1) * 0.05),
                     new SpellPowerBuff(1.5 + (this._level - 1) * 0.05, SpellSource.Chronomancy),
                     new WizardDataIncrease(WizardDataType.ChronomancyAttunement, 1)
+                ];
+            case ItemType.NatureWand:
+                return [
+                    new SpellPowerBuff(1.5 + (this._level - 1) * 0.05),
+                    new SpellPowerBuff(1.5 + (this._level - 1) * 0.05, SpellSource.Nature),
+                    new WizardDataIncrease(WizardDataType.NatureAttunement, 1)
+                ];
+            case ItemType.AquaWand:
+                return [
+                    new SpellPowerBuff(1.5 + (this._level - 1) * 0.05),
+                    new SpellPowerBuff(1.5 + (this._level - 1) * 0.05, SpellSource.Aqua),
+                    new WizardDataIncrease(WizardDataType.AquaAttunement, 1)
                 ];
         }
     }
@@ -164,6 +184,8 @@ class ItemTimedBuffSource implements ITimedBuffSource {
             case ItemType.IronAxe:
             case ItemType.IronPickaxe:
             case ItemType.ChronomancyWand:
+            case ItemType.NatureWand:
+            case ItemType.AquaWand:
                 throw new Error("Item shouldn't have timed buff.");
         }
     }

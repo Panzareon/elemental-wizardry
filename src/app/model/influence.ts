@@ -86,6 +86,7 @@ class Influence {
                     new InfluenceDonation(this, ResourceType.ManaGem, 5, 100),
                     new InfluenceDonation(this, ResourceType.ChronoGem, 10, 200),
                     new InfluenceDonation(this, ResourceType.NatureGem, 10, 200),
+                    new InfluenceDonation(this, ResourceType.AquaGem, 10, 200),
                 ]
         }
     }
