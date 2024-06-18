@@ -3,7 +3,7 @@ import { GameLocation } from "../gameLocation";
 import { GardenPlot, GardenPlotPlant } from "../garden-plot";
 import { Influence } from "../influence";
 import { Item, ItemTimedBuffSource } from "../item";
-import { Knowledge } from "../knowledge";
+import { Knowledge, KnowledgeStudyType } from "../knowledge";
 import { Recipe } from "../recipe";
 import { Resource, TimedBuffResourceAdjustment } from "../resource";
 import { Skill } from "../skill";
@@ -56,7 +56,7 @@ class WizardDeserializer {
         if (this.json.actives !== undefined) {
             for (const serializedActive of this.json.actives) {
                 const active = this.findActive(wizard, serializedActive);
-                if (active !== null) {
+                if (active !== null && active !== undefined) {
                     wizard.setActive(active);
                 }
             }
@@ -71,16 +71,14 @@ class WizardDeserializer {
                 return wizard.spells.find(x => x.type === serializedActive[1])?.cast.ritualCast ?? null;
             case ActiveType.Skill:
                 return wizard.skills.find(x => x.type === serializedActive[1]) ?? null;
-            case ActiveType.KnowledgeTraining:
-                return wizard.knowledge.find(x => x.type === serializedActive[1])?.trainingActive ?? null;
-            case ActiveType.KnowledgeStudy:
-                return wizard.knowledge.find(x => x.type === serializedActive[1])?.studyActive ?? null;
             case ActiveType.GardenPlot:
                 return wizard.gardenPlots.length > serializedActive[1] ? wizard.gardenPlots[serializedActive[1]] : null;
             case ActiveType.RecipeMachine:
                 return wizard.recipeMachines.length > serializedActive[1] ? wizard.recipeMachines[serializedActive[1]] : null;
             case ActiveType.ExploreAction:
                 return wizard.location.find(x => x.type === serializedActive[1][0])?.exploreAction?.options.find(x => x instanceof ExploreActionDuration && (x as ExploreActionDuration).uniqueId === serializedActive[1][1]) as ExploreActionDuration;
+            case ActiveType.KnowledgeStudy:
+                return wizard.knowledge.find(x => x.type === serializedActive[1][0])?.studyActives.find(x => x.studyType === serializedActive[1][1]) ?? null;
         }
     }
     deserializeSpell(x: SpellJson): Spell {

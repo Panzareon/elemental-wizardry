@@ -8,7 +8,7 @@ import { SpellType } from "./spell";
 import { UnlockType } from "./unlocks";
 import { Wizard, WizardDataType } from "./wizard";
 
-export { Knowledge, KnowledgeType, IKnowledgeAction }
+export { Knowledge, KnowledgeType, IKnowledgeAction, KnowledgeStudyType }
 
 enum KnowledgeType {
     MagicKnowledge = 0,
@@ -20,12 +20,16 @@ enum KnowledgeType {
     AquamancyKnowledge = 6,
 }
 
+enum KnowledgeStudyType {
+    Study = 0,
+    Training = 1,
+}
+
 class Knowledge {
     private _type: KnowledgeType;
     private _level: number;
     private _exp: number;
-    private _studyActive: IActive;
-    private _trainingActive?: IActive;
+    private _studyActives: IKnowledgeAction[] = [];
     private _expMultiplier: number = 1;
     private _previousLevel = 0;
     private _available = true;
@@ -34,9 +38,9 @@ class Knowledge {
         this._type = type;
         this._level = 1;
         this._exp = 0;
-        this._studyActive = new KnowledgeStudy(this);
+        this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.Study));
         if (type != KnowledgeType.Potioncraft) {
-            this._trainingActive = new KnowledgeTraining(this);
+            this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.Training));
         }
     }
 
@@ -83,12 +87,8 @@ class Knowledge {
         return Math.pow(this.level, 2) * 10;
     }
 
-    get studyActive() : IActive {
-        return this._studyActive;
-    }
-
-    get trainingActive() : IActive | undefined {
-        return this._trainingActive;
+    get studyActives() : IKnowledgeAction[] {
+        return this._studyActives;
     }
 
     get levelUpProgress() : number {
@@ -244,51 +244,54 @@ class Knowledge {
 }
 interface IKnowledgeAction extends IActive {
     get knowledge() : Knowledge;
+    get name() : string;
+    get studyType() : KnowledgeStudyType;
 }
 class KnowledgeStudy implements IKnowledgeAction {
-    constructor(private _knowledge: Knowledge) {
+    constructor(private _knowledge: Knowledge, private _study: KnowledgeStudyType) {
     }
     public get knowledge(): Knowledge {
         return this._knowledge;
     }
+    get name(): string {
+        switch (this._study) {
+            case KnowledgeStudyType.Study:
+                return "Study";
+            case KnowledgeStudyType.Training:
+                return "Training";
+        }
+    }
+    public get studyType(): KnowledgeStudyType {
+        return this._study;
+    }
     get activeName(): string {
-        return "Study " + this._knowledge.name;
+        switch (this._study) {
+            case KnowledgeStudyType.Study:
+                return "Study " + this._knowledge.name;
+            case KnowledgeStudyType.Training:
+                return "Train " + this._knowledge.name;
+        }
     }
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
     }
     public get activeBuffs(): Buff[] {
-        return [];
+        switch (this._study) {
+            case KnowledgeStudyType.Study:
+                return [];
+            case KnowledgeStudyType.Training:
+                return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -1 * this._knowledge.level / 2, this.requiredResource)];
+        }
     }
     public get serialize(): [ActiveType, any] {
-        return [ActiveType.KnowledgeStudy, this._knowledge.type];
+        return [ActiveType.KnowledgeStudy, [this._knowledge.type, this._study]];
     }
     activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
-        this.knowledge.gainExp(deltaTime, wizard);
-        return ActiveActivateResult.Ok;
-    }
-    deactivate(wizard: Wizard): void {
-    }
-}
-class KnowledgeTraining implements IKnowledgeAction {
-    constructor(private _knowledge: Knowledge) {
-    }
-    public get knowledge(): Knowledge {
-        return this._knowledge;
-    }
-    get activeName(): string {
-        return "Train " + this._knowledge.name;
-    }
-    get activeProgress(): number {
-        return this._knowledge.levelUpProgress;
-    }
-    get activeBuffs(): Buff[] {
-        return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -1 * this._knowledge.level / 2, this.requiredResource)];
-    }
-    public get serialize(): [ActiveType, any] {
-        return [ActiveType.KnowledgeTraining, this._knowledge.type];
-    }
-    activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
+        if (this.requiredResource === undefined) {
+            this.knowledge.gainExp(deltaTime, wizard);
+            return ActiveActivateResult.Ok;
+        }
+
         var resource = wizard.getResource(this.requiredResource);
         if (resource !== undefined && resource.amount > 0) {
             this.knowledge.gainExp(deltaTime * 5, wizard);
@@ -305,21 +308,26 @@ class KnowledgeTraining implements IKnowledgeAction {
     }
     deactivate(wizard: Wizard): void {
     }
-    get requiredResource() : ResourceType {
-        switch (this.knowledge.type) {
-            case KnowledgeType.MagicKnowledge:
-                return ResourceType.Mana;
-            case KnowledgeType.ChronomancyKnowledge:
-                return ResourceType.Chrono;
-            case KnowledgeType.CraftingKnowledge:
-                return ResourceType.Mana;
-            case KnowledgeType.NatureMagic:
-            case KnowledgeType.Herbalism:
-                return ResourceType.Nature;
-            case KnowledgeType.AquamancyKnowledge:
-                return ResourceType.Aqua;
-            case KnowledgeType.Potioncraft:
-                throw new Error("Cannot train " + KnowledgeType[this._knowledge.type]);
+    get requiredResource() : ResourceType|undefined {
+        switch (this._study) {
+            case KnowledgeStudyType.Study:
+                return undefined;
+            case KnowledgeStudyType.Training:
+                switch (this.knowledge.type) {
+                    case KnowledgeType.MagicKnowledge:
+                        return ResourceType.Mana;
+                    case KnowledgeType.ChronomancyKnowledge:
+                        return ResourceType.Chrono;
+                    case KnowledgeType.CraftingKnowledge:
+                        return ResourceType.Mana;
+                    case KnowledgeType.NatureMagic:
+                    case KnowledgeType.Herbalism:
+                        return ResourceType.Nature;
+                    case KnowledgeType.AquamancyKnowledge:
+                        return ResourceType.Aqua;
+                    case KnowledgeType.Potioncraft:
+                        throw new Error("Cannot train " + KnowledgeType[this._knowledge.type]);
+                }
         }
     }
 }

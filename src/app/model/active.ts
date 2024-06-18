@@ -12,12 +12,11 @@ enum ActiveActivateResult
 enum ActiveType {
     Ritual = 0,
     Skill = 1,
-    KnowledgeTraining = 2,
-    KnowledgeStudy = 3,
     GardenPlot = 4,
     ExploreLocation = 5,
     RecipeMachine = 6,
     ExploreAction = 7,
+    KnowledgeStudy = 8,
 }
 
 interface IActive {

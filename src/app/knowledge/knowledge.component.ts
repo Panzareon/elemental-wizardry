@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Knowledge } from '../model/knowledge';
+import { IKnowledgeAction, Knowledge } from '../model/knowledge';
 import { DataService } from '../data.service';
 
 @Component({
@@ -15,33 +15,15 @@ export class KnowledgeComponent {
     return this.data.wizard.availableKnowledge;
   }
 
-  toggleStudy(knowledge: Knowledge) {
-    if (this.isStudyActive(knowledge)) {
-      this.data.wizard.setInactive(knowledge.studyActive);
+  toggleStudy(knowledgeAction: IKnowledgeAction) {
+    if (this.isStudyActive(knowledgeAction)) {
+      this.data.wizard.setInactive(knowledgeAction);
     }
     else {
-      this.data.wizard.setActive(knowledge.studyActive);
+      this.data.wizard.setActive(knowledgeAction);
     }
   }
-  isStudyActive(knowledge: Knowledge) {
-    return this.data.wizard.active.includes(knowledge.studyActive);
-  }
-
-  toggleTraining(knowledge: Knowledge) {
-    if (knowledge.trainingActive === undefined) {
-      return;
-    }
-    if (this.isTrainingActive(knowledge)) {
-      this.data.wizard.setInactive(knowledge.trainingActive);
-    }
-    else {
-      this.data.wizard.setActive(knowledge.trainingActive);
-    }
-  }
-  isTrainingActive(knowledge: Knowledge) : boolean {
-    if (knowledge.trainingActive === undefined) {
-      return false;
-    }
-    return this.data.wizard.active.includes(knowledge.trainingActive);
+  isStudyActive(knowledgeAction: IKnowledgeAction) {
+    return this.data.wizard.active.includes(knowledgeAction);
   }
 }
