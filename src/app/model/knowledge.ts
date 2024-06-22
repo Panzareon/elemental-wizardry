@@ -23,6 +23,7 @@ enum KnowledgeType {
 enum KnowledgeStudyType {
     Study = 0,
     Training = 1,
+    StudyScroll = 2,
 }
 
 class Knowledge {
@@ -42,6 +43,7 @@ class Knowledge {
         if (type != KnowledgeType.Potioncraft) {
             this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.Training));
         }
+        this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.StudyScroll))
     }
 
     public get type() : KnowledgeType {
@@ -246,6 +248,7 @@ interface IKnowledgeAction extends IActive {
     get knowledge() : Knowledge;
     get name() : string;
     get studyType() : KnowledgeStudyType;
+    isAvaliable(wizard: Wizard) : boolean;
 }
 class KnowledgeStudy implements IKnowledgeAction {
     constructor(private _knowledge: Knowledge, private _study: KnowledgeStudyType) {
@@ -259,6 +262,8 @@ class KnowledgeStudy implements IKnowledgeAction {
                 return "Study";
             case KnowledgeStudyType.Training:
                 return "Training";
+            case KnowledgeStudyType.StudyScroll:
+                return "Study Scroll";
         }
     }
     public get studyType(): KnowledgeStudyType {
@@ -270,48 +275,70 @@ class KnowledgeStudy implements IKnowledgeAction {
                 return "Study " + this._knowledge.name;
             case KnowledgeStudyType.Training:
                 return "Train " + this._knowledge.name;
+            case KnowledgeStudyType.StudyScroll:
+                return "Study " + this._knowledge.name + " with Scrolls";
         }
     }
     get activeProgress(): number {
         return this._knowledge.levelUpProgress;
     }
     public get activeBuffs(): Buff[] {
+        if (this.requiredResource === null) {
+            return [];
+        }
         switch (this._study) {
             case KnowledgeStudyType.Study:
                 return [];
             case KnowledgeStudyType.Training:
                 return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -1 * this._knowledge.level / 2, this.requiredResource)];
+            case KnowledgeStudyType.StudyScroll:
+                return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -0.25, this.requiredResource)];
         }
     }
     public get serialize(): [ActiveType, any] {
         return [ActiveType.KnowledgeStudy, [this._knowledge.type, this._study]];
     }
     activate(wizard: Wizard, deltaTime: number): ActiveActivateResult {
-        if (this.requiredResource === undefined) {
-            this.knowledge.gainExp(deltaTime, wizard);
-            return ActiveActivateResult.Ok;
-        }
-
-        var resource = wizard.getResource(this.requiredResource);
-        if (resource !== undefined && resource.amount > 0) {
-            this.knowledge.gainExp(deltaTime * 5, wizard);
-            return ActiveActivateResult.Ok;
-        }
-        else {
-            if (resource?.kind === ResourceKind.Mana)
-            {
-                return ActiveActivateResult.OutOfMana;
+        if (this.requiredResource !== null) {
+            var resource = wizard.getResource(this.requiredResource);
+            if (resource !== undefined && resource.amount > 0) {
             }
-
-            return ActiveActivateResult.CannotContinue;
+            else {
+                if (resource?.kind === ResourceKind.Mana)
+                {
+                    return ActiveActivateResult.OutOfMana;
+                }
+    
+                return ActiveActivateResult.CannotContinue;
+            }
         }
+
+        this.knowledge.gainExp(deltaTime * this.expMultiplier, wizard);
+        return ActiveActivateResult.Ok;
     }
     deactivate(wizard: Wizard): void {
     }
-    get requiredResource() : ResourceType|undefined {
+    isAvaliable(wizard: Wizard): boolean {
+        if (this.requiredResource === null) {
+            return true;
+        }
+
+        return wizard.hasResource(this.requiredResource, 0);
+    }
+    private get expMultiplier(): number{
+        switch (this._study){
+            case KnowledgeStudyType.Study:
+                return 1;
+            case KnowledgeStudyType.Training:
+                return 5;
+            case KnowledgeStudyType.StudyScroll:
+                return 4;
+        }
+    }
+    get requiredResource() : ResourceType|null {
         switch (this._study) {
             case KnowledgeStudyType.Study:
-                return undefined;
+                return null;
             case KnowledgeStudyType.Training:
                 switch (this.knowledge.type) {
                     case KnowledgeType.MagicKnowledge:
@@ -328,6 +355,8 @@ class KnowledgeStudy implements IKnowledgeAction {
                     case KnowledgeType.Potioncraft:
                         throw new Error("Cannot train " + KnowledgeType[this._knowledge.type]);
                 }
+            case KnowledgeStudyType.StudyScroll:
+                return ResourceType.Scroll;
         }
     }
 }

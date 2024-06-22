@@ -6,9 +6,11 @@
             {{knowledge.name}} lvl{{knowledge.level}}
         </mat-card-header>
         <mat-card-content>
-            <mat-button-toggle [checked]="isStudyActive(knowledgeAction)" (change)="toggleStudy(knowledgeAction)" *ngFor="let knowledgeAction of knowledge.studyActives">
-                {{knowledgeAction.name}}
-            </mat-button-toggle>
+            <ng-container  *ngFor="let knowledgeAction of knowledge.studyActives">
+                <mat-button-toggle [checked]="isStudyActive(knowledgeAction)" (change)="toggleStudy(knowledgeAction)" *ngIf="isAvailable(knowledgeAction)">
+                    {{knowledgeAction.name}}
+                </mat-button-toggle>
+            </ng-container>
         </mat-card-content>
     </mat-card>
 </div>

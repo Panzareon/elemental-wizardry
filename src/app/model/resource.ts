@@ -23,6 +23,7 @@ enum ResourceType {
     Aqua = 16,
     AquaGem = 17,
     Water = 18,
+    Scroll = 19,
 }
 enum ResourceKind {
     Mana = 1,
@@ -152,6 +153,8 @@ class Resource {
                 return 100;
             case ResourceType.MandrakeRoot:
             case ResourceType.WolfsbaneRoot:
+                return 100;
+            case ResourceType.Scroll:
                 return 100;
             default:
                 return 10;

@@ -26,4 +26,7 @@ export class KnowledgeComponent {
   isStudyActive(knowledgeAction: IKnowledgeAction) {
     return this.data.wizard.active.includes(knowledgeAction);
   }
+  isAvailable(action: IKnowledgeAction): boolean {
+    return action.isAvaliable(this.data.wizard);
+  }
 }
