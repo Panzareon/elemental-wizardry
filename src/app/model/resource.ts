@@ -300,7 +300,7 @@ class AquaProductionAdjustment extends TimedBuffResourceAdjustment {
     }
 
     protected override applyGeneration(resource: Resource, generation: AdjustValue, deltaTime: number, wizard: Wizard): void {
-        this.onSubtractAmount(generation.subtractValue);
+        this.onSubtractAmount(generation.subtractValue * deltaTime);
 
         if (generation.subtractValue == 0 && this.triggerBuffPower > 0) {
             if (this.timedBuff !== undefined) {
