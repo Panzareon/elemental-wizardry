@@ -7,7 +7,7 @@ import { Item, ItemType } from "./item";
 import { KnowledgeType } from "./knowledge";
 import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { SkillType } from "./skill";
-import { UnlockType } from "./unlocks";
+import { UnlockGroup, UnlockType } from "./unlocks";
 import { EventInfo, EventInfoType, Wizard } from "./wizard";
 
 export { GameLocation, Offer, LocationType, ExploreResultType, ExploreResult }
@@ -266,7 +266,7 @@ class ExploreResult {
                 return [(wizard.getKnowledgeLevel(KnowledgeType.MagicKnowledge) ?? 0) >= 4, "Need Magic Knowledge level 4"];
             case ExploreResultType.AlchemistGuild:
             case ExploreResultType.Forest:
-                return [wizard.unlocks.some(x => x.type === UnlockType.ChronomancyMentor || x.type == UnlockType.CraftingMentor), "Need a Mentor"];
+                return [wizard.unlocks.some(x => (x.group & UnlockGroup.Mentor) === UnlockGroup.Mentor), "Need a Mentor"];
             default:
                 return [true, ""];
         }

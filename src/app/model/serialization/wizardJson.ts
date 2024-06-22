@@ -62,6 +62,8 @@ interface KnowledgeJson {
     previousLevel: number;
     available: boolean;
     levelAfterRewind: number;
+    insight: number;
+    insightProgress: number;
 }
 interface BuffJson {
     source: BuffSourceJson;

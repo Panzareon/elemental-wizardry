@@ -5,7 +5,7 @@ import { RecipeType } from "./recipe";
 import { Resource, ResourceKind, ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { SpellType } from "./spell";
-import { UnlockType } from "./unlocks";
+import { UnlockGroup, UnlockType } from "./unlocks";
 import { Wizard, WizardDataType } from "./wizard";
 
 export { Knowledge, KnowledgeType, IKnowledgeAction, KnowledgeStudyType }
@@ -24,6 +24,7 @@ enum KnowledgeStudyType {
     Study = 0,
     Training = 1,
     StudyScroll = 2,
+    TrainWithMentor = 3,
 }
 
 class Knowledge {
@@ -35,15 +36,16 @@ class Knowledge {
     private _previousLevel = 0;
     private _available = true;
     private _levelAfterRewind: number = 0;
+    private _insight: number = 0;
+    private _insightProgress: number = 0;
     constructor(type: KnowledgeType) {
         this._type = type;
         this._level = 1;
         this._exp = 0;
         this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.Study));
-        if (type != KnowledgeType.Potioncraft) {
-            this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.Training));
-        }
+        this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.Training));
         this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.StudyScroll))
+        this._studyActives.push(new KnowledgeStudy(this, KnowledgeStudyType.TrainWithMentor))
     }
 
     public get type() : KnowledgeType {
@@ -59,6 +61,12 @@ class Knowledge {
     public get levelAfterRewind() : number {
         return this._levelAfterRewind;
     }
+    public get insight() : number {
+        return this._insight;
+    }
+    public get insightProgress() : number {
+        return this._insightProgress;
+    }
     public get available() : boolean {
         return this._available;
     }
@@ -71,6 +79,9 @@ class Knowledge {
     }
 
     gainExp(exp: number, wizard: Wizard) : number {
+        if (this.level >= this.currentMaxLevel) {
+            return 0;
+        }
         let gainedExp = exp * this._expMultiplier
         if (this._previousLevel > this.level) {
             gainedExp *= 2;
@@ -81,12 +92,28 @@ class Knowledge {
             this._exp -= neededExp;
             this._level++;
             this.getUnlocks(wizard);
+            if (this._level >= this.currentMaxLevel) {
+                this._exp = 0;
+            }
         }
         return gainedExp;
     }
     
+    gainInsight(insight: number) : void {
+        this._insightProgress += insight;
+        var neededInsight = this.nextInsightProgress;
+        if (this._insightProgress >= neededInsight) {
+            this._insightProgress -= neededInsight;
+            this._insight++;
+        }
+    }
+    
     get nextLevelExp() : number {
         return Math.pow(this.level, 2) * 10;
+    }
+
+    get nextInsightProgress() : number {
+        return Math.pow(this.insight + 1, 2) * 10;
     }
 
     get studyActives() : IKnowledgeAction[] {
@@ -96,12 +123,18 @@ class Knowledge {
     get levelUpProgress() : number {
         return this._exp / this.nextLevelExp;
     }
-    load(level: number, exp: number, previousLevel : number, available: boolean, levelAfterRewind: number) {
+
+    get currentMaxLevel() : number {
+        return 3 + this._insight*3;
+    }
+    load(level: number, exp: number, previousLevel : number, available: boolean, levelAfterRewind: number, insight: number, insightProgress: number) {
         this._level = level;
         this._exp = exp;
         this._previousLevel = previousLevel;
         this._available = available;
         this._levelAfterRewind = levelAfterRewind;
+        this._insight = insight;
+        this._insightProgress = insightProgress;
     }
     public getUnlocks(wizard: Wizard) {
         switch (this.type){
@@ -240,6 +273,9 @@ class Knowledge {
             this._level = this._levelAfterRewind;
         }
         this._levelAfterRewind = this._level;
+        while (this.currentMaxLevel < this._level) {
+            this._insight++;
+        }
         this._exp = 0;
         this._available = false;
     }
@@ -264,6 +300,8 @@ class KnowledgeStudy implements IKnowledgeAction {
                 return "Training";
             case KnowledgeStudyType.StudyScroll:
                 return "Study Scroll";
+            case KnowledgeStudyType.TrainWithMentor:
+                return "Train with Mentor";
         }
     }
     public get studyType(): KnowledgeStudyType {
@@ -277,6 +315,8 @@ class KnowledgeStudy implements IKnowledgeAction {
                 return "Train " + this._knowledge.name;
             case KnowledgeStudyType.StudyScroll:
                 return "Study " + this._knowledge.name + " with Scrolls";
+            case KnowledgeStudyType.TrainWithMentor:
+                return "Train " + this._knowledge.name + " with Mentor";
         }
     }
     get activeProgress(): number {
@@ -290,6 +330,7 @@ class KnowledgeStudy implements IKnowledgeAction {
             case KnowledgeStudyType.Study:
                 return [];
             case KnowledgeStudyType.Training:
+            case KnowledgeStudyType.TrainWithMentor:
                 return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -1 * this._knowledge.level / 2, this.requiredResource)];
             case KnowledgeStudyType.StudyScroll:
                 return [new ResourceProductionBuff(AdjustValueType.NotMultipliedAdd, -0.25, this.requiredResource)];
@@ -314,13 +355,43 @@ class KnowledgeStudy implements IKnowledgeAction {
         }
 
         this.knowledge.gainExp(deltaTime * this.expMultiplier, wizard);
+        let previousInsight = this.knowledge.insight;
+        this.knowledge.gainInsight(deltaTime * this.insightMultiplier);
+        if (previousInsight < this.knowledge.insight) {
+            if (!this.isAvaliable(wizard)) {
+                return ActiveActivateResult.CannotContinue;
+            }
+        }
+        if (this.insightMultiplier === 0 && this.knowledge.level >= this.knowledge.currentMaxLevel) {
+            return ActiveActivateResult.CannotContinue;
+        }
         return ActiveActivateResult.Ok;
     }
     deactivate(wizard: Wizard): void {
     }
     isAvaliable(wizard: Wizard): boolean {
-        if (this.requiredResource === null) {
+        if (this._study === KnowledgeStudyType.Study) {
             return true;
+        }
+
+        if (this.requiredResource === null) {
+            return false;
+        }
+        switch (this._study) {
+            case KnowledgeStudyType.Training:
+            case KnowledgeStudyType.StudyScroll:
+                break;
+            case KnowledgeStudyType.TrainWithMentor:
+                if (this.knowledge.insight >= 4) {
+                    return false;
+                }
+                if (this.knowledge.insight >= 2 && (this.mentorType === null || !wizard.unlocks.some(x => x.type === this.mentorType))) {
+                    return false;
+                }
+                if (!wizard.unlocks.some(x => (x.group & UnlockGroup.Mentor) === UnlockGroup.Mentor)) {
+                    return false;
+                }
+                break;
         }
 
         return wizard.hasResource(this.requiredResource, 0);
@@ -330,9 +401,22 @@ class KnowledgeStudy implements IKnowledgeAction {
             case KnowledgeStudyType.Study:
                 return 1;
             case KnowledgeStudyType.Training:
+                return 3;
+            case KnowledgeStudyType.TrainWithMentor:
                 return 5;
             case KnowledgeStudyType.StudyScroll:
                 return 4;
+        }
+    }
+    private get insightMultiplier(): number{
+        switch (this._study){
+            case KnowledgeStudyType.Study:
+            case KnowledgeStudyType.Training:
+                return 0;
+            case KnowledgeStudyType.StudyScroll:
+                return 1;
+            case KnowledgeStudyType.TrainWithMentor:
+                return 5;
         }
     }
     get requiredResource() : ResourceType|null {
@@ -340,6 +424,7 @@ class KnowledgeStudy implements IKnowledgeAction {
             case KnowledgeStudyType.Study:
                 return null;
             case KnowledgeStudyType.Training:
+            case KnowledgeStudyType.TrainWithMentor:
                 switch (this.knowledge.type) {
                     case KnowledgeType.MagicKnowledge:
                         return ResourceType.Mana;
@@ -353,10 +438,27 @@ class KnowledgeStudy implements IKnowledgeAction {
                     case KnowledgeType.AquamancyKnowledge:
                         return ResourceType.Aqua;
                     case KnowledgeType.Potioncraft:
-                        throw new Error("Cannot train " + KnowledgeType[this._knowledge.type]);
+                        if (this._study == KnowledgeStudyType.TrainWithMentor){
+                            return ResourceType.Water;
+                        }
+                        return null;
                 }
             case KnowledgeStudyType.StudyScroll:
                 return ResourceType.Scroll;
+        }
+    }
+    get mentorType(): UnlockType|null{
+        switch (this._knowledge.type) {
+            case KnowledgeType.ChronomancyKnowledge:
+                return UnlockType.ChronomancyMentor;
+            case KnowledgeType.CraftingKnowledge:
+                return UnlockType.CraftingMentor;
+            case KnowledgeType.Herbalism:
+            case KnowledgeType.NatureMagic:
+            case KnowledgeType.Potioncraft:
+            case KnowledgeType.AquamancyKnowledge:
+            case KnowledgeType.MagicKnowledge:
+                return null;
         }
     }
 }

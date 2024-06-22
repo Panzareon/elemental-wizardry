@@ -6,7 +6,7 @@ import { Resource, ResourceAmount, ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { Wizard } from "./wizard";
 
-export { Unlocks, UnlockType }
+export { Unlocks, UnlockType, UnlockGroup }
 
 enum UnlockType {
     ManaProduction = 0,
@@ -28,6 +28,12 @@ enum UnlockType {
     EnchantCauldron = 16,
     AquamancyProduction = 17,
     RainBarrel = 18,
+}
+enum UnlockGroup {
+    None = 0,
+    Mentor = 1 << 0,
+    ProductionUpgrade = 1 << 1,
+    CapacityUpgrade = 1 << 2,
 }
 
 class Unlocks {
@@ -84,6 +90,34 @@ class Unlocks {
                 return "Rain Barrel";
         }
         return UnlockType[this.type];
+    }
+    public get group() : UnlockGroup {
+        switch (this._type) {
+            case UnlockType.ManaProduction:
+            case UnlockType.ChronomancyProduction:
+            case UnlockType.NatureProduction:
+            case UnlockType.AquamancyProduction:
+                return UnlockGroup.ProductionUpgrade;
+            case UnlockType.ChronomancyMentor:
+            case UnlockType.CraftingMentor:
+                return UnlockGroup.Mentor;
+            case UnlockType.ManaCapacity:
+            case UnlockType.ChronoCapacity:
+            case UnlockType.NatureCapacity:
+            case UnlockType.Purse:
+            case UnlockType.WoodStorage:
+                return UnlockGroup.CapacityUpgrade;
+            case UnlockType.RainBarrel:
+                return UnlockGroup.CapacityUpgrade | UnlockGroup.ProductionUpgrade;
+            case UnlockType.Chronomancy:
+            case UnlockType.GardenPlot:
+            case UnlockType.SimpleWorkshop:
+            case UnlockType.NatureMagic:
+            case UnlockType.ImproveMeditate:
+            case UnlockType.WolfsbaneSeeds:
+            case UnlockType.EnchantCauldron:
+                return UnlockGroup.None;
+        }
     }
     public get canRepeat(): boolean {
         return this.maxRepeats > this.numberRepeated;

@@ -6,6 +6,14 @@
             {{knowledge.name}} lvl{{knowledge.level}}
         </mat-card-header>
         <mat-card-content>
+            <div>
+                Insight {{knowledge.insight}} (max level: {{knowledge.currentMaxLevel}})
+                <div class="insight-progress-parent">
+                    <div class="insight-progress" [style.width.%]="knowledge.insightProgress / knowledge.nextInsightProgress * 100"></div>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-content>
             <ng-container  *ngFor="let knowledgeAction of knowledge.studyActives">
                 <mat-button-toggle [checked]="isStudyActive(knowledgeAction)" (change)="toggleStudy(knowledgeAction)" *ngIf="isAvailable(knowledgeAction)">
                     {{knowledgeAction.name}}

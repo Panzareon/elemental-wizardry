@@ -85,6 +85,8 @@ class WizardSerializer {
             available: x.available,
             previousLevel: x.previousLevel,
             levelAfterRewind: x.levelAfterRewind,
+            insight: x.insight,
+            insightProgress: x.insightProgress,
         }
     }
     serializeLocation(x: GameLocation): LocationJson {

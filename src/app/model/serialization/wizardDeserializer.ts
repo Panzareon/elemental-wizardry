@@ -105,7 +105,7 @@ class WizardDeserializer {
     }
     deserializeKnowledge(x: KnowledgeJson): Knowledge {
         let knowledge = new Knowledge(x.type);
-        knowledge.load(x.level, x.exp, x.previousLevel ?? 0, x.available ?? true, x.levelAfterRewind ?? 0);
+        knowledge.load(x.level, x.exp, x.previousLevel ?? 0, x.available ?? true, x.levelAfterRewind ?? 0, x.insight ?? 0, x.insightProgress ?? 0);
         return knowledge;
     }
     deserializeBuffs(buff: BuffJson, spells: Spell[], resources: Resource[]) : TimedBuff[] {
