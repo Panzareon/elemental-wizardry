@@ -217,9 +217,12 @@ class Wizard {
   public hasResources(resources: ResourceAmount[]) : boolean {
     return resources.every(x => this.hasResource(x.resourceType, x.amount));
   }
-  public addResource(resourceType: ResourceType, amount: number) : Resource {
+  public addResource(resourceType: ResourceType, amount: number, text: string|undefined = undefined) : Resource {
     let resource = this.addResourceType(resourceType);
     resource.addAmount(amount, this);
+    if (text !== undefined){
+      this.notifyEvent(EventInfo.gainResource(resource, text));
+    }
     return resource;
   }
 

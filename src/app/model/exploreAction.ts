@@ -1,14 +1,16 @@
 import { ActiveActivateResult, ActiveType, IActive } from "./active";
 import { Buff } from "./buff";
 import { GameLocation } from "./gameLocation";
+import { ResourceType } from "./resource";
 import { SkillType } from "./skill";
 import { Spell, SpellType } from "./spell";
-import { Wizard } from "./wizard";
+import { EventInfo, Wizard } from "./wizard";
 
 export {ExploreAction, ExploreActionType, ExploreActionOption, ExploreActionDuration}
 
 enum ExploreActionType {
     ExploreMine = 0,
+    ExploreMountain = 1,
 }
 
 class ExploreAction
@@ -43,6 +45,19 @@ class ExploreAction
                     default:
                         return "";
                 }
+            case ExploreActionType.ExploreMountain:
+                switch (this._step) {
+                    case 0:
+                        return "You find a strange path almost hidden by the surrounding";
+                    case 1:
+                        return "You encounter a ravine blocking the way forward";
+                    case 2:
+                        return "The path stops next to the base of a cliff, but there seems to be something on the top";
+                    case 3:
+                        return "You find a stash hidden away"
+                    default:
+                        return "";
+                }
         }
     }
     public get options() : ExploreActionOption[] {
@@ -62,7 +77,8 @@ class ExploreAction
     }
 
     public nextStep(wizard: Wizard) : boolean {
-        this._step++;
+        this.getStepReward(wizard);
+        this._step = this.getNextStep();
         this._selectedOption = undefined;
         this._options = this.createOptions();
         return this.checkResult(wizard);
@@ -87,20 +103,62 @@ class ExploreAction
             case ExploreActionType.ExploreMine:
                 wizard.learnSkill(SkillType.Mining);
                 break;
+            case ExploreActionType.ExploreMountain:
+                wizard.addResource(ResourceType.Scroll, 2, "You get 2 Scrolls as reward");
+                wizard.addResource(ResourceType.Gold, 100, "You are paid 100 Gold as reward");
+                break;
         }
     }
     private createOptions() : ExploreActionOption[] {
         switch (this._type) {
             case ExploreActionType.ExploreMine:
-                if (this._step == 0) {
-                    return [new ExploreActionDuration("Check Entrance", this, 10, 1), new ExploreActionCancel("Turn back")];
+                switch (this._step) {
+                    case 0:
+                        return [new ExploreActionDuration("Check Entrance", this, 10, 1), new ExploreActionCancel("Turn back")];
+                    case 1:
+                        return [new ExploreActionDuration("Clear Rubble", this, 20, 1)
+                                    .addSpellOption(SpellType.MagicBolt, 10)]
+                    default:
+                        return [];
                 }
-                if (this._step == 1) {
-                    return [new ExploreActionDuration("Clear Rubble", this, 20, 1)
-                                .addSpellOption(SpellType.MagicBolt, 10)]
+            case ExploreActionType.ExploreMountain:
+                switch (this._step) {
+                    case 0:
+                        return [new ExploreActionDuration("Follow the hidden path", this, 10, 1), new ExploreActionCancel("Turn back")];
+                    case 1:
+                        return [new ExploreActionDuration("Search way around", this, 20, 1), new ExploreActionCancel("Turn back")];
+                    case 2:
+                        return [new ExploreActionDuration("Climb up", this, 25, 1), new ExploreActionCancel("Turn back")];
+                    case 3:
+                        return [new ExploreActionDuration("Loot", this, 5, 1)];
+                    default:
+                        return [];
                 }
+        }
+    }
+    private getNextStep() : number {
+        switch (this._type) {
+            case ExploreActionType.ExploreMountain:
+                let possibleSteps = [1, 2, 3];
+                if (this._step > 0) {
+                    possibleSteps.push(-1);
+                }
+                let currentIndex = possibleSteps.indexOf(this._step);
+                if (currentIndex >= 0) {
+                    possibleSteps.splice(currentIndex, 1);
+                }
+                return possibleSteps[Math.floor(Math.random() * possibleSteps.length)];
+        }
 
-                return [];
+        return this._step + 1;
+    }
+    private getStepReward(wizard: Wizard) {
+        switch (this._type) {
+            case ExploreActionType.ExploreMountain:
+                switch (this._step) {
+                    case 3:
+                        wizard.addResource(ResourceType.Scroll, 5, "You find 5 Scrolls in the stash");
+                }
         }
     }
 }

@@ -214,23 +214,30 @@ class ExploreResult {
     private getReward(wizard: Wizard) {
         switch (this._type) {
             case ExploreResultType.Random:
-                if (Math.random() < 0.1) {
-                    switch (this._location.type) {
-                        case LocationType.Village: {
+                switch (this._location.type) {
+                    case LocationType.Village: {
+                        if (Math.random() < 0.1) {
                             let resource = wizard.addResource(ResourceType.Gold, 5);
                             wizard.notifyEvent(EventInfo.gainResource(resource, "Found 5 gold on the ground"));
-                            break;
                         }
-                        case LocationType.Forest: {
+                        break;
+                    }
+                    case LocationType.Forest: {
+                        if (Math.random() < 0.1) {
                             let resource = wizard.addResource(ResourceType.Wood, 1);
                             wizard.notifyEvent(EventInfo.gainResource(resource, "Found some firewood on the ground"));
-                            break;
                         }
-                        case LocationType.Mountain: {
+                        break;
+                    }
+                    case LocationType.Mountain: {
+                        if (Math.random() < 0.1) {
                             let resource = wizard.addResource(ResourceType.Stone, 1);
                             wizard.notifyEvent(EventInfo.gainResource(resource, "Found a stone on the ground"));
-                            break;
                         }
+                        else if (Math.random() < 0.2) {
+                            this._location.setExploreAction(ExploreActionType.ExploreMountain);
+                        }
+                        break;
                     }
                 }
                 break;
