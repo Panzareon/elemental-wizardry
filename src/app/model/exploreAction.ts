@@ -18,8 +18,10 @@ class ExploreAction
     private _step : number = 0;
     private _options: ExploreActionOption[];
     private _selectedOption?: ExploreActionOption;
+    private _logic: IExploreActionLogic;
     constructor(private _type : ExploreActionType, private _location : GameLocation) {
-        this._options = this.createOptions();
+        this._logic = this.getLogic();
+        this._options = this._logic.createOptions(this);
     }
 
     public get type(): ExploreActionType {
@@ -35,30 +37,7 @@ class ExploreAction
         return this._selectedOption;
     }
     public get description(): string {
-        switch (this._type) {
-            case ExploreActionType.ExploreMine:
-                switch (this._step) {
-                    case 0:
-                        return "You find a strange enrance half hidden by vegetation";
-                    case 1:
-                        return "It looks like a caved in entrance to an old mine you might be able to clear out";
-                    default:
-                        return "";
-                }
-            case ExploreActionType.ExploreMountain:
-                switch (this._step) {
-                    case 0:
-                        return "You find a strange path almost hidden by the surrounding";
-                    case 1:
-                        return "You encounter a ravine blocking the way forward";
-                    case 2:
-                        return "The path stops next to the base of a cliff, but there seems to be something on the top";
-                    case 3:
-                        return "You find a stash hidden away"
-                    default:
-                        return "";
-                }
-        }
+        return this._logic.getDescription(this._step);
     }
     public get options() : ExploreActionOption[] {
         if (this._selectedOption !== undefined) {
@@ -69,7 +48,7 @@ class ExploreAction
 
     public load(step: number, selected: number|undefined, selectedData: any) {
         this._step = step;
-        this._options = this.createOptions();
+        this._options = this._logic.createOptions(this);
         if (selected !== undefined) {
             this._selectedOption = this._options.find(x => x.uniqueId == selected);
             this._selectedOption?.load(selectedData);
@@ -80,7 +59,7 @@ class ExploreAction
         this.getStepReward(wizard);
         this._step = this.getNextStep();
         this._selectedOption = undefined;
-        this._options = this.createOptions();
+        this._options = this._logic.createOptions(this);
         return this.checkResult(wizard);
     }
     public setSelectedOption(option: ExploreActionOption) {
@@ -91,63 +70,17 @@ class ExploreAction
     }
     public checkResult(wizard: Wizard): boolean {
         if (this.options.length == 0) {
-            this.getRewards(wizard);
+            this._logic.getRewards(wizard);
             this._location.removeExploreAction();
             return false;
         }
 
         return true;
     }
-    private getRewards(wizard: Wizard) {
-        switch (this._type) {
-            case ExploreActionType.ExploreMine:
-                wizard.learnSkill(SkillType.Mining);
-                break;
-            case ExploreActionType.ExploreMountain:
-                wizard.addResource(ResourceType.Scroll, 2, "You get 2 Scrolls as reward");
-                wizard.addResource(ResourceType.Gold, 100, "You are paid 100 Gold as reward");
-                break;
-        }
-    }
-    private createOptions() : ExploreActionOption[] {
-        switch (this._type) {
-            case ExploreActionType.ExploreMine:
-                switch (this._step) {
-                    case 0:
-                        return [new ExploreActionDuration("Check Entrance", this, 10, 1), new ExploreActionCancel("Turn back")];
-                    case 1:
-                        return [new ExploreActionDuration("Clear Rubble", this, 20, 1)
-                                    .addSpellOption(SpellType.MagicBolt, 10)]
-                    default:
-                        return [];
-                }
-            case ExploreActionType.ExploreMountain:
-                switch (this._step) {
-                    case 0:
-                        return [new ExploreActionDuration("Follow the hidden path", this, 10, 1), new ExploreActionCancel("Turn back")];
-                    case 1:
-                        return [new ExploreActionDuration("Search way around", this, 20, 1), new ExploreActionCancel("Turn back")];
-                    case 2:
-                        return [new ExploreActionDuration("Climb up", this, 25, 1), new ExploreActionCancel("Turn back")];
-                    case 3:
-                        return [new ExploreActionDuration("Loot", this, 5, 1)];
-                    default:
-                        return [];
-                }
-        }
-    }
     private getNextStep() : number {
-        switch (this._type) {
-            case ExploreActionType.ExploreMountain:
-                let possibleSteps = [1, 2, 3];
-                if (this._step > 0) {
-                    possibleSteps.push(-1);
-                }
-                let currentIndex = possibleSteps.indexOf(this._step);
-                if (currentIndex >= 0) {
-                    possibleSteps.splice(currentIndex, 1);
-                }
-                return possibleSteps[Math.floor(Math.random() * possibleSteps.length)];
+        let nextStep = this._logic.getNextStep(this);
+        if (nextStep !== null) {
+            return nextStep;
         }
 
         return this._step + 1;
@@ -160,6 +93,94 @@ class ExploreAction
                         wizard.addResource(ResourceType.Scroll, 5, "You find 5 Scrolls in the stash");
                 }
         }
+    }
+    private getLogic(): IExploreActionLogic {
+        switch (this._type) {
+            case ExploreActionType.ExploreMine:
+                return new ExploreMineLogic();
+            case ExploreActionType.ExploreMountain:
+                return new ExploreMountainLogic();
+        }
+    }
+}
+interface IExploreActionLogic {
+    getNextStep(action: ExploreAction): number|null;
+    getDescription(step: number) : string;
+    getRewards(wizard: Wizard):void;
+    createOptions(action: ExploreAction) : ExploreActionOption[];
+}
+class ExploreMineLogic implements IExploreActionLogic {
+    public getDescription(step: number): string {
+        switch (step) {
+            case 0:
+                return "You find a strange enrance half hidden by vegetation";
+            case 1:
+                return "It looks like a caved in entrance to an old mine you might be able to clear out";
+            default:
+                return "";
+        }
+    }
+    public getRewards(wizard: Wizard) {
+        wizard.learnSkill(SkillType.Mining);
+    }
+    public createOptions(action: ExploreAction) : ExploreActionOption[] {
+        switch (action.step) {
+            case 0:
+                return [new ExploreActionDuration("Check Entrance", action, 10, 1), new ExploreActionCancel("Turn back")];
+            case 1:
+                return [new ExploreActionDuration("Clear Rubble", action, 20, 1)
+                            .addSpellOption(SpellType.MagicBolt, 10)]
+            default:
+                return [];
+        }
+    }
+    public getNextStep(action: ExploreAction): number | null {
+        return null;
+    }
+}
+class ExploreMountainLogic implements IExploreActionLogic {
+    public getDescription(step: number): string {
+        switch (step) {
+            case 0:
+                return "You find a strange path almost hidden by the surrounding";
+            case 1:
+                return "You encounter a ravine blocking the way forward";
+            case 2:
+                return "The path stops next to the base of a cliff, but there seems to be something on the top";
+            case 3:
+                return "You find a stash hidden away"
+            default:
+                return "";
+        }
+    }
+    public getRewards(wizard: Wizard) {
+        wizard.addResource(ResourceType.Scroll, 2, "You get 2 Scrolls as reward");
+        wizard.addResource(ResourceType.Gold, 100, "You are paid 100 Gold as reward");
+    }
+    public createOptions(action: ExploreAction) : ExploreActionOption[] {
+        switch (action.step) {
+            case 0:
+                return [new ExploreActionDuration("Follow the hidden path", action, 10, 1), new ExploreActionCancel("Turn back")];
+            case 1:
+                return [new ExploreActionDuration("Search way around", action, 20, 1), new ExploreActionCancel("Turn back")];
+            case 2:
+                return [new ExploreActionDuration("Climb up", action, 25, 1), new ExploreActionCancel("Turn back")];
+            case 3:
+                return [new ExploreActionDuration("Loot", action, 5, 1)];
+            default:
+                return [];
+        }
+    }
+    public getNextStep(action: ExploreAction): number | null {
+        let possibleSteps = [1, 2, 3];
+        if (action.step > 0) {
+            possibleSteps.push(-1);
+        }
+        let currentIndex = possibleSteps.indexOf(action.step);
+        if (currentIndex >= 0) {
+            possibleSteps.splice(currentIndex, 1);
+        }
+        return possibleSteps[Math.floor(Math.random() * possibleSteps.length)];
     }
 }
 abstract class ExploreActionOption {
