@@ -25,6 +25,7 @@ enum SpellType {
     DelayRewind = 11,
     ConjureWater = 12,
     InfuseAquaGem = 13,
+    Levitate = 14,
 }
 
 enum SpellCastingType {
@@ -162,6 +163,8 @@ class Spell implements ITimedBuffSource {
                 return "Create water with aqua";
             case SpellType.InfuseAquaGem:
                 return "Infuses a gemstone with Aqua to create a Aqua Gem";
+            case SpellType.Levitate:
+                return "Levitate your own body";
         }
     }
 
@@ -407,6 +410,8 @@ class Spell implements ITimedBuffSource {
                 return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Aqua, 2 * costMultiplier)]);
             case SpellType.InfuseAquaGem:
                 return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Aqua, 10 * costMultiplier), new ResourceAmount(ResourceType.Gemstone, 1)]);
+            case SpellType.Levitate:
+                return SpellCast.CreateSimpleSpell([new ResourceAmount(ResourceType.Mana, 10 * costMultiplier)]);
         }
     }
 
@@ -415,6 +420,7 @@ class Spell implements ITimedBuffSource {
             case SpellType.InfuseGem:
             case SpellType.MagicBolt:
             case SpellType.SummonFamiliar:
+            case SpellType.Levitate:
                 return SpellSource.Mana;
             case SpellType.InfuseChronoGem:
             case SpellType.ExpediteGeneration:

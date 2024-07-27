@@ -162,9 +162,12 @@ class ExploreMountainLogic implements IExploreActionLogic {
             case 0:
                 return [new ExploreActionDuration("Follow the hidden path", action, 10, 1), new ExploreActionCancel("Turn back")];
             case 1:
-                return [new ExploreActionDuration("Search way around", action, 20, 1), new ExploreActionCancel("Turn back")];
+                return [new ExploreActionDuration("Search way around", action, 20, 1),
+                    new ExploreActionCastSpell(SpellType.Levitate, action),
+                    new ExploreActionCancel("Turn back")];
             case 2:
-                return [new ExploreActionDuration("Climb up", action, 25, 1), new ExploreActionCancel("Turn back")];
+                return [new ExploreActionDuration("Climb up", action, 25, 1)
+                    .addSpellOption(SpellType.Levitate, 20), new ExploreActionCancel("Turn back")];
             case 3:
                 return [new ExploreActionDuration("Loot", action, 5, 1)];
             default:
@@ -262,7 +265,7 @@ class ExploreActionDuration extends ExploreActionOption implements IActive {
     }
 
     public addSpellOption(spell: SpellType, spellCastProgress: number) : ExploreActionDuration {
-        this.addAdditionalOption(new ExploreActionCastSpell(spell, spellCastProgress, this._action, this));
+        this.addAdditionalOption(new ExploreActionCastSpell(spell, this._action, [this, spellCastProgress]));
         return this;
     }
 }
@@ -276,7 +279,7 @@ class ExploreActionCancel extends ExploreActionOption {
     }
 }
 class ExploreActionCastSpell extends ExploreActionOption {
-    constructor(private _spell: SpellType, private _spellCastProgress: number, private _action: ExploreAction, private _duration? : ExploreActionDuration) {
+    constructor(private _spell: SpellType, private _action: ExploreAction, private _duration? : [ExploreActionDuration,number]) {
         super("Cast " + new Spell(_spell).name, undefined)
     }
 
@@ -290,7 +293,7 @@ class ExploreActionCastSpell extends ExploreActionOption {
             let spellPower = spell.getSpellPower(wizard);
             spell.castSpell(wizard);
             if (this._duration !== undefined) {
-                this._duration.addProgress(wizard, spellPower * this._spellCastProgress)
+                this._duration[0].addProgress(wizard, spellPower * this._duration[1])
             }
             else {
                 this._action.nextStep(wizard);

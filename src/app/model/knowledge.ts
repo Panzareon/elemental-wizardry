@@ -163,6 +163,9 @@ class Knowledge {
                 if (this.level >= 8) {
                     wizard.addAvailableUnlock(UnlockType.ImproveMeditate);
                 }
+                if (this.level >= 9) {
+                    wizard.learnSpell(SpellType.Levitate);
+                }
                 break;
             case KnowledgeType.ChronomancyKnowledge:
                 if (this.level >= 2) {
