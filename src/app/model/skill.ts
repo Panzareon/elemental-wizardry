@@ -338,7 +338,8 @@ class Skill implements IActive {
         switch (this.type) {
             case SkillType.MagicShow:
                 return [new DurationSpell(SpellType.MagicBolt, 1, 0.1),
-                        new DurationSpell(SpellType.Growth, 4, 0.05)];
+                        new DurationSpell(SpellType.Growth, 4, 0.05),
+                        new DurationSpell(SpellType.Levitate, 5, 0.05)];
             case SkillType.ChopWood:
                 return [new DurationSpell(SpellType.MagicBolt, 1, 0.1)];
             case SkillType.Mining:
