@@ -6,9 +6,10 @@ import { ResourceInfoComponent } from '../resource-info/resource-info.component'
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-inventory',
-  templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.less']
+    selector: 'app-inventory',
+    templateUrl: './inventory.component.html',
+    styleUrls: ['./inventory.component.less'],
+    standalone: false
 })
 export class InventoryComponent implements OnInit {
   constructor(private inventory: InventoryService, private dialog: MatDialog, private data: DataService) { }

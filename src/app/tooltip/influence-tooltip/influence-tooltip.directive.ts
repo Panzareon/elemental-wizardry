@@ -4,7 +4,8 @@ import { Influence } from 'src/app/model/influence';
 import { TooltipBaseDirective } from '../tooltip-base.directive';
 
 @Directive({
-  selector: '[appInfluenceTooltip]'
+    selector: '[appInfluenceTooltip]',
+    standalone: false
 })
 export class InfluenceTooltipDirective extends TooltipBaseDirective<InfluenceTooltipComponent> {
 

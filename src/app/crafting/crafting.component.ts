@@ -4,9 +4,10 @@ import { Recipe, RecipeSource } from '../model/recipe';
 import { RecipeMachine } from '../model/recipeMachine';
 
 @Component({
-  selector: 'app-crafting',
-  templateUrl: './crafting.component.html',
-  styleUrls: ['./crafting.component.less']
+    selector: 'app-crafting',
+    templateUrl: './crafting.component.html',
+    styleUrls: ['./crafting.component.less'],
+    standalone: false
 })
 export class CraftingComponent {
   private _sources: RecipeSource[];

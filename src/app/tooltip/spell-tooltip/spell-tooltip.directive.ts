@@ -4,7 +4,8 @@ import { Spell } from 'src/app/model/spell';
 import { TooltipBaseDirective } from '../tooltip-base.directive';
 
 @Directive({
-  selector: '[appSpellTooltip]'
+    selector: '[appSpellTooltip]',
+    standalone: false
 })
 export class SpellTooltipDirective extends TooltipBaseDirective<SpellTooltipComponent> {
   @Input() spell! : Spell;

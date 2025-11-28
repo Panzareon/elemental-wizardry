@@ -3,9 +3,10 @@ import { DataService } from '../data.service';
 import { Unlocks } from '../model/unlocks';
 
 @Component({
-  selector: 'app-unlocks',
-  templateUrl: './unlocks.component.html',
-  styleUrls: ['./unlocks.component.less']
+    selector: 'app-unlocks',
+    templateUrl: './unlocks.component.html',
+    styleUrls: ['./unlocks.component.less'],
+    standalone: false
 })
 export class UnlocksComponent {
   private _availableUnlocks;

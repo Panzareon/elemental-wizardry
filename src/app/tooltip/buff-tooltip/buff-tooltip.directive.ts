@@ -4,7 +4,8 @@ import { TooltipBaseDirective } from '../tooltip-base.directive';
 import { TimedBuff } from 'src/app/model/timed-buff';
 
 @Directive({
-  selector: '[appBuffTooltip]'
+    selector: '[appBuffTooltip]',
+    standalone: false
 })
 export class BuffTooltipDirective extends TooltipBaseDirective<BuffTooltipComponent> {
 

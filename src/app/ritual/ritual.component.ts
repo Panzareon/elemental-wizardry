@@ -4,9 +4,10 @@ import { Spell, SpellCastingType } from '../model/spell';
 import { RitualCircleComponent } from '../ritual-circle/ritual-circle.component';
 
 @Component({
-  selector: 'app-ritual',
-  templateUrl: './ritual.component.html',
-  styleUrls: ['./ritual.component.less']
+    selector: 'app-ritual',
+    templateUrl: './ritual.component.html',
+    styleUrls: ['./ritual.component.less'],
+    standalone: false
 })
 export class RitualComponent implements AfterViewInit {
   public constructor(private _data: DataService) {

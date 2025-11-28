@@ -3,9 +3,10 @@ import { TooltipBase } from '../tooltip-base';
 import { TimedBuff } from 'src/app/model/timed-buff';
 
 @Component({
-  selector: 'app-buff-tooltip',
-  templateUrl: './buff-tooltip.component.html',
-  styleUrls: ['./buff-tooltip.component.less']
+    selector: 'app-buff-tooltip',
+    templateUrl: './buff-tooltip.component.html',
+    styleUrls: ['./buff-tooltip.component.less'],
+    standalone: false
 })
 export class BuffTooltipComponent extends TooltipBase {
   public constructor(changeDetectorRef : ChangeDetectorRef) {

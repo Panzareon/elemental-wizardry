@@ -3,9 +3,10 @@ import { Influence, InfluenceAmount } from '../model/influence';
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-influence-cost',
-  templateUrl: './influence-cost.component.html',
-  styleUrls: ['./influence-cost.component.less']
+    selector: 'app-influence-cost',
+    templateUrl: './influence-cost.component.html',
+    styleUrls: ['./influence-cost.component.less'],
+    standalone: false
 })
 export class InfluenceCostComponent {
   private _Influece?: Influence;

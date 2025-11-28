@@ -4,9 +4,10 @@ import { Resource, ResourceType } from '../model/resource';
 import { Offer } from '../model/gameLocation';
 
 @Component({
-  selector: 'app-store',
-  templateUrl: './store.component.html',
-  styleUrls: ['./store.component.less']
+    selector: 'app-store',
+    templateUrl: './store.component.html',
+    styleUrls: ['./store.component.less'],
+    standalone: false
 })
 export class StoreComponent {
   constructor(private data: DataService){

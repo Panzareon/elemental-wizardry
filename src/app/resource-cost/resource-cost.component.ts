@@ -5,9 +5,10 @@ import { Resource } from '../model/resource';
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-resource-cost',
-  templateUrl: './resource-cost.component.html',
-  styleUrls: ['./resource-cost.component.less']
+    selector: 'app-resource-cost',
+    templateUrl: './resource-cost.component.html',
+    styleUrls: ['./resource-cost.component.less'],
+    standalone: false
 })
 export class ResourceCostComponent {
   private _resource?: Resource;

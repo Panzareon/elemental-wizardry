@@ -4,9 +4,10 @@ import { Influence, InfluenceDonation } from '../model/influence';
 import { ResourceType } from '../model/resource';
 
 @Component({
-  selector: 'app-influence',
-  templateUrl: './influence.component.html',
-  styleUrls: ['./influence.component.less']
+    selector: 'app-influence',
+    templateUrl: './influence.component.html',
+    styleUrls: ['./influence.component.less'],
+    standalone: false
 })
 export class InfluenceComponent {
   constructor(private data: DataService) {

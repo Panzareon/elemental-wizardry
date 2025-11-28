@@ -4,7 +4,8 @@ import { ExplorationTooltipComponent } from './exploration-tooltip.component';
 import { GameLocation } from 'src/app/model/gameLocation';
 
 @Directive({
-  selector: '[appExplorationTooltip]'
+    selector: '[appExplorationTooltip]',
+    standalone: false
 })
 export class ExplorationTooltipDirective  extends TooltipBaseDirective<ExplorationTooltipComponent> {
   @Input() location! : GameLocation;

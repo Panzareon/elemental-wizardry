@@ -5,9 +5,10 @@ import { MatRadioChange } from '@angular/material/radio';
 import { ResourceType } from '../model/resource';
 
 @Component({
-  selector: 'app-garden',
-  templateUrl: './garden.component.html',
-  styleUrls: ['./garden.component.less']
+    selector: 'app-garden',
+    templateUrl: './garden.component.html',
+    styleUrls: ['./garden.component.less'],
+    standalone: false
 })
 export class GardenComponent {
   private readonly waterAmount = 5;

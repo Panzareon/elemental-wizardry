@@ -3,9 +3,10 @@ import { Item, ItemUsageType } from '../model/item';
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-item',
-  templateUrl: './item.component.html',
-  styleUrls: ['./item.component.less']
+    selector: 'app-item',
+    templateUrl: './item.component.html',
+    styleUrls: ['./item.component.less'],
+    standalone: false
 })
 export class ItemComponent {
   public constructor(private _data : DataService) {

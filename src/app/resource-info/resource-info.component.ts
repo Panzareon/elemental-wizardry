@@ -3,9 +3,10 @@ import { Resource } from '../model/resource';
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-resource-info',
-  templateUrl: './resource-info.component.html',
-  styleUrls: ['./resource-info.component.less']
+    selector: 'app-resource-info',
+    templateUrl: './resource-info.component.html',
+    styleUrls: ['./resource-info.component.less'],
+    standalone: false
 })
 export class ResourceInfoComponent {
   constructor(private data: DataService) {}

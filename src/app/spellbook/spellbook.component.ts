@@ -5,9 +5,10 @@ import { SpellIconComponent } from '../spell-icon/spell-icon.component';
 import { WizardDataType } from '../model/wizard';
 
 @Component({
-  selector: 'app-spellbook',
-  templateUrl: './spellbook.component.html',
-  styleUrls: ['./spellbook.component.less']
+    selector: 'app-spellbook',
+    templateUrl: './spellbook.component.html',
+    styleUrls: ['./spellbook.component.less'],
+    standalone: false
 })
 export class SpellbookComponent {
   constructor(private data: DataService) {

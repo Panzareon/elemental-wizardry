@@ -4,9 +4,10 @@ import { Item, ItemUsageType } from '../model/item';
 import { ResourceAmount } from '../model/resource';
 
 @Component({
-  selector: 'app-equipment',
-  templateUrl: './equipment.component.html',
-  styleUrls: ['./equipment.component.less']
+    selector: 'app-equipment',
+    templateUrl: './equipment.component.html',
+    styleUrls: ['./equipment.component.less'],
+    standalone: false
 })
 export class EquipmentComponent {
   public constructor(private _data: DataService) {}

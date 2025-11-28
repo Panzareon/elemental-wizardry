@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule, inject, provideAppInitializer } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -118,16 +118,14 @@ import { SpellListComponent } from './spell-list/spell-list.component';
     MatToolbarModule,
     MatRadioModule,
   ],
-  providers: [{
-    provide: APP_INITIALIZER,
-    deps: [GameLogicService, SaveService],
-    useFactory: (logic: GameLogicService, saveService: SaveService) => () =>
+  providers: [provideAppInitializer(() => {
+        const initializerFn = ((logic: GameLogicService, saveService: SaveService) => () =>
     {
       saveService.load();
       logic.init();
-    },
-    multi: true,
-  }],
+    })(inject(GameLogicService), inject(SaveService));
+        return initializerFn();
+      })],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

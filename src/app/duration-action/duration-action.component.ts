@@ -6,9 +6,10 @@ import { Subscription } from 'rxjs';
 import { SpellIconComponent } from '../spell-icon/spell-icon.component';
 
 @Component({
-  selector: 'app-duration-action',
-  templateUrl: './duration-action.component.html',
-  styleUrls: ['./duration-action.component.less']
+    selector: 'app-duration-action',
+    templateUrl: './duration-action.component.html',
+    styleUrls: ['./duration-action.component.less'],
+    standalone: false
 })
 export class DurationActionComponent {
   public readonly progressPerLine = 27;

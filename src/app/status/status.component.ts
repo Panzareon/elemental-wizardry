@@ -4,9 +4,10 @@ import { WizardDataType } from '../model/wizard';
 import { SpellSource } from '../model/spell';
 
 @Component({
-  selector: 'app-status',
-  templateUrl: './status.component.html',
-  styleUrls: ['./status.component.less']
+    selector: 'app-status',
+    templateUrl: './status.component.html',
+    styleUrls: ['./status.component.less'],
+    standalone: false
 })
 export class StatusComponent {
   public constructor(private _data: DataService){

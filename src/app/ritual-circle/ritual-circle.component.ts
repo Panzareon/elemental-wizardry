@@ -2,9 +2,10 @@ import { Component, ElementRef, Input } from '@angular/core';
 import { Spell } from '../model/spell';
 
 @Component({
-  selector: 'app-ritual-circle',
-  templateUrl: './ritual-circle.component.html',
-  styleUrls: ['./ritual-circle.component.less']
+    selector: 'app-ritual-circle',
+    templateUrl: './ritual-circle.component.html',
+    styleUrls: ['./ritual-circle.component.less'],
+    standalone: false
 })
 export class RitualCircleComponent {
   public isAnimating : boolean = false;

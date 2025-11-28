@@ -4,9 +4,10 @@ import { Skill, SkillActionType, SkillType } from '../model/skill';
 import { GameLocation } from '../model/gameLocation';
 
 @Component({
-  selector: 'app-actions',
-  templateUrl: './actions.component.html',
-  styleUrls: ['./actions.component.less']
+    selector: 'app-actions',
+    templateUrl: './actions.component.html',
+    styleUrls: ['./actions.component.less'],
+    standalone: false
 })
 export class ActionsComponent {
   constructor(private data: DataService) {

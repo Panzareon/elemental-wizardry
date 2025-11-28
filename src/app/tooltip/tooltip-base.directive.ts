@@ -1,7 +1,9 @@
 import { ApplicationRef, ComponentRef, Directive, ElementRef, EnvironmentInjector, HostListener, Injector, Type, createComponent } from '@angular/core';
 import { TooltipBase } from './tooltip-base';
 
-@Directive({})
+@Directive({
+    standalone: false
+})
 export abstract class TooltipBaseDirective<TTooltipComponent extends TooltipBase> {
 
   private _componentRef: ComponentRef<TTooltipComponent>|null = null;

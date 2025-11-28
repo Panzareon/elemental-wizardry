@@ -4,9 +4,10 @@ import { Unsubscribable } from 'rxjs';
 import { EventInfo, EventInfoType } from '../model/wizard';
 
 @Component({
-  selector: 'app-event-list',
-  templateUrl: './event-list.component.html',
-  styleUrls: ['./event-list.component.less']
+    selector: 'app-event-list',
+    templateUrl: './event-list.component.html',
+    styleUrls: ['./event-list.component.less'],
+    standalone: false
 })
 export class EventListComponent {
   private _events : string[] = [];

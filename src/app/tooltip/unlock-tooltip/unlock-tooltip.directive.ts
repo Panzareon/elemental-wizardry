@@ -4,7 +4,8 @@ import { UnlockTooltipComponent } from './unlock-tooltip.component';
 import { Unlocks } from 'src/app/model/unlocks';
 
 @Directive({
-  selector: '[appUnlockTooltip]'
+    selector: '[appUnlockTooltip]',
+    standalone: false
 })
 export class UnlockTooltipDirective extends TooltipBaseDirective<UnlockTooltipComponent> {
   @Input() unlock! : Unlocks;

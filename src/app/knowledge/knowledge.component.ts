@@ -3,9 +3,10 @@ import { IKnowledgeAction, Knowledge } from '../model/knowledge';
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-knowledge',
-  templateUrl: './knowledge.component.html',
-  styleUrls: ['./knowledge.component.less']
+    selector: 'app-knowledge',
+    templateUrl: './knowledge.component.html',
+    styleUrls: ['./knowledge.component.less'],
+    standalone: false
 })
 export class KnowledgeComponent {
   constructor (private data: DataService) {

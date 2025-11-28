@@ -4,9 +4,10 @@ import { ExploreResult, GameLocation } from 'src/app/model/gameLocation';
 import { DataService } from 'src/app/data.service';
 
 @Component({
-  selector: 'app-exploration-tooltip',
-  templateUrl: './exploration-tooltip.component.html',
-  styleUrls: ['./exploration-tooltip.component.less']
+    selector: 'app-exploration-tooltip',
+    templateUrl: './exploration-tooltip.component.html',
+    styleUrls: ['./exploration-tooltip.component.less'],
+    standalone: false
 })
 export class ExplorationTooltipComponent extends TooltipBase {
   public constructor(private _data: DataService, changeDetectorRef : ChangeDetectorRef) {

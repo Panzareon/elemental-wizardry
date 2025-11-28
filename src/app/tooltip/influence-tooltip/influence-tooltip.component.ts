@@ -5,9 +5,10 @@ import { DataService } from 'src/app/data.service';
 import { Resource, ResourceType } from 'src/app/model/resource';
 
 @Component({
-  selector: 'app-influence-tooltip',
-  templateUrl: './influence-tooltip.component.html',
-  styleUrls: ['./influence-tooltip.component.less']
+    selector: 'app-influence-tooltip',
+    templateUrl: './influence-tooltip.component.html',
+    styleUrls: ['./influence-tooltip.component.less'],
+    standalone: false
 })
 export class InfluenceTooltipComponent extends TooltipBase {
   public constructor(private _data: DataService, changeDetectorRef : ChangeDetectorRef) {

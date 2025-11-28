@@ -3,9 +3,10 @@ import { DataService } from '../data.service';
 import { TimedBuff } from '../model/timed-buff';
 
 @Component({
-  selector: 'app-active-buffs',
-  templateUrl: './active-buffs.component.html',
-  styleUrls: ['./active-buffs.component.less']
+    selector: 'app-active-buffs',
+    templateUrl: './active-buffs.component.html',
+    styleUrls: ['./active-buffs.component.less'],
+    standalone: false
 })
 export class ActiveBuffsComponent {
   public constructor(private _data: DataService){}

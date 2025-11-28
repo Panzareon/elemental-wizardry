@@ -4,9 +4,10 @@ import { DataService } from '../data.service';
 import { Costs } from '../model/costs';
 
 @Component({
-  selector: 'app-unlock-card',
-  templateUrl: './unlock-card.component.html',
-  styleUrls: ['./unlock-card.component.less']
+    selector: 'app-unlock-card',
+    templateUrl: './unlock-card.component.html',
+    styleUrls: ['./unlock-card.component.less'],
+    standalone: false
 })
 export class UnlockCardComponent {
   constructor(private _data: DataService) {

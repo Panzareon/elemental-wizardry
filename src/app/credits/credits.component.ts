@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-credits',
-  templateUrl: './credits.component.html',
-  styleUrls: ['./credits.component.less']
+    selector: 'app-credits',
+    templateUrl: './credits.component.html',
+    styleUrls: ['./credits.component.less'],
+    standalone: false
 })
 export class CreditsComponent {
 

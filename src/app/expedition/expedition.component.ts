@@ -7,9 +7,10 @@ import { Wizard } from '../model/wizard';
 import { retry } from 'rxjs';
 
 @Component({
-  selector: 'app-expedition',
-  templateUrl: './expedition.component.html',
-  styleUrls: ['./expedition.component.less']
+    selector: 'app-expedition',
+    templateUrl: './expedition.component.html',
+    styleUrls: ['./expedition.component.less'],
+    standalone: false
 })
 export class ExpeditionComponent {
   public constructor(private data: DataService) {

@@ -4,9 +4,10 @@ import { Unlocks } from 'src/app/model/unlocks';
 import { DataService } from 'src/app/data.service';
 
 @Component({
-  selector: 'app-unlock-tooltip',
-  templateUrl: './unlock-tooltip.component.html',
-  styleUrls: ['./unlock-tooltip.component.less']
+    selector: 'app-unlock-tooltip',
+    templateUrl: './unlock-tooltip.component.html',
+    styleUrls: ['./unlock-tooltip.component.less'],
+    standalone: false
 })
 export class UnlockTooltipComponent extends TooltipBase {
   public constructor(private _data: DataService, changeDetectorRef : ChangeDetectorRef) {

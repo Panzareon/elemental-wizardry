@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Spell } from '../model/spell';
 
 @Component({
-  selector: 'app-spell-icon',
-  templateUrl: './spell-icon.component.html',
-  styleUrls: ['./spell-icon.component.less']
+    selector: 'app-spell-icon',
+    templateUrl: './spell-icon.component.html',
+    styleUrls: ['./spell-icon.component.less'],
+    standalone: false
 })
 export class SpellIconComponent {
   @Input() spell!: Spell;

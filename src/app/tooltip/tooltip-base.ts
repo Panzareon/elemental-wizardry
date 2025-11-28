@@ -3,7 +3,10 @@ import { MatCard } from "@angular/material/card";
 
 export { TooltipBase }
 
-@Component({template: ''})
+@Component({
+    template: '',
+    standalone: false
+})
 abstract class TooltipBase implements AfterViewInit {
     public visible : boolean = false;
     private _left: number = 0;

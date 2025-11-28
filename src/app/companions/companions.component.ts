@@ -3,9 +3,10 @@ import { Companion, CompanionAction } from '../model/companion';
 import { DataService } from '../data.service';
 
 @Component({
-  selector: 'app-companions',
-  templateUrl: './companions.component.html',
-  styleUrls: ['./companions.component.less']
+    selector: 'app-companions',
+    templateUrl: './companions.component.html',
+    styleUrls: ['./companions.component.less'],
+    standalone: false
 })
 export class CompanionsComponent {
   public constructor(private _data: DataService){

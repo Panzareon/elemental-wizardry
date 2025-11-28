@@ -3,9 +3,10 @@ import { EventInfo } from '../model/wizard';
 import { AppComponent } from '../app.component';
 
 @Component({
-  selector: 'app-popup-info',
-  templateUrl: './popup-info.component.html',
-  styleUrls: ['./popup-info.component.less']
+    selector: 'app-popup-info',
+    templateUrl: './popup-info.component.html',
+    styleUrls: ['./popup-info.component.less'],
+    standalone: false
 })
 export class PopupInfoComponent {
   private _positionX? : number;
