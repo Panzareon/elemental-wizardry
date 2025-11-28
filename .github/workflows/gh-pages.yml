@@ -23,6 +23,9 @@ jobs:
     - name: Build
       run: npm run build:gh-pages
 
+    - name: List contents of dist/elemental-wizardry
+      run: ls -al ./dist/elemental-wizardry
+
     - name: Copy 404 Page
       run: cp ./dist/elemental-wizardry/index.html ./dist/elemental-wizardry/404.html 
 
