@@ -1,12 +1,16 @@
-<div *ngFor="let resource of getManaResources()" class="resource" (click)="clickResource(resource)">
+@for (resource of getManaResources(); track resource) {
+  <div class="resource" (click)="clickResource(resource)">
     <img src="assets/icons/{{resourceType(resource).toLowerCase()}}.svg" class="mana-icon"/>
     <mat-card class="resource-{{resourceType(resource).toLowerCase()}}">
-        <div class="resource-amount" [style.width.%]="amountPercent(resource)"></div>
-        <span>{{amountDisplay(resource)}}</span>
+      <div class="resource-amount" [style.width.%]="amountPercent(resource)"></div>
+      <span>{{amountDisplay(resource)}}</span>
     </mat-card>
-</div>
+  </div>
+}
 <mat-card>
-    <mat-card-content *ngFor="let resource of getItemResources()">
-        {{resource.name}}: {{amountDisplay(resource)}}
+  @for (resource of getItemResources(); track resource) {
+    <mat-card-content>
+      {{resource.name}}: {{amountDisplay(resource)}}
     </mat-card-content>
+  }
 </mat-card>

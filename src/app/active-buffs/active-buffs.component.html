@@ -1,4 +1,6 @@
-<div class="timed-buff" appBuffTooltip [buff]="buff" *ngFor="let buff of activeBuffs">
+@for (buff of activeBuffs; track buff) {
+  <div class="timed-buff" appBuffTooltip [buff]="buff">
     <img src="assets/icons/{{buff.source.icon}}"/>
     <div class="cooldown" [style.--time-left.%]="(1-buff.durationPercent)*100"></div>
-</div>
+  </div>
+}

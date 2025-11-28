@@ -1,41 +1,45 @@
 <div class="popup-parent">
-    <ng-template #popupContainer></ng-template>
+  <ng-template #popupContainer></ng-template>
 </div>
 <div class="app">
-    <div class="main">
-        <div class="sidebar">
-            <app-active-actions></app-active-actions>
-            <app-inventory></app-inventory>
-            <app-active-buffs></app-active-buffs>
-        </div>
-        <mat-divider [vertical]="true"></mat-divider>
-        <div class="content">
-            <mat-tab-group>
-                <ng-container *ngFor="let tabGroup of tabs">
-                    <mat-tab label="{{tabGroup[0]}}" *ngIf="showTabGroup(tabGroup)">
-                        <ng-template matTabContent>
-                            <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-                                <ng-container  *ngFor="let tab of tabGroup[1]">
-                                    <a mat-tab-link routerLink="{{tab[0]}}" *ngIf="tab[2]">{{tab[1]}}</a>
-                                </ng-container>
-                            </nav>
-                        </ng-template>
-                    </mat-tab>
-                </ng-container>
-            </mat-tab-group>
-            <mat-tab-nav-panel #tabPanel>
-                <router-outlet></router-outlet>
-            </mat-tab-nav-panel>
-        </div>
-        <div class="sidebar">
-            <app-event-list></app-event-list>
-        </div>
+  <div class="main">
+    <div class="sidebar">
+      <app-active-actions></app-active-actions>
+      <app-inventory></app-inventory>
+      <app-active-buffs></app-active-buffs>
     </div>
-    <footer>
-        <mat-toolbar>
-            <a href="credits">Credits</a>
-            <a href="about">About</a>
-            <a href="privacy-policy">Privacy Policy</a>
-        </mat-toolbar>
-    </footer>
+    <mat-divider [vertical]="true"></mat-divider>
+    <div class="content">
+      <mat-tab-group>
+        @for (tabGroup of tabs; track tabGroup) {
+          @if (showTabGroup(tabGroup)) {
+            <mat-tab label="{{tabGroup[0]}}">
+              <ng-template matTabContent>
+                <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+                  @for (tab of tabGroup[1]; track tab) {
+                    @if (tab[2]) {
+                      <a mat-tab-link routerLink="{{tab[0]}}">{{tab[1]}}</a>
+                    }
+                  }
+                </nav>
+              </ng-template>
+            </mat-tab>
+          }
+        }
+      </mat-tab-group>
+      <mat-tab-nav-panel #tabPanel>
+        <router-outlet></router-outlet>
+      </mat-tab-nav-panel>
+    </div>
+    <div class="sidebar">
+      <app-event-list></app-event-list>
+    </div>
+  </div>
+  <footer>
+    <mat-toolbar>
+      <a href="credits">Credits</a>
+      <a href="about">About</a>
+      <a href="privacy-policy">Privacy Policy</a>
+    </mat-toolbar>
+  </footer>
 </div>

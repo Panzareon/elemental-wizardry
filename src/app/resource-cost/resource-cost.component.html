@@ -1,6 +1,8 @@
 <span [ngClass]="{'disabled' : disabled}">
-    {{cost.amount}}<img *ngIf="icon!==null" src="assets/icons/{{icon}}.svg"/>
-    <ng-container *ngIf="icon===null">
-        {{name}}
-    </ng-container>
+  {{cost.amount}}@if (icon!==null) {
+  <img src="assets/icons/{{icon}}.svg"/>
+}
+@if (icon===null) {
+  {{name}}
+}
 </span>

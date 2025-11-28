@@ -1,16 +1,22 @@
 <mat-card class="tooltip" [style.left]="left + 'px'" [style.top]="top + 'px'" [class.visible]="visible" [class.moved-position]="movedPosition">
-    <mat-card-header>
-        <h2>{{location.name}}</h2>
-    </mat-card-header>
-    <mat-card-content *ngFor="let target of location.exploreActive?.rewards" >
+  <mat-card-header>
+    <h2>{{location.name}}</h2>
+  </mat-card-header>
+  @for (target of location.exploreActive?.rewards; track target) {
+    <mat-card-content >
       <h4>{{target.name}}</h4>
       {{unlockCondition(target)}}
       <div class="explore-progress">
         <mat-card class="progress-bar">
-            <div class="progress" [style.width.%]="target.progressRatio * 100"></div>
+          <div class="progress" [style.width.%]="target.progressRatio * 100"></div>
         </mat-card>
-        <img class="progress-icon" src="assets/icons/check-mark.svg" *ngIf="isDone(target)"/>
-        <img class="progress-icon" src="assets/icons/lock.svg" *ngIf="isLocked(target)"/>
+        @if (isDone(target)) {
+          <img class="progress-icon" src="assets/icons/check-mark.svg"/>
+        }
+        @if (isLocked(target)) {
+          <img class="progress-icon" src="assets/icons/lock.svg"/>
+        }
       </div>
     </mat-card-content>
-  </mat-card>
+  }
+</mat-card>

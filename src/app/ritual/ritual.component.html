@@ -1,40 +1,50 @@
-<ng-container *ngIf="preparedRitual !== null" >
-    <div class="tooltip-wrapper" *ngIf="preparedRitual.cast.ritualCast !== undefined">
-        <button mat-stroked-button (click)="channel(preparedRitual)" class="spell" [disabled]="preparedRitual.cast.ritualCast.isChanneling">
-            <span class="spell-content">
-                <app-spell-icon [spell]="preparedRitual" #icon></app-spell-icon>
-                <div class="description">
-                    <div class="name">
-                        {{preparedRitual.name}}
-                    </div>
-                    <div class="channel-cost">
-                        Channel <app-resource-cost *ngFor="let cost of preparedRitual.cast.ritualCast.channelCost" [cost]="cost"></app-resource-cost> over {{preparedRitual.cast.ritualCast.channelDuration}} seconds.
-                    </div>
-                </div>
-            </span>
-        </button>
+@if (preparedRitual !== null) {
+  @if (preparedRitual.cast.ritualCast !== undefined) {
+    <div class="tooltip-wrapper">
+      <button mat-stroked-button (click)="channel(preparedRitual)" class="spell" [disabled]="preparedRitual.cast.ritualCast.isChanneling">
+        <span class="spell-content">
+          <app-spell-icon [spell]="preparedRitual" #icon></app-spell-icon>
+          <div class="description">
+            <div class="name">
+              {{preparedRitual.name}}
+            </div>
+            <div class="channel-cost">
+              Channel @for (cost of preparedRitual.cast.ritualCast.channelCost; track cost) {
+              <app-resource-cost [cost]="cost"></app-resource-cost>
+              } over {{preparedRitual.cast.ritualCast.channelDuration}} seconds.
+            </div>
+          </div>
+        </span>
+      </button>
     </div>
-    <app-ritual-circle #ritualCircle></app-ritual-circle>
-</ng-container>
-<ng-container *ngIf="preparedRitual === null">
-    <ng-container *ngFor="let spell of spells">
-        <div appSpellTooltip [spell]="spell" class="tooltip-wrapper" *ngIf="spell.cast.ritualCast !== undefined">
-            <button mat-stroked-button (click)="prepare(spell)" [disabled]="!canPrepare(spell)" class="spell">
-                <span class="spell-content">
-                    <app-spell-icon [spell]="spell" #icon></app-spell-icon>
-                    <div class="description">
-                        <div class="name">
-                            {{spell.name}}
-                        </div>
-                        <div class="cost">
-                            <app-resource-cost *ngFor="let cost of spell.cast.baseCost" [cost]="cost"></app-resource-cost>
-                        </div>
-                        <div class="channel-cost">
-                            Channel <app-resource-cost *ngFor="let cost of spell.cast.ritualCast.channelCost" [cost]="cost"></app-resource-cost> over {{spell.cast.ritualCast.channelDuration}} seconds.
-                        </div>
-                    </div>
-                </span>
-            </button>
-        </div>
-    </ng-container>
-</ng-container>
+  }
+  <app-ritual-circle #ritualCircle></app-ritual-circle>
+}
+@if (preparedRitual === null) {
+  @for (spell of spells; track spell) {
+    @if (spell.cast.ritualCast !== undefined) {
+      <div appSpellTooltip [spell]="spell" class="tooltip-wrapper">
+        <button mat-stroked-button (click)="prepare(spell)" [disabled]="!canPrepare(spell)" class="spell">
+          <span class="spell-content">
+            <app-spell-icon [spell]="spell" #icon></app-spell-icon>
+            <div class="description">
+              <div class="name">
+                {{spell.name}}
+              </div>
+              <div class="cost">
+                @for (cost of spell.cast.baseCost; track cost) {
+                  <app-resource-cost [cost]="cost"></app-resource-cost>
+                }
+              </div>
+              <div class="channel-cost">
+                Channel @for (cost of spell.cast.ritualCast.channelCost; track cost) {
+                <app-resource-cost [cost]="cost"></app-resource-cost>
+                } over {{spell.cast.ritualCast.channelDuration}} seconds.
+              </div>
+            </div>
+          </span>
+        </button>
+      </div>
+    }
+  }
+}

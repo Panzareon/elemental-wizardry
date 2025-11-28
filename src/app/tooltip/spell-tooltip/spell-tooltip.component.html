@@ -1,7 +1,9 @@
 <mat-card class="tooltip" [style.left]="left + 'px'" [style.top]="top + 'px'" [class.visible]="visible" [class.moved-position]="movedPosition">
   <mat-card-header>
     {{spell.name}} Lvl {{spell.castLevel}}
-    <ng-container *ngIf="spell.level !== spell.castLevel"> ({{spell.level}})</ng-container>
+    @if (spell.level !== spell.castLevel) {
+      ({{spell.level}})
+    }
   </mat-card-header>
   <mat-card-content>
     <mat-card class="exp">

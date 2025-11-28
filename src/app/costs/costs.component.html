@@ -1,4 +1,8 @@
 <span class="cost">
-    <app-resource-cost *ngFor="let resource of cost.resources" [cost]="resource"></app-resource-cost>
-    <app-influence-cost *ngFor="let influence of cost.influence" [cost]="influence"></app-influence-cost>
+  @for (resource of cost.resources; track resource) {
+    <app-resource-cost [cost]="resource"></app-resource-cost>
+  }
+  @for (influence of cost.influence; track influence) {
+    <app-influence-cost [cost]="influence"></app-influence-cost>
+  }
 </span>

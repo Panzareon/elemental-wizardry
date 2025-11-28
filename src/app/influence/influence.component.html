@@ -1,11 +1,15 @@
-<mat-expansion-panel *ngFor="let influence of influences" expanded="true" appInfluenceTooltip [influence]="influence">
+@for (influence of influences; track influence) {
+  <mat-expansion-panel expanded="true" appInfluenceTooltip [influence]="influence">
     <mat-expansion-panel-header>
-        <mat-panel-title>{{influence.name}} ({{influence.amount}} Influence)</mat-panel-title>
+      <mat-panel-title>{{influence.name}} ({{influence.amount}} Influence)</mat-panel-title>
     </mat-expansion-panel-header>
-    <ng-container *ngFor="let donation of influence.donations">
-        <div class="donation" *ngIf="isResourceAvailable(donation)">
-            <span>{{getName(donation.resource)}}</span>
-            <button mat-stroked-button (click)="donate(donation)" [disabled]="!hasResource(donation)">Donate ({{donation.reward}} Influence)</button>
+    @for (donation of influence.donations; track donation) {
+      @if (isResourceAvailable(donation)) {
+        <div class="donation">
+          <span>{{getName(donation.resource)}}</span>
+          <button mat-stroked-button (click)="donate(donation)" [disabled]="!hasResource(donation)">Donate ({{donation.reward}} Influence)</button>
         </div>
-    </ng-container>
-</mat-expansion-panel>
+      }
+    }
+  </mat-expansion-panel>
+}

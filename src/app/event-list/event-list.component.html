@@ -1,5 +1,7 @@
-<mat-card *ngFor="let event of events">
+@for (event of events; track event) {
+  <mat-card>
     <mat-card-content>
-        {{event}}
+      {{event}}
     </mat-card-content>
-</mat-card>
+  </mat-card>
+}

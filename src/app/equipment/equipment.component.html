@@ -1,12 +1,18 @@
 <div class="attuned">
-    Attuned ({{attunedItems.length}}/{{attunementSlots}}):
-    <app-item [item]="item" *ngFor="let item of attunedItems" class="stackable-card"></app-item>
+  Attuned ({{attunedItems.length}}/{{attunementSlots}}):
+  @for (item of attunedItems; track item) {
+    <app-item [item]="item" class="stackable-card"></app-item>
+  }
 </div>
 <div class="not-attuned">
-    Inventory:
-    <app-item [item]="item" *ngFor="let item of notAttunedItems" class="stackable-card"></app-item>
+  Inventory:
+  @for (item of notAttunedItems; track item) {
+    <app-item [item]="item" class="stackable-card"></app-item>
+  }
 </div>
 <div class="usable">
-    Usables:
-    <app-item [item]="item" *ngFor="let item of usables" class="stackable-card"></app-item>
+  Usables:
+  @for (item of usables; track item) {
+    <app-item [item]="item" class="stackable-card"></app-item>
+  }
 </div>

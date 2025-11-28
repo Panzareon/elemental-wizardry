@@ -1,24 +1,30 @@
 <div class="button-wrapper" appExplorationTooltip [location]="location">
-    <mat-card class="progress-card">
-        <div class="progress" [style.width.%]="getProgress(location.exploreAction?.selectedOption)*100" *ngIf="location.exploreAction?.selectedOption !== undefined"></div>
-        <mat-card-header>
-            {{location.name}}
-        </mat-card-header>
-        <mat-card-content *ngIf="location.exploreAction === undefined">
-            <mat-button-toggle class="action location" [checked]="isExploreActive()" (change)="toggleExplore()">Explore</mat-button-toggle>
-        </mat-card-content>
-        <mat-card-content *ngIf="location.exploreAction !== undefined">
-            {{location.exploreAction.description}}<br>
-            <ng-container *ngFor="let option of location.exploreAction.options">
-                <ng-container *ngIf="isAvailable(option)">
-                    <mat-button-toggle [checked]="isActionActive(option)" (change)="toggleAction(option)">{{option.name}}</mat-button-toggle><br>
-                    <ng-container *ngFor="let additionalOption of option.additionalOptions">
-                        <ng-container *ngIf="isAvailable(additionalOption)">
-                            <mat-button-toggle [checked]="isActionActive(additionalOption)" (change)="toggleAction(additionalOption)" class="additional-option">{{additionalOption.name}}</mat-button-toggle><br>
-                        </ng-container>
-                    </ng-container>
-                </ng-container>
-            </ng-container>
-        </mat-card-content>
-    </mat-card>
+  <mat-card class="progress-card">
+    @if (location.exploreAction?.selectedOption !== undefined) {
+      <div class="progress" [style.width.%]="getProgress(location.exploreAction?.selectedOption)*100"></div>
+    }
+    <mat-card-header>
+      {{location.name}}
+    </mat-card-header>
+    @if (location.exploreAction === undefined) {
+      <mat-card-content>
+        <mat-button-toggle class="action location" [checked]="isExploreActive()" (change)="toggleExplore()">Explore</mat-button-toggle>
+      </mat-card-content>
+    }
+    @if (location.exploreAction !== undefined) {
+      <mat-card-content>
+        {{location.exploreAction.description}}<br>
+        @for (option of location.exploreAction.options; track option) {
+          @if (isAvailable(option)) {
+            <mat-button-toggle [checked]="isActionActive(option)" (change)="toggleAction(option)">{{option.name}}</mat-button-toggle><br>
+            @for (additionalOption of option.additionalOptions; track additionalOption) {
+              @if (isAvailable(additionalOption)) {
+                <mat-button-toggle [checked]="isActionActive(additionalOption)" (change)="toggleAction(additionalOption)" class="additional-option">{{additionalOption.name}}</mat-button-toggle><br>
+              }
+            }
+          }
+        }
+      </mat-card-content>
+    }
+  </mat-card>
 </div>

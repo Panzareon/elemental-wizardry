@@ -1,31 +1,37 @@
-<mat-card class="progress-card stackable-card" *ngFor="let plot of plots">
+@for (plot of plots; track plot) {
+  <mat-card class="progress-card stackable-card">
     <div class="progress" [style.width.%]="getProgress(plot)*100"></div>
     <div class="water-amount-max" [class.available]="plot.water > 0">
-        <div class="water-amount" [style.height.%]="plot.water/plot.maxWater*100"></div>
+      <div class="water-amount" [style.height.%]="plot.water/plot.maxWater*100"></div>
     </div>
     <mat-card-header>
-        {{plot.plantName}}
+      {{plot.plantName}}
     </mat-card-header>
-    <ng-container *ngIf="showPlanting(plot)">
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <mat-button-toggle class="plant-button" [checked]="isActive(plot)" (change)="plant(plot)">Plant {{getName(plot.selectedSeed)}}</mat-button-toggle>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-radio-group (change)="selectedPlantChanged(plot, $event)">
-                <mat-radio-button labelPosition="before" value="plant" [checked]="plot.selectedSeed === plant" [value]="plant" *ngFor="let plant of availableSeeds">
-                    {{getName(plant)}}
-                </mat-radio-button>
-            </mat-radio-group>
-        </mat-expansion-panel>
-    </ng-container>
-    <mat-card-content *ngIf="!showPlanting(plot)">
-        <ng-container *ngIf="showHarvest(plot)">
-            <mat-button-toggle [checked]="isActive(plot)" (change)="harvest(plot)">Harvest</mat-button-toggle>
-        </ng-container>
-        <ng-container *ngIf="canWater(plot)">
-            <button mat-stroked-button (click)="water(plot)">Water</button>
-        </ng-container>
-    </mat-card-content>
-</mat-card>
+    @if (showPlanting(plot)) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-button-toggle class="plant-button" [checked]="isActive(plot)" (change)="plant(plot)">Plant {{getName(plot.selectedSeed)}}</mat-button-toggle>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-radio-group (change)="selectedPlantChanged(plot, $event)">
+          @for (plant of availableSeeds; track plant) {
+            <mat-radio-button labelPosition="before" value="plant" [checked]="plot.selectedSeed === plant" [value]="plant">
+              {{getName(plant)}}
+            </mat-radio-button>
+          }
+        </mat-radio-group>
+      </mat-expansion-panel>
+    }
+    @if (!showPlanting(plot)) {
+      <mat-card-content>
+        @if (showHarvest(plot)) {
+          <mat-button-toggle [checked]="isActive(plot)" (change)="harvest(plot)">Harvest</mat-button-toggle>
+        }
+        @if (canWater(plot)) {
+          <button mat-stroked-button (click)="water(plot)">Water</button>
+        }
+      </mat-card-content>
+    }
+  </mat-card>
+}

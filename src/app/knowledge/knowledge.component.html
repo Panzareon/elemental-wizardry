@@ -1,24 +1,28 @@
 
 <div class="knowledges">
-    <mat-card *ngFor="let knowledge of getKnowledge()" class="knowledge progress-card stackable-card" >
-        <div class="progress" [style.width.%]="knowledge.levelUpProgress*100"></div>
-        <mat-card-header>
-            {{knowledge.name}} lvl{{knowledge.level}}
-        </mat-card-header>
-        <mat-card-content>
-            <div>
-                Insight {{knowledge.insight}} (max level: {{knowledge.currentMaxLevel}})
-                <div class="insight-progress-parent">
-                    <div class="insight-progress" [style.width.%]="knowledge.insightProgress / knowledge.nextInsightProgress * 100"></div>
-                </div>
-            </div>
-        </mat-card-content>
-        <mat-card-content>
-            <ng-container  *ngFor="let knowledgeAction of knowledge.studyActives">
-                <mat-button-toggle [checked]="isStudyActive(knowledgeAction)" (change)="toggleStudy(knowledgeAction)" *ngIf="isAvailable(knowledgeAction)">
-                    {{knowledgeAction.name}}
-                </mat-button-toggle>
-            </ng-container>
-        </mat-card-content>
+  @for (knowledge of getKnowledge(); track knowledge) {
+    <mat-card class="knowledge progress-card stackable-card" >
+      <div class="progress" [style.width.%]="knowledge.levelUpProgress*100"></div>
+      <mat-card-header>
+        {{knowledge.name}} lvl{{knowledge.level}}
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          Insight {{knowledge.insight}} (max level: {{knowledge.currentMaxLevel}})
+          <div class="insight-progress-parent">
+            <div class="insight-progress" [style.width.%]="knowledge.insightProgress / knowledge.nextInsightProgress * 100"></div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-content>
+        @for (knowledgeAction of knowledge.studyActives; track knowledgeAction) {
+          @if (isAvailable(knowledgeAction)) {
+            <mat-button-toggle [checked]="isStudyActive(knowledgeAction)" (change)="toggleStudy(knowledgeAction)">
+              {{knowledgeAction.name}}
+            </mat-button-toggle>
+          }
+        }
+      </mat-card-content>
     </mat-card>
+  }
 </div>

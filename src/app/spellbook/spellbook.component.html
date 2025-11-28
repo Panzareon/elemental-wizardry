@@ -1,46 +1,57 @@
 
 <div class="spells">
-    <div *ngFor="let spell of spells" appSpellTooltip [spell]="spell" class="tooltip-wrapper">
-        <button mat-stroked-button (click)="select(spell)" class="spell">
-            <span class="spell-content">
-                <app-spell-icon [spell]="spell"></app-spell-icon>
-                <div class="description">
-                    <div class="name">
-                        {{spell.name}}
-                    </div>
-                </div>
-            </span>
-        </button>
+  @for (spell of spells; track spell) {
+    <div appSpellTooltip [spell]="spell" class="tooltip-wrapper">
+      <button mat-stroked-button (click)="select(spell)" class="spell">
+        <span class="spell-content">
+          <app-spell-icon [spell]="spell"></app-spell-icon>
+          <div class="description">
+            <div class="name">
+              {{spell.name}}
+            </div>
+          </div>
+        </span>
+      </button>
     </div>
+  }
 </div>
-<div class="spell-description" *ngIf="selectedSpell !== undefined">
+@if (selectedSpell !== undefined) {
+  <div class="spell-description">
     <div class="name">
-        <app-spell-icon [spell]="selectedSpell" #icon></app-spell-icon>
-        <div class="description">
-            {{selectedSpell.name}} Lvl {{selectedSpell.level}}
-        </div>
+      <app-spell-icon [spell]="selectedSpell" #icon></app-spell-icon>
+      <div class="description">
+        {{selectedSpell.name}} Lvl {{selectedSpell.level}}
+      </div>
     </div>
     <div class="cost">
-        <app-resource-cost *ngFor="let cost of selectedSpell.cast.baseCost" [cost]="cost"></app-resource-cost>
+      @for (cost of selectedSpell.cast.baseCost; track cost) {
+        <app-resource-cost [cost]="cost"></app-resource-cost>
+      }
     </div>
     <div>
-        <button mat-stroked-button (click)="cast(selectedSpell, icon)" [disabled]="!canCast(selectedSpell)" class="spell" *ngIf="castableSpell(selectedSpell)">
-            Cast
+      @if (castableSpell(selectedSpell)) {
+        <button mat-stroked-button (click)="cast(selectedSpell, icon)" [disabled]="!canCast(selectedSpell)" class="spell">
+          Cast
         </button>
-        <a routerLink="/ritual" *ngIf="isRitual(selectedSpell)">Ritual</a>
+      }
+      @if (isRitual(selectedSpell)) {
+        <a routerLink="/ritual">Ritual</a>
+      }
     </div>
     <div class="adjust-cast-level">
-        Cast with Level:
-        <button mat-stroked-button (click)="adjustLevel(selectedSpell, -1)" [disabled]="selectedSpell.castLevel <= 1">-</button>
-        {{selectedSpell.castLevel}}
-        <button mat-stroked-button (click)="adjustLevel(selectedSpell, +1)" [disabled]="selectedSpell.castLevel >= selectedSpell.level">+</button>
-
+      Cast with Level:
+      <button mat-stroked-button (click)="adjustLevel(selectedSpell, -1)" [disabled]="selectedSpell.castLevel <= 1">-</button>
+      {{selectedSpell.castLevel}}
+      <button mat-stroked-button (click)="adjustLevel(selectedSpell, +1)" [disabled]="selectedSpell.castLevel >= selectedSpell.level">+</button>
     </div>
     <mat-card class="exp">
       <div class="progress" [style.width.%]="selectedSpell.levelUpProgress * 100"></div>
     </mat-card>
     {{selectedSpell.description}}
-    <div class="attunement" [ngClass]="{'disabled' : !hasAttunement(attunement)}" *ngFor="let attunement of selectedSpell.getRequiredAttunements()">
+    @for (attunement of selectedSpell.getRequiredAttunements(); track attunement) {
+      <div class="attunement" [ngClass]="{'disabled' : !hasAttunement(attunement)}">
         Requires {{getName(attunement[0])}} {{getAttunement(attunement[0])}}/{{attunement[1]}}
-    </div>
-</div>
+      </div>
+    }
+  </div>
+}

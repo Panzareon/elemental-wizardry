@@ -1,15 +1,21 @@
 
 <div class="action-list skills">
-    <mat-button-toggle *ngFor="let skill of getOngoingSkills()" class="action skill" [checked]="isActive(skill)" (change)="toggleSkill(skill)">
-        {{skill.name}}
+  @for (skill of getOngoingSkills(); track skill) {
+    <mat-button-toggle class="action skill" [checked]="isActive(skill)" (change)="toggleSkill(skill)">
+      {{skill.name}}
     </mat-button-toggle>
+  }
 </div>
 <div class="action-list duration-skills">
-    <app-duration-action *ngFor="let skill of getDurationSkills()" [skill]="skill" class="skill">
+  @for (skill of getDurationSkills(); track skill) {
+    <app-duration-action [skill]="skill" class="skill">
     </app-duration-action>
+  }
 </div>
 
 <h4>Explore Locations</h4>
 <div class="action-list locations">
-    <app-expedition [location]="location" *ngFor="let location of getExplorableLocations()"></app-expedition>
+  @for (location of getExplorableLocations(); track location) {
+    <app-expedition [location]="location"></app-expedition>
+  }
 </div>

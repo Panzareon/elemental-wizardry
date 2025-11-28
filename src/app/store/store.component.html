@@ -1,9 +1,13 @@
-<mat-expansion-panel *ngFor="let store of stores" expanded="true">
+@for (store of stores; track store) {
+  <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
-        <mat-panel-title>{{store.name}}</mat-panel-title>
+      <mat-panel-title>{{store.name}}</mat-panel-title>
     </mat-expansion-panel-header>
-    <div *ngFor="let offer of store.offers" class="offer">
+    @for (offer of store.offers; track offer) {
+      <div class="offer">
         <span>{{offer.result.name}}</span>
         <button mat-stroked-button (click)="buy(offer)" [disabled]="!canAfford(offer)">Buy (<app-costs [cost]="offer.costs" ></app-costs>)</button>
-    </div>
-</mat-expansion-panel>
+      </div>
+    }
+  </mat-expansion-panel>
+}

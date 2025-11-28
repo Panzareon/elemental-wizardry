@@ -1,15 +1,23 @@
 <div>
-    <div *ngFor="let unlock of availableUnlocks" class="tooltip-wrapper" appUnlockTooltip [unlock]="unlock">
-        <app-unlock-card [unlock]="unlock"></app-unlock-card>
+  @for (unlock of availableUnlocks; track unlock) {
+    <div class="tooltip-wrapper" appUnlockTooltip [unlock]="unlock">
+      <app-unlock-card [unlock]="unlock"></app-unlock-card>
     </div>
-    <div *ngFor="let unlock of repeatableUnlocks" class="tooltip-wrapper" appUnlockTooltip [unlock]="unlock">
-        <app-unlock-card [unlock]="unlock"></app-unlock-card>
+  }
+  @for (unlock of repeatableUnlocks; track unlock) {
+    <div class="tooltip-wrapper" appUnlockTooltip [unlock]="unlock">
+      <app-unlock-card [unlock]="unlock"></app-unlock-card>
     </div>
+  }
 </div>
-<ng-container *ngIf="completedUnlocks.length > 0">
-    Unlocked:
-    <div *ngFor="let unlock of completedUnlocks">
-        {{unlock.name}} {{unlock.numberRepeated}}/{{unlock.maxRepeats}}
-        <ng-container *ngIf="unlock.numberActive !== unlock.numberRepeated"> | {{unlock.numberActive}} currently active</ng-container>
+@if (completedUnlocks.length > 0) {
+  Unlocked:
+  @for (unlock of completedUnlocks; track unlock) {
+    <div>
+      {{unlock.name}} {{unlock.numberRepeated}}/{{unlock.maxRepeats}}
+      @if (unlock.numberActive !== unlock.numberRepeated) {
+        | {{unlock.numberActive}} currently active
+      }
     </div>
-</ng-container>
+  }
+}
